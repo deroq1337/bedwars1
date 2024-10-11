@@ -43,10 +43,14 @@ public class BedWarsPauseCommand implements CommandExecutor {
         }
 
         final BedWarsCountdown countdown = gameState.getCountdown();
-        final boolean paused = !countdown.isRunning();
-        countdown.setRunning(paused);
 
-        player.sendMessage("§aDer Countdown wurde " + (paused ? "pausiert" : "fortgesetzt"));
+        if (countdown.isRunning()) {
+            countdown.pause();
+            player.sendMessage("§aDer Countdown wurde pausiert");
+        } else {
+            countdown.unpause();
+            player.sendMessage("§aDer Countdown wird fortgesetzt");
+        }
         return false;
     }
 }

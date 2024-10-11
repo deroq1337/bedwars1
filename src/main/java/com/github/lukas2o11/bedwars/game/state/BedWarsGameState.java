@@ -25,8 +25,13 @@ public abstract class BedWarsGameState {
     public abstract boolean canStart();
 
     public void check() {
-        if (!canStart()) {
+        if (!canStart() && countdown.isStarted()) {
             countdown.cancel();
+            return;
+        }
+
+        if (!countdown.isStarted()) {
+            countdown.start();
         }
     }
 
