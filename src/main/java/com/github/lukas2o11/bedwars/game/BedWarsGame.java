@@ -5,10 +5,11 @@ import com.github.lukas2o11.bedwars.game.commands.BedWarsPauseCommand;
 import com.github.lukas2o11.bedwars.game.commands.BedWarsStartCommand;
 import com.github.lukas2o11.bedwars.game.listeners.PlayerJoinListener;
 import com.github.lukas2o11.bedwars.game.listeners.PlayerQuitListener;
-import com.github.lukas2o11.bedwars.game.map.BedWarsGameMap;
+import com.github.lukas2o11.bedwars.game.map.DefaultBedWarsGameMap;
 import com.github.lukas2o11.bedwars.game.state.BedWarsGameState;
 import com.github.lukas2o11.bedwars.game.state.BedWarsLobbyGameState;
-import com.github.lukas2o11.bedwars.game.user.UserRegistry;
+import com.github.lukas2o11.bedwars.game.user.BedWarsUserRegistry;
+import com.github.lukas2o11.bedwars.game.user.DefaultBedWarsUserRegistry;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,17 +24,18 @@ public class BedWarsGame {
     public static final int COMMAND_START_THRESHOLD = 10;
 
     private final BedWars bedWars;
-    private final UserRegistry userRegistry;
+    private final BedWarsUserRegistry userRegistry;
     private Optional<BedWarsGameState> gameState;
-    private Optional<BedWarsGameMap> gameMap;
+    private Optional<DefaultBedWarsGameMap> gameMap;
 
     public BedWarsGame(final BedWars bedWars) {
         this.bedWars = bedWars;
-        this.userRegistry = new UserRegistry();
+        this.userRegistry = new DefaultBedWarsUserRegistry();
         this.gameState = Optional.of(new BedWarsLobbyGameState(this));
         gameState.get().enter();
 
         registerListeners();
+        registerCommands();
     }
 
     private void registerListeners() {
