@@ -1,0 +1,10 @@
+name: BedWars
+version: 1.0
+api-version: 1.21
+author: lukas2o11
+main: com.github.lukas2o11.bedwars.BedWars
+commands:
+  start:
+    description: Startet vorzeitig das Spiel
+  pause:
+    description: Pausiert den Lobby-Countdown
