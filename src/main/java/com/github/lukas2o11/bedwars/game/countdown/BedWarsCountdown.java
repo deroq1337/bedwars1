@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -28,13 +29,15 @@ public abstract class BedWarsCountdown {
     }
 
     private int current;
-    private BukkitTask task;
+    private Optional<BukkitTask> task = Optional.empty();
+    private boolean started = false;
     private boolean running = false;
 
     public void start() {
         this.current = start;
+        this.started = true;
         this.running = true;
-        this.task = Bukkit.getScheduler().runTaskTimer(game.getBedWars(), countdownTask(), interval, interval);
+        this.task = Optional.of(Bukkit.getScheduler().runTaskTimer(game.getBedWars(), countdownTask(), interval, interval));
     }
 
     public abstract void onTick();
@@ -45,12 +48,17 @@ public abstract class BedWarsCountdown {
         this.running = false;
     }
 
+    public void unpause() {
+        this.running = true;
+    }
+
     public void cancel() {
         this.running = false;
+        this.started = false;
         this.current = start;
 
-        task.cancel();
-        this.task = null;
+        task.ifPresent(BukkitTask::cancel);
+        task = Optional.empty();
     }
 
     private Runnable countdownTask() {
