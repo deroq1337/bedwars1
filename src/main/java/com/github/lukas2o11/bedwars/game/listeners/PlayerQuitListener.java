@@ -5,6 +5,7 @@ import com.github.lukas2o11.bedwars.game.exceptions.EmptyGameStateException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerQuitListener implements Listener {
 
@@ -16,7 +17,7 @@ public class PlayerQuitListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         game.getUserRegistry().removeUser(event.getPlayer().getUniqueId());
         game.getGameState().orElseThrow(() -> new EmptyGameStateException("Player quit error: GameState in BedWarsGame is empty")).check();
     }
