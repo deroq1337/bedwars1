@@ -12,7 +12,7 @@ public class DefaultBedWarsUserRegistry implements BedWarsUserRegistry {
 
     @Override
     public void addUser(final UUID uuid, final boolean alive) {
-        userMap.put(uuid, BedWarsUser.create(uuid, alive));
+        userMap.put(uuid, DefaultBedWarsUser.create(uuid, alive));
     }
 
     @Override
