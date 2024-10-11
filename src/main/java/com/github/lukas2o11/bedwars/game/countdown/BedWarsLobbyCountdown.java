@@ -13,7 +13,7 @@ public class BedWarsLobbyCountdown extends BedWarsCountdown {
     @Override
     public void onTick() {
         Bukkit.getOnlinePlayers().forEach(player -> {
-            player.setExp((float) 100 * getCurrent() / getStart());
+            player.setExp((float) getCurrent() / getStart());
             player.setLevel(getCurrent());
         });
     }
