@@ -10,7 +10,7 @@ public interface BedWarsGameMapManager {
 
     CompletableFuture<Boolean> updateMap(final BedWarsGameMap map);
 
-    CompletableFuture<Boolean> deleteMap(final BedWarsGameMap map);
+    CompletableFuture<Boolean> deleteMap(final String name);
 
     CompletableFuture<Optional<BedWarsGameMap>> getMapByName(final String name);
 

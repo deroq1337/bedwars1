@@ -36,18 +36,18 @@ public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager {
     @Override
     public CompletableFuture<Boolean> updateMap(final BedWarsGameMap map) {
         return CompletableFuture.supplyAsync(() -> {
-            final Bson filter = buildNameFilter(map.getName());
+            final Bson filter = Filters.eq("_id", map.getId());
             final UpdateResult result = mapCollection.replaceOne(filter, map);
-            return result.wasAcknowledged() && result.getModifiedCount() == 1;
+            return result.getModifiedCount() != 0;
         });
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteMap(final BedWarsGameMap map) {
+    public CompletableFuture<Boolean> deleteMap(final String name) {
         return CompletableFuture.supplyAsync(() -> {
-            final Bson filter = buildNameFilter(map.getName());
+            final Bson filter = buildNameFilter(name);
             final DeleteResult result = mapCollection.deleteMany(filter);
-            return result.wasAcknowledged() && result.getDeletedCount() == 1;
+            return result.getDeletedCount() != 0;
         });
     }
 
