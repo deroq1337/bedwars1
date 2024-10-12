@@ -4,6 +4,7 @@ import com.github.lukas2o11.bedwars.game.map.serialization.BedWarsDirectedGameMa
 import com.github.lukas2o11.bedwars.game.map.serialization.BedWarsGameMapLocation;
 import com.github.lukas2o11.bedwars.game.spawners.BedWarsGameResourceSpawnerType;
 import com.github.lukas2o11.bedwars.game.teams.BedWarsGameTeamType;
+import org.bson.types.ObjectId;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -11,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 public interface BedWarsGameMap {
+
+    ObjectId getId();
 
     String getName();
 

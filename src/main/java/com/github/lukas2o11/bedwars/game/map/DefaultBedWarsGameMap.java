@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.bson.types.ObjectId;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -23,6 +24,15 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     private int minPlayers;
     private int teamCount;
     private int teamSize;
+
+    public DefaultBedWarsGameMap(final String name, final int minPlayers, final int teamCount, final int teamSize) {
+        this.name = name;
+        this.minPlayers = minPlayers;
+        this.teamCount = teamCount;
+        this.teamSize = teamSize;
+    }
+
+    private ObjectId id;
     private Set<BedWarsGameTeamType> teams;
     private Map<BedWarsGameTeamType, BedWarsDirectedGameMapLocation> teamSpawnLocations;
     private Map<BedWarsGameTeamType, BedWarsGameMapLocation> teamBedLocations;
