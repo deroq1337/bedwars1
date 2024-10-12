@@ -5,7 +5,9 @@ import com.github.lukas2o11.bedwars.game.commands.BedWarsPauseCommand;
 import com.github.lukas2o11.bedwars.game.commands.BedWarsStartCommand;
 import com.github.lukas2o11.bedwars.game.listeners.PlayerJoinListener;
 import com.github.lukas2o11.bedwars.game.listeners.PlayerQuitListener;
+import com.github.lukas2o11.bedwars.game.map.BedWarsGameMapManager;
 import com.github.lukas2o11.bedwars.game.map.DefaultBedWarsGameMap;
+import com.github.lukas2o11.bedwars.game.map.DefaultBedWarsGameMapManager;
 import com.github.lukas2o11.bedwars.game.state.BedWarsGameState;
 import com.github.lukas2o11.bedwars.game.state.BedWarsLobbyGameState;
 import com.github.lukas2o11.bedwars.game.user.BedWarsUserRegistry;
@@ -25,12 +27,14 @@ public class BedWarsGame {
 
     private final BedWars bedWars;
     private final BedWarsUserRegistry userRegistry;
+    private final BedWarsGameMapManager gameMapManager;
     private Optional<BedWarsGameState> gameState;
     private Optional<DefaultBedWarsGameMap> gameMap;
 
     public BedWarsGame(final BedWars bedWars) {
         this.bedWars = bedWars;
         this.userRegistry = new DefaultBedWarsUserRegistry();
+        this.gameMapManager = new DefaultBedWarsGameMapManager(this);
         this.gameState = Optional.of(new BedWarsLobbyGameState(this));
         gameState.get().enter();
 
