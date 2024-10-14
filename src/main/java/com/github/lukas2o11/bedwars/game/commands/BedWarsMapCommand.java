@@ -18,6 +18,7 @@ public class BedWarsMapCommand implements CommandExecutor {
 
     public BedWarsMapCommand(BedWarsGame game) {
         this.gameMapManager = game.getGameMapManager();
+        game.getBedWars().getCommand("map").setExecutor(this);
     }
 
     @Override
