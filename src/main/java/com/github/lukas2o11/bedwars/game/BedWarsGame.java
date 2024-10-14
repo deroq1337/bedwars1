@@ -1,6 +1,7 @@
 package com.github.lukas2o11.bedwars.game;
 
 import com.github.lukas2o11.bedwars.BedWars;
+import com.github.lukas2o11.bedwars.game.commands.BedWarsMapCommand;
 import com.github.lukas2o11.bedwars.game.commands.BedWarsPauseCommand;
 import com.github.lukas2o11.bedwars.game.commands.BedWarsStartCommand;
 import com.github.lukas2o11.bedwars.game.listeners.PlayerJoinListener;
@@ -50,5 +51,6 @@ public class BedWarsGame {
     private void registerCommands() {
         new BedWarsStartCommand(this);
         new BedWarsPauseCommand(this);
+        new BedWarsMapCommand(this);
     }
 }

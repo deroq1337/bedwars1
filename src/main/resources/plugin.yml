@@ -8,3 +8,5 @@ commands:
     description: Startet vorzeitig das Spiel
   pause:
     description: Pausiert den Lobby-Countdown
+  map:
+    description: Verwaltet die Maps
