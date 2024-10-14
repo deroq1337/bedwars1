@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public interface BedWarsGameMapManager {
+public interface BedWarsGameMapManager<M extends BedWarsGameMap> {
 
-    CompletableFuture<Boolean> createMap(final BedWarsGameMap map);
+    CompletableFuture<Boolean> createMap(final M map);
 
-    CompletableFuture<Boolean> updateMap(final BedWarsGameMap map);
+    CompletableFuture<Boolean> updateMap(final M map);
 
     CompletableFuture<Boolean> deleteMap(final String name);
 
-    CompletableFuture<Optional<BedWarsGameMap>> getMapByName(final String name);
+    CompletableFuture<Optional<M>> getMapByName(final String name);
 
-    CompletableFuture<Optional<BedWarsGameMap>> getRandomMap();
+    CompletableFuture<Optional<M>> getRandomMap();
 
-    CompletableFuture<List<BedWarsGameMap>> listMaps();
+    CompletableFuture<List<M>> listMaps();
 }

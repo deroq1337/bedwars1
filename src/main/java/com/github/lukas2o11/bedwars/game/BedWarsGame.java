@@ -28,7 +28,7 @@ public class BedWarsGame {
 
     private final BedWars bedWars;
     private final BedWarsUserRegistry userRegistry;
-    private final BedWarsGameMapManager gameMapManager;
+    private final BedWarsGameMapManager<DefaultBedWarsGameMap> gameMapManager;
     private Optional<BedWarsGameState> gameState;
     private Optional<DefaultBedWarsGameMap> gameMap;
 

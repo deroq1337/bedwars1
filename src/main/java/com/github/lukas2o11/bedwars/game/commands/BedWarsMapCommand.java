@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class BedWarsMapCommand implements CommandExecutor {
 
-    private final BedWarsGameMapManager gameMapManager;
+    private final BedWarsGameMapManager<DefaultBedWarsGameMap> gameMapManager;
 
     public BedWarsMapCommand(BedWarsGame game) {
         this.gameMapManager = game.getGameMapManager();
@@ -68,7 +68,7 @@ public class BedWarsMapCommand implements CommandExecutor {
         }
 
         final BedWarsGameMap gameMap = new DefaultBedWarsGameMap(name, teamCount, teamSize, minPlayers);
-        if (!gameMapManager.createMap(gameMap).join()) {
+        if (!gameMapManager.createMap((DefaultBedWarsGameMap) gameMap).join()) {
             player.sendMessage("§cMap konnte nicht erstellt werden (insert wurde nicht anerkannt)");
             return true;
         }
@@ -90,7 +90,7 @@ public class BedWarsMapCommand implements CommandExecutor {
 
     private boolean renameMap(final Player player, final String[] args) {
         final String oldName = args[1];
-        final Optional<BedWarsGameMap> oldFound = gameMapManager.getMapByName(oldName).join();
+        final Optional<DefaultBedWarsGameMap> oldFound = gameMapManager.getMapByName(oldName).join();
         if (oldFound.isEmpty()) {
             player.sendMessage("§cEs gibt keine Map mit diesem Namen");
             return true;
@@ -105,7 +105,7 @@ public class BedWarsMapCommand implements CommandExecutor {
         }
 
         toUpdate.setName(newName);
-        if (!gameMapManager.updateMap(toUpdate).join()) {
+        if (!gameMapManager.updateMap((DefaultBedWarsGameMap) toUpdate).join()) {
             player.sendMessage("§cMap konnte nicht aktualisiert werden");
             return true;
         }
