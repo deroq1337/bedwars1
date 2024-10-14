@@ -5,7 +5,6 @@ import com.github.lukas2o11.bedwars.game.map.serialization.BedWarsGameMapLocatio
 import com.github.lukas2o11.bedwars.game.spawners.BedWarsGameResourceSpawnerType;
 import com.github.lukas2o11.bedwars.game.teams.BedWarsGameTeamType;
 import org.bson.types.ObjectId;
-import org.bukkit.Location;
 import org.bukkit.Material;
 
 import java.util.Map;
@@ -35,35 +34,35 @@ public interface BedWarsGameMap {
 
     Map<BedWarsGameTeamType, BedWarsDirectedGameMapLocation> getTeamSpawnLocations();
 
-    void addTeamSpawnLocation(final BedWarsGameTeamType teamType, final Location location);
+    void addTeamSpawnLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location);
 
     boolean removeTeamSpawnLocation(final BedWarsGameTeamType teamType);
 
     Map<BedWarsGameTeamType, BedWarsGameMapLocation> getTeamBedLocations();
 
-    void addTeamBedLocation(final BedWarsGameTeamType teamType, final Location location);
+    void addTeamBedLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location);
 
     boolean removeTeamBedLocation(final BedWarsGameTeamType teamType);
 
     Map<Integer, BedWarsDirectedGameMapLocation> getShopLocations();
 
-    void addShopLocation(final Location location);
+    void addShopLocation(final BedWarsDirectedGameMapLocation location);
 
     boolean removeShopLocation(final int id);
 
     Map<BedWarsGameResourceSpawnerType, Map<Integer, BedWarsGameMapLocation>> getSpawnerLocations();
 
-    void addSpawnerLocation(final BedWarsGameResourceSpawnerType spawnerType, final Location location);
+    void addSpawnerLocation(final BedWarsGameResourceSpawnerType spawnerType, final BedWarsDirectedGameMapLocation location);
 
     boolean removeSpawnerLocation(final BedWarsGameResourceSpawnerType spawnerType, final int id);
 
     BedWarsDirectedGameMapLocation getRespawnLocation();
 
-    void setRespawnLocation(final Location location);
+    void setRespawnLocation(final BedWarsDirectedGameMapLocation location);
 
     BedWarsDirectedGameMapLocation getSpectatorLocation();
 
-    void setSpectatorLocation(final Location location);
+    void setSpectatorLocation(final BedWarsDirectedGameMapLocation location);
 
     Set<Material> getBreakableBlocks();
 

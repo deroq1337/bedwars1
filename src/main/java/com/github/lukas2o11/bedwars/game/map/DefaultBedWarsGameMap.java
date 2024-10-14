@@ -4,16 +4,13 @@ import com.github.lukas2o11.bedwars.game.map.serialization.BedWarsDirectedGameMa
 import com.github.lukas2o11.bedwars.game.map.serialization.BedWarsGameMapLocation;
 import com.github.lukas2o11.bedwars.game.spawners.BedWarsGameResourceSpawnerType;
 import com.github.lukas2o11.bedwars.game.teams.BedWarsGameTeamType;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.bson.types.ObjectId;
-import org.bukkit.Location;
 import org.bukkit.Material;
 
 import java.util.*;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -21,15 +18,15 @@ import java.util.*;
 public class DefaultBedWarsGameMap implements BedWarsGameMap {
 
     private String name;
-    private int minPlayers;
     private int teamCount;
     private int teamSize;
+    private int minPlayers;
 
-    public DefaultBedWarsGameMap(final String name, final int minPlayers, final int teamCount, final int teamSize) {
+    public DefaultBedWarsGameMap(final String name, final int teamCount, final int teamSize, final int minPlayers) {
         this.name = name;
-        this.minPlayers = minPlayers;
         this.teamCount = teamCount;
         this.teamSize = teamSize;
+        this.minPlayers = minPlayers;
     }
 
     private ObjectId id;
@@ -56,9 +53,9 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     }
 
     @Override
-    public void addTeamSpawnLocation(final BedWarsGameTeamType teamType, final Location location) {
+    public void addTeamSpawnLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location) {
         this.teamSpawnLocations = Optional.ofNullable(teamSpawnLocations).orElseGet(HashMap::new);
-        teamSpawnLocations.put(teamType, new BedWarsDirectedGameMapLocation(location));
+        teamSpawnLocations.put(teamType, location);
     }
 
     @Override
@@ -69,9 +66,9 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     }
 
     @Override
-    public void addTeamBedLocation(final BedWarsGameTeamType teamType, final Location location) {
+    public void addTeamBedLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location) {
         this.teamBedLocations = Optional.ofNullable(teamBedLocations).orElseGet(HashMap::new);
-        teamBedLocations.put(teamType, new BedWarsGameMapLocation(location));
+        teamBedLocations.put(teamType, location);
     }
 
     @Override
@@ -82,9 +79,9 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     }
 
     @Override
-    public void addShopLocation(final Location location) {
+    public void addShopLocation(final BedWarsDirectedGameMapLocation location) {
         this.shopLocations = Optional.ofNullable(shopLocations).orElseGet(HashMap::new);
-        shopLocations.put(shopLocations.size() + 1, new BedWarsDirectedGameMapLocation(location));
+        shopLocations.put(shopLocations.size() + 1, location);
     }
 
     @Override
@@ -104,10 +101,10 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     }
 
     @Override
-    public void addSpawnerLocation(final BedWarsGameResourceSpawnerType spawnerType, final Location location) {
+    public void addSpawnerLocation(final BedWarsGameResourceSpawnerType spawnerType, final BedWarsDirectedGameMapLocation location) {
         this.spawnerLocations = Optional.ofNullable(spawnerLocations).orElseGet(HashMap::new);
         final Map<Integer, BedWarsGameMapLocation> idLocations = spawnerLocations.computeIfAbsent(spawnerType, o -> new HashMap<>());
-        idLocations.put(idLocations.size() + 1, new BedWarsGameMapLocation(location));
+        idLocations.put(idLocations.size() + 1, location);
     }
 
     @Override
@@ -120,13 +117,13 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     }
 
     @Override
-    public void setRespawnLocation(final Location location) {
-        this.respawnLocation = new BedWarsDirectedGameMapLocation(location);
+    public void setRespawnLocation(final BedWarsDirectedGameMapLocation location) {
+        this.respawnLocation = location;
     }
 
     @Override
-    public void setSpectatorLocation(final Location location) {
-        this.spectatorLocation = new BedWarsDirectedGameMapLocation(location);
+    public void setSpectatorLocation(final BedWarsDirectedGameMapLocation location) {
+        this.spectatorLocation = location;
     }
 
     @Override
