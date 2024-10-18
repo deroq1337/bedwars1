@@ -32,6 +32,8 @@ public interface BedWarsGameMap {
 
     boolean removeTeam(final BedWarsGameTeamType teamType);
 
+    boolean hasTeam(final BedWarsGameTeamType teamType);
+
     Map<BedWarsGameTeamType, BedWarsDirectedGameMapLocation> getTeamSpawnLocations();
 
     void addTeamSpawnLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location);
@@ -40,13 +42,13 @@ public interface BedWarsGameMap {
 
     Map<BedWarsGameTeamType, BedWarsGameMapLocation> getTeamBedLocations();
 
-    void addTeamBedLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location);
+    void addTeamBedLocation(final BedWarsGameTeamType teamType, final BedWarsGameMapLocation location);
 
     boolean removeTeamBedLocation(final BedWarsGameTeamType teamType);
 
     Map<Integer, BedWarsDirectedGameMapLocation> getShopLocations();
 
-    void addShopLocation(final BedWarsDirectedGameMapLocation location);
+    int addShopLocation(final BedWarsDirectedGameMapLocation location);
 
     boolean removeShopLocation(final int id);
 

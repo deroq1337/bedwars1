@@ -53,6 +53,13 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     }
 
     @Override
+    public boolean hasTeam(final BedWarsGameTeamType teamType) {
+        return Optional.ofNullable(teams)
+                .map(teams -> teams.contains(teamType))
+                .orElse(false);
+    }
+
+    @Override
     public void addTeamSpawnLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location) {
         this.teamSpawnLocations = Optional.ofNullable(teamSpawnLocations).orElseGet(HashMap::new);
         teamSpawnLocations.put(teamType, location);
@@ -66,7 +73,7 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     }
 
     @Override
-    public void addTeamBedLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location) {
+    public void addTeamBedLocation(final BedWarsGameTeamType teamType, final BedWarsGameMapLocation location) {
         this.teamBedLocations = Optional.ofNullable(teamBedLocations).orElseGet(HashMap::new);
         teamBedLocations.put(teamType, location);
     }
@@ -79,14 +86,16 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     }
 
     @Override
-    public void addShopLocation(final BedWarsDirectedGameMapLocation location) {
+    public int addShopLocation(final BedWarsDirectedGameMapLocation location) {
         this.shopLocations = Optional.ofNullable(shopLocations).orElseGet(HashMap::new);
-        shopLocations.put(shopLocations.size() + 1, location);
+        final int id = shopLocations.size() + 1;
+        shopLocations.put(id, location);
+        return id;
     }
 
     @Override
     public boolean removeShopLocation(final int id) {
-        boolean removed = Optional.ofNullable(shopLocations)
+        final boolean removed = Optional.ofNullable(shopLocations)
                 .map(shopLocations -> shopLocations.remove(id) != null)
                 .orElse(false);
         if (removed) {
