@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface BedWarsGameVotingManager<M extends BedWarsGameMap> {
 
-    //<V extends BedWarsGameVotingVotable<M>, C extends BedWarsGameVotingCandidate<M, V>> @NotNull BedWarsGameVoting<M, V, C> getGameMapVoting();
+    <V extends BedWarsGameVotingVotable<M>, C extends BedWarsGameVotingCandidate<M, V>> @NotNull BedWarsGameVoting<M, V, C> getGameMapVoting();
 
     <V extends BedWarsGameVotingVotable<Boolean>, C extends BedWarsGameVotingCandidate<Boolean, V>> @NotNull BedWarsGameVoting<Boolean, V, C> getFreezerVoting();
 
