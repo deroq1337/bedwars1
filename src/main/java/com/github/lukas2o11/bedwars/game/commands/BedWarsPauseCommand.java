@@ -9,12 +9,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class BedWarsPauseCommand implements CommandExecutor {
 
-    private final BedWarsGame game;
+    private final BedWarsGame<?> game;
 
-    public BedWarsPauseCommand(final BedWarsGame game) {
+    public BedWarsPauseCommand(@NotNull BedWarsGame game) {
         this.game = game;
         game.getBedWars().getCommand("pause").setExecutor(this);
     }

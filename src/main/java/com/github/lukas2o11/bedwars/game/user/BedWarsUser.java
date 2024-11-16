@@ -1,12 +1,16 @@
 package com.github.lukas2o11.bedwars.game.user;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
 public interface BedWarsUser {
 
-    UUID getUuid();
+    @NotNull UUID getUUID();
 
     boolean isAlive();
 
-    void setAlive(final boolean alive);
+    void setAlive(boolean alive);
+
+    void giveItems();
 }

@@ -1,6 +1,7 @@
 package com.github.lukas2o11.bedwars.game.database;
 
 import com.mongodb.client.MongoCollection;
+import org.jetbrains.annotations.NotNull;
 
 public interface MongoDB {
 
@@ -8,5 +9,5 @@ public interface MongoDB {
 
     void disconnect();
 
-    <T> MongoCollection<T> getMongoCollection(final String name, final Class<T> entityClass);
+    <T> MongoCollection<T> getMongoCollection(@NotNull String name, @NotNull Class<T> entityClass);
 }

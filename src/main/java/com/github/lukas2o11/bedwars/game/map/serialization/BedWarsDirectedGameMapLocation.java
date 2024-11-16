@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class BedWarsDirectedGameMapLocation extends BedWarsGameMapLocation {
     private final float yaw;
     private final float pitch;
 
-    public BedWarsDirectedGameMapLocation(final Location location) {
+    public BedWarsDirectedGameMapLocation(@NotNull Location location) {
         super(location);
         this.yaw = location.getYaw();
         this.pitch = location.getPitch();

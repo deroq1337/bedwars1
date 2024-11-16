@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,12 +17,12 @@ import java.util.Optional;
 @Setter
 public abstract class BedWarsCountdown {
 
-    private final BedWarsGame game;
+    private final BedWarsGame<?> game;
     private final int start;
     private final int interval;
     private final List<Integer> specialTicks;
 
-    public BedWarsCountdown(final BedWarsGame game, final int start, final int interval, final int... specialTicks) {
+    public BedWarsCountdown(@NotNull BedWarsGame<?> game, int start, int interval, int... specialTicks) {
         this.game = game;
         this.start = start;
         this.interval = interval;

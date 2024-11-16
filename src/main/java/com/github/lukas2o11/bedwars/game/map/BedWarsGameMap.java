@@ -6,6 +6,7 @@ import com.github.lukas2o11.bedwars.game.spawners.BedWarsGameResourceSpawnerType
 import com.github.lukas2o11.bedwars.game.teams.BedWarsGameTeamType;
 import org.bson.types.ObjectId;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
@@ -16,59 +17,63 @@ public interface BedWarsGameMap {
 
     String getName();
 
-    void setName(final String name);
+    void setName(@NotNull String name);
 
     int getTeamCount();
 
-    void setTeamCount(final int teamCount);
+    void setTeamCount(int teamCount);
 
     int getTeamSize();
 
-    void setTeamSize(final int teamSize);
+    void setTeamSize(int teamSize);
 
     Set<BedWarsGameTeamType> getTeams();
 
-    boolean addTeam(final BedWarsGameTeamType teamType);
+    boolean addTeam(@NotNull BedWarsGameTeamType teamType);
 
-    boolean removeTeam(final BedWarsGameTeamType teamType);
+    boolean removeTeam(@NotNull BedWarsGameTeamType teamType);
 
-    boolean hasTeam(final BedWarsGameTeamType teamType);
+    boolean hasTeam(@NotNull BedWarsGameTeamType teamType);
 
     Map<BedWarsGameTeamType, BedWarsDirectedGameMapLocation> getTeamSpawnLocations();
 
-    void addTeamSpawnLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location);
+    void addTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsDirectedGameMapLocation location);
 
-    boolean removeTeamSpawnLocation(final BedWarsGameTeamType teamType);
+    boolean removeTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType);
 
     Map<BedWarsGameTeamType, BedWarsGameMapLocation> getTeamBedLocations();
 
-    void addTeamBedLocation(final BedWarsGameTeamType teamType, final BedWarsGameMapLocation location);
+    void addTeamBedLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsGameMapLocation location);
 
-    boolean removeTeamBedLocation(final BedWarsGameTeamType teamType);
+    boolean removeTeamBedLocation(@NotNull BedWarsGameTeamType teamType);
 
     Map<Integer, BedWarsDirectedGameMapLocation> getShopLocations();
 
-    int addShopLocation(final BedWarsDirectedGameMapLocation location);
+    int addShopLocation(@NotNull BedWarsDirectedGameMapLocation location);
 
-    boolean removeShopLocation(final int id);
+    boolean removeShopLocation(int id);
 
     Map<BedWarsGameResourceSpawnerType, Map<Integer, BedWarsGameMapLocation>> getSpawnerLocations();
 
-    void addSpawnerLocation(final BedWarsGameResourceSpawnerType spawnerType, final BedWarsDirectedGameMapLocation location);
+    void addSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, @NotNull BedWarsDirectedGameMapLocation location);
 
-    boolean removeSpawnerLocation(final BedWarsGameResourceSpawnerType spawnerType, final int id);
+    boolean removeSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, int id);
 
     BedWarsDirectedGameMapLocation getRespawnLocation();
 
-    void setRespawnLocation(final BedWarsDirectedGameMapLocation location);
+    void setRespawnLocation(@NotNull BedWarsDirectedGameMapLocation location);
 
     BedWarsDirectedGameMapLocation getSpectatorLocation();
 
-    void setSpectatorLocation(final BedWarsDirectedGameMapLocation location);
+    void setSpectatorLocation(@NotNull BedWarsDirectedGameMapLocation location);
 
     Set<Material> getBreakableBlocks();
 
-    boolean addBreakableBlock(final Material material);
+    boolean addBreakableBlock(@NotNull Material material);
 
-    boolean removeBreakableBlock(final Material material);
+    boolean removeBreakableBlock(@NotNull Material material);
+
+    Material getDisplayItem();
+
+    void setDisplayItem(@NotNull Material material);
 }

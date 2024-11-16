@@ -1,6 +1,6 @@
 package com.github.lukas2o11.bedwars;
 
-import com.github.lukas2o11.bedwars.game.BedWarsGame;
+import com.github.lukas2o11.bedwars.game.DefaultBedWarsGame;
 import com.github.lukas2o11.bedwars.game.database.DefaultMongoDB;
 import com.github.lukas2o11.bedwars.game.database.MongoDB;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class BedWars extends JavaPlugin {
         this.mongoDB = new DefaultMongoDB();
         mongoDB.connect();
 
-        new BedWarsGame(this);
+        new DefaultBedWarsGame(this);
     }
 
     @Override

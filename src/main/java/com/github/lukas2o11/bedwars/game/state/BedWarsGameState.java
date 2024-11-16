@@ -15,11 +15,11 @@ public abstract class BedWarsGameState {
     private final BedWarsCountdown countdown;
 
     public void enter() {
-        game.setGameState(Optional.of(this));
+        game.setGameState(this);
     }
 
     public void leave()  {
-        game.setGameState(Optional.empty());
+        game.setGameState(null);
     }
 
     public abstract boolean canStart();

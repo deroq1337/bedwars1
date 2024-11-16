@@ -9,6 +9,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.jetbrains.annotations.NotNull;
 
 public class DefaultMongoDB implements MongoDB {
 
@@ -30,7 +31,7 @@ public class DefaultMongoDB implements MongoDB {
     }
 
     @Override
-    public <T> MongoCollection<T> getMongoCollection(final String name, final Class<T> entityClass) {
+    public <T> MongoCollection<T> getMongoCollection(@NotNull String name, @NotNull Class<T> entityClass) {
         return database.getCollection(name, entityClass);
     }
 
@@ -39,7 +40,11 @@ public class DefaultMongoDB implements MongoDB {
         final CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
                 .automatic(true)
                 .build());
-        final CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
+        final CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+                MongoClientSettings.getDefaultCodecRegistry(),
+                pojoCodecRegistry
+              //  CodecRegistries.fromProviders(new OptionalPropertyCodecProvider())
+        );
         return MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .codecRegistry(codecRegistry)

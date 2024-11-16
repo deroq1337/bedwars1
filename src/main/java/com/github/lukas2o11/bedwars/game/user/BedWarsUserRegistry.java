@@ -1,16 +1,18 @@
 package com.github.lukas2o11.bedwars.game.user;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 public interface BedWarsUserRegistry {
 
-    void addUser(final UUID uuid, final boolean alive);
+    @NotNull BedWarsUser addUser(@NotNull UUID uuid, boolean alive);
 
-    void removeUser(final UUID uuid);
+    void removeUser(@NotNull UUID uuid);
 
-    List<BedWarsUser> listAliveUsers();
+    @NotNull List<BedWarsUser> getAliveUsers();
 
-    Collection<BedWarsUser> listUsers();
+    @NotNull Collection<BedWarsUser> getUsers();
 }

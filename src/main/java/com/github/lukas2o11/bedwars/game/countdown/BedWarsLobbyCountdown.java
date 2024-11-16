@@ -3,11 +3,12 @@ package com.github.lukas2o11.bedwars.game.countdown;
 import com.github.lukas2o11.bedwars.game.BedWarsGame;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.jetbrains.annotations.NotNull;
 
 public class BedWarsLobbyCountdown extends BedWarsCountdown {
 
-    public BedWarsLobbyCountdown(final BedWarsGame game) {
-        super(game, 60, 20, BedWarsGame.STATE_LOBBY_SPECIAL_TICKS);
+    public BedWarsLobbyCountdown(@NotNull BedWarsGame game) {
+        super(game, 60, 20, 60, 30, 10, 5, 4, 3, 2, 1);
     }
 
     @Override

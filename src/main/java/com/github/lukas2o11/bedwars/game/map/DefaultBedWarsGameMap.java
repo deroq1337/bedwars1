@@ -7,6 +7,7 @@ import com.github.lukas2o11.bedwars.game.teams.BedWarsGameTeamType;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -38,110 +39,139 @@ public class DefaultBedWarsGameMap implements BedWarsGameMap {
     private BedWarsDirectedGameMapLocation respawnLocation;
     private BedWarsDirectedGameMapLocation spectatorLocation;
     private Set<Material> breakableBlocks;
+    private Material displayItem;
 
     @Override
-    public boolean addTeam(final BedWarsGameTeamType teamType) {
-        this.teams = Optional.ofNullable(teams).orElseGet(HashSet::new);
+    public boolean addTeam(@NotNull BedWarsGameTeamType teamType) {
+        if (teams == null) {
+            this.teams = new HashSet<>();
+        }
         return teams.add(teamType);
     }
 
     @Override
-    public boolean removeTeam(final BedWarsGameTeamType teamType) {
+    public boolean removeTeam(@NotNull BedWarsGameTeamType teamType) {
         return Optional.ofNullable(teams)
                 .map(teams -> teams.remove(teamType))
                 .orElse(false);
     }
 
     @Override
-    public boolean hasTeam(final BedWarsGameTeamType teamType) {
+    public boolean hasTeam(@NotNull BedWarsGameTeamType teamType) {
         return Optional.ofNullable(teams)
                 .map(teams -> teams.contains(teamType))
                 .orElse(false);
     }
 
     @Override
-    public void addTeamSpawnLocation(final BedWarsGameTeamType teamType, final BedWarsDirectedGameMapLocation location) {
-        this.teamSpawnLocations = Optional.ofNullable(teamSpawnLocations).orElseGet(HashMap::new);
+    public void addTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsDirectedGameMapLocation location) {
+        if (teamSpawnLocations == null) {
+            this.teamSpawnLocations = new HashMap<>();
+        }
         teamSpawnLocations.put(teamType, location);
     }
 
     @Override
-    public boolean removeTeamSpawnLocation(final BedWarsGameTeamType teamType) {
+    public boolean removeTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType) {
         return Optional.ofNullable(teamSpawnLocations)
                 .map(teamSpawnLocations -> teamSpawnLocations.remove(teamType) != null)
                 .orElse(false);
     }
 
     @Override
-    public void addTeamBedLocation(final BedWarsGameTeamType teamType, final BedWarsGameMapLocation location) {
-        this.teamBedLocations = Optional.ofNullable(teamBedLocations).orElseGet(HashMap::new);
+    public void addTeamBedLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsGameMapLocation location) {
+        if (teamBedLocations == null) {
+            this.teamBedLocations = new HashMap<>();
+        }
         teamBedLocations.put(teamType, location);
     }
 
     @Override
-    public boolean removeTeamBedLocation(final BedWarsGameTeamType teamType) {
+    public boolean removeTeamBedLocation(@NotNull BedWarsGameTeamType teamType) {
         return Optional.ofNullable(teamBedLocations)
                 .map(teamBedLocations -> teamBedLocations.remove(teamType) != null)
                 .orElse(false);
     }
 
     @Override
-    public int addShopLocation(final BedWarsDirectedGameMapLocation location) {
-        this.shopLocations = Optional.ofNullable(shopLocations).orElseGet(HashMap::new);
+    public int addShopLocation(@NotNull BedWarsDirectedGameMapLocation location) {
+        if (shopLocations == null) {
+            this.shopLocations = new HashMap<>();
+        }
+
         final int id = shopLocations.size() + 1;
         shopLocations.put(id, location);
         return id;
     }
 
     @Override
-    public boolean removeShopLocation(final int id) {
-        final boolean removed = Optional.ofNullable(shopLocations)
-                .map(shopLocations -> shopLocations.remove(id) != null)
-                .orElse(false);
-        if (removed) {
-            shopLocations.keySet().stream()
-                    .filter(i -> i > id)
-                    .forEach(i -> {
-                        final BedWarsDirectedGameMapLocation location = shopLocations.remove(i);
-                        shopLocations.put(i - 1, location);
-                    });
-        }
-        return removed;
+    public boolean removeShopLocation(int id) {
+        return Optional.ofNullable(shopLocations)
+                .map(locations -> {
+                    final boolean removed = locations.remove(id) != null;
+                    if (removed) {
+                        locations.keySet().stream()
+                                .filter(i -> i > id)
+                                .forEach(i -> {
+                                    final BedWarsDirectedGameMapLocation location = locations.remove(i);
+                                    locations.put(i - 1, location);
+                                });
+                    }
+                    return removed;
+                }).orElse(false);
     }
 
     @Override
-    public void addSpawnerLocation(final BedWarsGameResourceSpawnerType spawnerType, final BedWarsDirectedGameMapLocation location) {
-        this.spawnerLocations = Optional.ofNullable(spawnerLocations).orElseGet(HashMap::new);
+    public void addSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, @NotNull BedWarsDirectedGameMapLocation location) {
+        if (spawnerLocations == null) {
+            this.spawnerLocations = new HashMap<>();
+        }
+
         final Map<Integer, BedWarsGameMapLocation> idLocations = spawnerLocations.computeIfAbsent(spawnerType, o -> new HashMap<>());
         idLocations.put(idLocations.size() + 1, location);
     }
 
     @Override
-    public boolean removeSpawnerLocation(final BedWarsGameResourceSpawnerType spawnerType, final int id) {
-        return Optional.ofNullable(spawnerLocations).map(spawnerLocations ->
-                        Optional.ofNullable(spawnerLocations.get(spawnerType))
-                                .map(idLocations -> idLocations.remove(id) != null)
-                                .orElse(false))
+    public boolean removeSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, int id) {
+        return Optional.ofNullable(spawnerLocations)
+                .map(spawnerLocations -> Optional.ofNullable(spawnerLocations.get(spawnerType))
+                        .map(idLocations -> idLocations.remove(id) != null)
+                        .orElse(false))
                 .orElse(false);
     }
 
     @Override
-    public void setRespawnLocation(final BedWarsDirectedGameMapLocation location) {
+    public void setRespawnLocation(@NotNull BedWarsDirectedGameMapLocation location) {
         this.respawnLocation = location;
     }
 
     @Override
-    public void setSpectatorLocation(final BedWarsDirectedGameMapLocation location) {
+    public void setSpectatorLocation(@NotNull BedWarsDirectedGameMapLocation location) {
         this.spectatorLocation = location;
     }
 
     @Override
-    public boolean addBreakableBlock(final Material material) {
+    public boolean addBreakableBlock(@NotNull Material material) {
+        if (breakableBlocks == null) {
+            this.breakableBlocks = new HashSet<>();
+        }
         return breakableBlocks.add(material);
     }
 
     @Override
-    public boolean removeBreakableBlock(final Material material) {
-        return breakableBlocks.remove(material);
+    public boolean removeBreakableBlock(@NotNull Material material) {
+        return Optional.ofNullable(breakableBlocks)
+                .map(blocks -> blocks.remove(material))
+                .orElse(false);
+    }
+
+    @Override
+    public Material getDisplayItem() {
+        return displayItem;
+    }
+
+    @Override
+    public void setDisplayItem(@NotNull Material material) {
+        this.displayItem = material;
     }
 }

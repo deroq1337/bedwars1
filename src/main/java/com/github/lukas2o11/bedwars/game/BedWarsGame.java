@@ -1,56 +1,29 @@
 package com.github.lukas2o11.bedwars.game;
 
 import com.github.lukas2o11.bedwars.BedWars;
-import com.github.lukas2o11.bedwars.game.commands.BedWarsMapCommand;
-import com.github.lukas2o11.bedwars.game.commands.BedWarsPauseCommand;
-import com.github.lukas2o11.bedwars.game.commands.BedWarsStartCommand;
-import com.github.lukas2o11.bedwars.game.listeners.PlayerJoinListener;
-import com.github.lukas2o11.bedwars.game.listeners.PlayerQuitListener;
+import com.github.lukas2o11.bedwars.game.map.BedWarsGameMap;
 import com.github.lukas2o11.bedwars.game.map.BedWarsGameMapManager;
-import com.github.lukas2o11.bedwars.game.map.DefaultBedWarsGameMap;
-import com.github.lukas2o11.bedwars.game.map.DefaultBedWarsGameMapManager;
 import com.github.lukas2o11.bedwars.game.state.BedWarsGameState;
-import com.github.lukas2o11.bedwars.game.state.BedWarsLobbyGameState;
 import com.github.lukas2o11.bedwars.game.user.BedWarsUserRegistry;
-import com.github.lukas2o11.bedwars.game.user.DefaultBedWarsUserRegistry;
-import lombok.Getter;
-import lombok.Setter;
+import com.github.lukas2o11.bedwars.game.voting.BedWarsGameVotingManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-@Getter
-@Setter
-public class BedWarsGame {
+public interface BedWarsGame<M extends BedWarsGameMap> {
 
-    public static final int STATE_LOBBY_MIN_PLAYERS = 1;
-    public static final int[] STATE_LOBBY_SPECIAL_TICKS = new int[]{60, 30, 10, 5, 4, 3, 2, 1};
-    public static final int COMMAND_START_THRESHOLD = 10;
+    @NotNull BedWars getBedWars();
 
-    private final BedWars bedWars;
-    private final BedWarsUserRegistry userRegistry;
-    private final BedWarsGameMapManager<DefaultBedWarsGameMap> gameMapManager;
-    private Optional<BedWarsGameState> gameState;
-    private Optional<DefaultBedWarsGameMap> gameMap;
+    @NotNull BedWarsUserRegistry getUserRegistry();
 
-    public BedWarsGame(final BedWars bedWars) {
-        this.bedWars = bedWars;
-        this.userRegistry = new DefaultBedWarsUserRegistry();
-        this.gameMapManager = new DefaultBedWarsGameMapManager(this);
-        this.gameState = Optional.of(new BedWarsLobbyGameState(this));
-        gameState.get().enter();
+    @NotNull BedWarsGameMapManager<M> getGameMapManager();
 
-        registerListeners();
-        registerCommands();
-    }
+    @NotNull BedWarsGameVotingManager getGameVotingManager();
 
-    private void registerListeners() {
-        new PlayerJoinListener(this);
-        new PlayerQuitListener(this);
-    }
+    Optional<BedWarsGameState> getGameState();
 
-    private void registerCommands() {
-        new BedWarsStartCommand(this);
-        new BedWarsPauseCommand(this);
-        new BedWarsMapCommand(this);
-    }
+    void setGameState(@Nullable BedWarsGameState state);
+
+    Optional<M> getGameMap();
 }

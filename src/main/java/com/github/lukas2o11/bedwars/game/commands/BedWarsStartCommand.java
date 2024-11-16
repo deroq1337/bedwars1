@@ -9,12 +9,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class BedWarsStartCommand implements CommandExecutor {
 
-    private final BedWarsGame game;
+    private final BedWarsGame<?> game;
 
-    public BedWarsStartCommand(final BedWarsGame game) {
+    public BedWarsStartCommand(@NotNull BedWarsGame game) {
         this.game = game;
         game.getBedWars().getCommand("start").setExecutor(this);
     }
@@ -30,8 +31,7 @@ public class BedWarsStartCommand implements CommandExecutor {
             return true;
         }
 
-        final BedWarsGameState gameState = game.getGameState()
-                .orElseThrow(() -> new EmptyGameStateException("Error force-starting game: GameState in BedWarsGame is empty"));
+        final BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Error force-starting game: GameState in BedWarsGame is empty"));
         if (!(gameState instanceof BedWarsLobbyGameState)) {
             player.sendMessage("§cDas Spiel hat bereits begonnen");
             return true;
@@ -43,7 +43,7 @@ public class BedWarsStartCommand implements CommandExecutor {
         }
 
         final BedWarsCountdown countdown = gameState.getCountdown();
-        if (countdown.getCurrent() <= BedWarsGame.COMMAND_START_THRESHOLD) {
+        if (countdown.getCurrent() <= 10) {
             player.sendMessage("§cDas Spiel startet bereits");
             return true;
         }

@@ -4,14 +4,14 @@ import com.github.lukas2o11.bedwars.game.BedWarsGame;
 import com.github.lukas2o11.bedwars.game.exceptions.EmptyGameStateException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerQuitListener implements Listener {
 
-    private final BedWarsGame game;
+    private final BedWarsGame<?> game;
 
-    public PlayerQuitListener(final BedWarsGame game) {
+    public PlayerQuitListener(@NotNull BedWarsGame game) {
         this.game = game;
         game.getBedWars().getServer().getPluginManager().registerEvents(this, game.getBedWars());
     }

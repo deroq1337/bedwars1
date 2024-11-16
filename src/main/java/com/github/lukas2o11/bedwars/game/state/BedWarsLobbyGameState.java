@@ -2,12 +2,13 @@ package com.github.lukas2o11.bedwars.game.state;
 
 import com.github.lukas2o11.bedwars.game.BedWarsGame;
 import com.github.lukas2o11.bedwars.game.countdown.BedWarsLobbyCountdown;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public class BedWarsLobbyGameState extends BedWarsGameState {
 
-    public BedWarsLobbyGameState(final BedWarsGame game) {
+    public BedWarsLobbyGameState(@NotNull BedWarsGame game) {
         super(game, new BedWarsLobbyCountdown(game));
     }
 
@@ -23,7 +24,7 @@ public class BedWarsLobbyGameState extends BedWarsGameState {
 
     @Override
     public boolean canStart() {
-        return getGame().getUserRegistry().listUsers().size() >= BedWarsGame.STATE_LOBBY_MIN_PLAYERS;
+        return getGame().getUserRegistry().getUsers().size() >= 1;
     }
 
     @Override
