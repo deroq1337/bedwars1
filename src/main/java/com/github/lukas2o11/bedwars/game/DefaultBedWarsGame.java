@@ -4,6 +4,7 @@ import com.github.lukas2o11.bedwars.BedWars;
 import com.github.lukas2o11.bedwars.game.commands.BedWarsMapCommand;
 import com.github.lukas2o11.bedwars.game.commands.BedWarsPauseCommand;
 import com.github.lukas2o11.bedwars.game.commands.BedWarsStartCommand;
+import com.github.lukas2o11.bedwars.game.listeners.InventoryClickListener;
 import com.github.lukas2o11.bedwars.game.listeners.PlayerInteractListener;
 import com.github.lukas2o11.bedwars.game.listeners.PlayerJoinListener;
 import com.github.lukas2o11.bedwars.game.listeners.PlayerQuitListener;
@@ -64,6 +65,7 @@ public class DefaultBedWarsGame implements BedWarsGame<DefaultBedWarsGameMap> {
         new PlayerJoinListener(this);
         new PlayerQuitListener(this);
         new PlayerInteractListener(this);
+        new InventoryClickListener(this);
     }
 
     private void registerCommands() {
