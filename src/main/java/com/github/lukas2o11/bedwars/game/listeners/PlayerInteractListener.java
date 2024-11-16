@@ -11,6 +11,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public class PlayerInteractListener implements Listener {
 
     private final BedWarsGame<?> game;
@@ -24,16 +26,15 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         final BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Error on interact: GameState is null"));
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (event.getItem() == null) {
-                return;
-            }
-
-            if (event.getItem().equals(Items.VOTING_ITEM_ITEM)) {
-                event.setCancelled(true);
-                if (gameState instanceof BedWarsLobbyGameState) {
-                    event.getPlayer().openInventory(game.getGameVotingManager().getInventory());
+            Optional.ofNullable(event.getItem()).ifPresent(item -> {
+                if (item.equals(Items.VOTING_ITEM_ITEM)) {
+                    if (gameState instanceof BedWarsLobbyGameState) {
+                        event.getPlayer().openInventory(game.getGameVotingManager().getInventory());
+                    }
+                    event.setCancelled(true);
+                    return;
                 }
-            }
+            });
         }
     }
 }

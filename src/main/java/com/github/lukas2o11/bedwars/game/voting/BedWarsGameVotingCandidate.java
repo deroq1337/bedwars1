@@ -1,21 +1,21 @@
 package com.github.lukas2o11.bedwars.game.voting;
 
-import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
+import java.util.Collections;
+import java.util.Optional;
 
-public interface BedWarsGameVotingCandidate<T> {
+public interface BedWarsGameVotingCandidate<T, V extends BedWarsGameVotingVotable<T>> {
 
-    @NotNull T getVotable();
+    @NotNull V getVotable();
 
-    @NotNull Material getDisplayItem();
+    @NotNull BedWarsGameVotingVotes getVotes();
 
-    int getSlot();
-
-    int getVotes();
-
-    boolean addVote(@NotNull UUID player);
-
-    boolean removeVote(@NotNull UUID player);
+    default void updateDisplayItem() {
+        Optional.ofNullable(getVotable().getDisplayItem().getItemMeta()).ifPresent(itemMeta -> {
+            String lore = "§7Votes: §e" + getVotes().get();
+            itemMeta.setLore(Collections.singletonList(lore));
+            getVotable().getDisplayItem().setItemMeta(itemMeta);
+        });
+    }
 }

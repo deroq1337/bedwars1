@@ -1,48 +1,38 @@
 package com.github.lukas2o11.bedwars.game.voting.map;
 
+import com.github.lukas2o11.bedwars.game.item.ItemBuilders;
 import com.github.lukas2o11.bedwars.game.map.DefaultBedWarsGameMap;
 import com.github.lukas2o11.bedwars.game.voting.BedWarsGameVotingCandidate;
+import com.github.lukas2o11.bedwars.game.voting.BedWarsGameVotingVotes;
+import com.github.lukas2o11.bedwars.game.voting.DefaultBedWarsGameVotingVotes;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-public class BedWarsGameMapVotingCandidate implements BedWarsGameVotingCandidate<DefaultBedWarsGameMap> {
+@Getter
+public class BedWarsGameMapVotingCandidate implements BedWarsGameVotingCandidate<DefaultBedWarsGameMap, BedWarsGameMapVotingVotable> {
 
-    @Getter
-    private @NotNull final DefaultBedWarsGameMap votable;
+    @NotNull
+    private final BedWarsGameMapVotingVotable votable;
 
-    @Getter
-    private @NotNull final Material displayItem;
+    @NotNull
+    private final BedWarsGameVotingVotes votes;
 
-    @Getter
-    private final int slot;
-
-    public BedWarsGameMapVotingCandidate(@NotNull DefaultBedWarsGameMap votable, int slot) {
-        this.votable = votable;
-        this.displayItem = Optional.ofNullable(votable.getDisplayItem())
-                .orElse(Material.BEDROCK);
-        this.slot = slot;
+    public BedWarsGameMapVotingCandidate(@NotNull DefaultBedWarsGameMap value, int slot) {
+        this.votable = new BedWarsGameMapVotingVotable(value, buildDisplayItem(value), slot);
+        this.votes = new DefaultBedWarsGameVotingVotes();
     }
 
-    private @NotNull final Set<UUID> votes = new HashSet<>();
-
-    @Override
-    public int getVotes() {
-        return votes.size();
-    }
-
-    @Override
-    public boolean addVote(@NotNull UUID player) {
-        return votes.add(player);
-    }
-
-    @Override
-    public boolean removeVote(@NotNull UUID player) {
-        return votes.remove(player);
+    private @NotNull ItemStack buildDisplayItem(DefaultBedWarsGameMap value) {
+        return ItemBuilders.normal(Optional.ofNullable(value.getDisplayItem())
+                        .orElse(Material.BEDROCK))
+                .title("§c" + value.getName())
+                .lore("§7Votes: §e" + Optional.ofNullable(votes)
+                        .map(BedWarsGameVotingVotes::get)
+                        .orElse(0))
+                .build();
     }
 }

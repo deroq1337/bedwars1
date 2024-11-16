@@ -1,45 +1,26 @@
 package com.github.lukas2o11.bedwars.game.voting.freezer;
 
 import com.github.lukas2o11.bedwars.game.voting.BedWarsGameVotingCandidate;
+import com.github.lukas2o11.bedwars.game.voting.BedWarsGameVotingVotes;
+import com.github.lukas2o11.bedwars.game.voting.DefaultBedWarsGameVotingVotes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 @RequiredArgsConstructor
-public class BedWarsGameFreezerVotingCandidate implements BedWarsGameVotingCandidate<Boolean> {
+@Getter
+public class BedWarsGameFreezerVotingCandidate implements BedWarsGameVotingCandidate<Boolean, BedWarsGameFreezerVotingVotable> {
 
     @NotNull
-    @Getter
-    private final Boolean votable;
+    private final BedWarsGameFreezerVotingVotable votable;
 
     @NotNull
-    @Getter
-    private final Material displayItem;
+    private final BedWarsGameVotingVotes votes;
 
-    @Getter
-    private final int slot;
-
-    @NotNull
-    private final Set<UUID> votes = new HashSet<>();
-
-    @Override
-    public int getVotes() {
-        return votes.size();
-    }
-
-    @Override
-    public boolean addVote(@NotNull UUID player) {
-        return votes.add(player);
-    }
-
-    @Override
-    public boolean removeVote(@NotNull UUID player) {
-        return votes.remove(player);
+    public BedWarsGameFreezerVotingCandidate(@NotNull Boolean value, @NotNull ItemStack displayItem, int slot) {
+        this.votable = new BedWarsGameFreezerVotingVotable(value, displayItem, slot);
+        this.votes = new DefaultBedWarsGameVotingVotes();
     }
 }
 

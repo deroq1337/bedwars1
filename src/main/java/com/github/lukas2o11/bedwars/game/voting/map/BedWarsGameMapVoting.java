@@ -1,26 +1,25 @@
 package com.github.lukas2o11.bedwars.game.voting.map;
 
 import com.github.lukas2o11.bedwars.game.BedWarsGame;
+import com.github.lukas2o11.bedwars.game.item.ItemBuilders;
 import com.github.lukas2o11.bedwars.game.map.DefaultBedWarsGameMap;
 import com.github.lukas2o11.bedwars.game.voting.BedWarsGameVoting;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
-public class BedWarsGameMapVoting implements BedWarsGameVoting<DefaultBedWarsGameMap, BedWarsGameMapVotingCandidate> {
+public class BedWarsGameMapVoting implements BedWarsGameVoting<DefaultBedWarsGameMap, BedWarsGameMapVotingVotable, BedWarsGameMapVotingCandidate> {
 
     @NotNull
     private final List<BedWarsGameMapVotingCandidate> candidates;
 
     @NotNull
-    private final Material displayItem;
-
-    @NotNull
-    private final String displayTitle;
+    private final ItemStack displayItem;
 
     private final int slot;
 
@@ -32,9 +31,15 @@ public class BedWarsGameMapVoting implements BedWarsGameVoting<DefaultBedWarsGam
         this.candidates = game.getGameMapManager().getRandomMaps(3).join().stream()
                 .map(map -> new BedWarsGameMapVotingCandidate(map, slot.getAndAdd(2)))
                 .toList();
-        this.displayItem = Material.FILLED_MAP;
-        this.displayTitle = "§cMap-Voting";
+        this.displayItem = buildDisplayItem();
         this.slot = 12;
         this.inventoryTitle = "§8Map-Voting";
+    }
+
+    private @NotNull ItemStack buildDisplayItem() {
+        return ItemBuilders.normal(Material.FILLED_MAP)
+                .title("§cMap-Voting")
+                .lore("§7Aktueller Gewinner: §c" + getWinner().getVotable().getValue().getName())
+                .build();
     }
 }
