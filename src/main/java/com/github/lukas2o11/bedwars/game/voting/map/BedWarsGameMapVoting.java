@@ -24,6 +24,9 @@ public class BedWarsGameMapVoting implements BedWarsGameVoting<DefaultBedWarsGam
 
     private final int slot;
 
+    @NotNull
+    private final String inventoryTitle;
+
     public BedWarsGameMapVoting(@NotNull BedWarsGame<DefaultBedWarsGameMap> game) {
         AtomicInteger slot = new AtomicInteger(2);
         this.candidates = game.getGameMapManager().getRandomMaps(3).join().stream()
@@ -31,6 +34,7 @@ public class BedWarsGameMapVoting implements BedWarsGameVoting<DefaultBedWarsGam
                 .toList();
         this.displayItem = Material.FILLED_MAP;
         this.displayTitle = "§cMap-Voting";
-        this.slot = 4;
+        this.slot = 12;
+        this.inventoryTitle = "§8Map-Voting";
     }
 }

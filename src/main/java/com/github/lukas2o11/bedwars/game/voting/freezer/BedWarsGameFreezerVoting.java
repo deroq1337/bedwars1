@@ -22,13 +22,17 @@ public class BedWarsGameFreezerVoting implements BedWarsGameVoting<Boolean, BedW
 
     private final int slot;
 
+    @NotNull
+    private final String inventoryTitle;
+
     public BedWarsGameFreezerVoting() {
         this.candidates = Arrays.asList(
-                new BedWarsGameFreezerVotingCandidate(true, Material.GREEN_DYE, 3),
-                new BedWarsGameFreezerVotingCandidate(false, Material.RED_DYE, 5)
+                new BedWarsGameFreezerVotingCandidate(true, Material.GREEN_DYE, 12),
+                new BedWarsGameFreezerVotingCandidate(false, Material.RED_DYE, 14)
         );
         this.displayItem = Material.ICE;
         this.displayTitle = "§bFreezer-Voting";
-        this.slot = 6;
+        this.slot = 14;
+        this.inventoryTitle = "§8Freezer-Voting";
     }
 }
