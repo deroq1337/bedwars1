@@ -19,7 +19,7 @@ public interface BedWarsGame<M extends BedWarsGameMap> {
 
     @NotNull BedWarsGameMapManager<M> getGameMapManager();
 
-    @NotNull BedWarsGameVotingManager getGameVotingManager();
+    @NotNull BedWarsGameVotingManager<M> getGameVotingManager();
 
     Optional<BedWarsGameState> getGameState();
 
