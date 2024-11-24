@@ -5,6 +5,7 @@ import com.github.lukas2o11.bedwars.game.exceptions.EmptyGameStateException;
 import com.github.lukas2o11.bedwars.game.item.Items;
 import com.github.lukas2o11.bedwars.game.state.BedWarsGameState;
 import com.github.lukas2o11.bedwars.game.state.BedWarsLobbyGameState;
+import com.github.lukas2o11.bedwars.game.teams.BedWarsGameTeam;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -19,6 +20,9 @@ public class DefaultBedWarsUser implements BedWarsUser {
 
     private @NotNull final BedWarsGame<?> game;
     private @NotNull final UUID uuid;
+
+    @Getter
+    private Optional<BedWarsGameTeam> gameTeam;
 
     @Getter
     private boolean alive;

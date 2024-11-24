@@ -22,17 +22,23 @@ public interface BedWarsGameVoting<T, V extends BedWarsGameVotingVotable<T>, C e
 
     default void updateDisplayItem() {
         Optional.ofNullable(getDisplayItem().getItemMeta()).ifPresent(itemMeta -> {
-            String lore = "§7Aktueller Gewinner: " + getWinner().getVotable().getDisplayTitle();
+            String lore = "§7Aktueller Gewinner: " + getWinnerAsString();
             itemMeta.setLore(Collections.singletonList(lore));
             getDisplayItem().setItemMeta(itemMeta);
         });
     }
 
-    default @NotNull C getWinner() {
+    default Optional<C> getWinner() {
+        if (getCandidates().isEmpty()) {
+            System.out.println("No candidates available: " + getClass().getSimpleName());
+            return Optional.empty();
+        }
+
         return getCandidates().stream()
-                .max((o1, o2) -> -Integer.compare(o2.getVotes().get(), o1.getVotes().get()))
-                .orElseThrow(() -> new NoSuchElementException("No candidates available"));
+                .max((o1, o2) -> -Integer.compare(o2.getVotes().get(), o1.getVotes().get()));
     }
+
+    @NotNull String getWinnerAsString();
 
     default @NotNull Inventory getInventory() {
         Inventory inventory = Bukkit.createInventory(null, 27, getInventoryTitle());
@@ -45,7 +51,7 @@ public interface BedWarsGameVoting<T, V extends BedWarsGameVotingVotable<T>, C e
             BedWarsGameVotingCandidate<T, ?> candidate = getCandidates().stream()
                     .filter(c -> c.getVotable().getDisplayItem().getType() == item.getType())
                     .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException("No voting candidate for item '" + item.getType() + "' found"));
+                    .orElseThrow(() -> new NoSuchElementException("No voting candidate for item '" + item.getType() + "' found: " + getClass().getSimpleName()));
             UUID uuid = player.getUniqueId();
             if (!candidate.getVotes().add(uuid)) {
                 candidate.getVotes().remove(uuid);

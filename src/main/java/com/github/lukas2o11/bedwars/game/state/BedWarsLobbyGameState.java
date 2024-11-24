@@ -24,7 +24,8 @@ public class BedWarsLobbyGameState extends BedWarsGameState {
 
     @Override
     public boolean canStart() {
-        return getGame().getUserRegistry().getUsers().size() >= 1;
+        return getGame().getGameVotingManager().getGameMapVoting().getCandidates().size() > 0
+                && getGame().getUserRegistry().getUsers().size() >= 1;
     }
 
     @Override

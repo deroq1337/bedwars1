@@ -18,11 +18,13 @@ public class BedWarsGameFreezerVoting implements BedWarsGameVoting<Boolean, BedW
     @NotNull
     private static final ItemStack FREEZER_PRO_DISPLAY_ITEM = ItemBuilders.normal(Material.GREEN_DYE)
             .title("§aJa")
+            .lore("§7Votes: §e0")
             .build();
 
     @NotNull
     private static final ItemStack FREEZER_CONTRA_DISPLAY_ITEM = ItemBuilders.normal(Material.RED_DYE)
             .title("§cNein")
+            .lore("§7Votes: §e0")
             .build();
 
     @NotNull
@@ -49,9 +51,15 @@ public class BedWarsGameFreezerVoting implements BedWarsGameVoting<Boolean, BedW
     private @NotNull ItemStack buildDisplayItem() {
         return ItemBuilders.normal(Material.ICE)
                 .title("§bFreezer-Voting")
-                .lore("§7Aktueller Gewinner: §c" + Optional.ofNullable(getWinner().getVotable().getDisplayItem().getItemMeta())
+                .lore("§7Aktueller Gewinner: §c" + getWinnerAsString())
+                .build();
+    }
+
+    @Override
+    public String getWinnerAsString() {
+        return getWinner().map(winner -> Optional.ofNullable(winner.getVotable().getDisplayItem().getItemMeta())
                         .map(ItemMeta::getDisplayName)
                         .orElse("N/A"))
-                .build();
+                .orElse("N/A");
     }
 }

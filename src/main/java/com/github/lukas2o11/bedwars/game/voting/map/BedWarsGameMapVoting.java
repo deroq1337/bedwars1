@@ -7,9 +7,11 @@ import com.github.lukas2o11.bedwars.game.voting.BedWarsGameVoting;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
@@ -39,7 +41,13 @@ public class BedWarsGameMapVoting implements BedWarsGameVoting<DefaultBedWarsGam
     private @NotNull ItemStack buildDisplayItem() {
         return ItemBuilders.normal(Material.FILLED_MAP)
                 .title("§cMap-Voting")
-                .lore("§7Aktueller Gewinner: §c" + getWinner().getVotable().getValue().getName())
+                .lore("§7Aktueller Gewinner: §c" + getWinnerAsString())
                 .build();
+    }
+
+    @Override
+    public @NotNull String getWinnerAsString() {
+        return getWinner().map(winner -> winner.getVotable().getValue().getName())
+                .orElse("N/A");
     }
 }
