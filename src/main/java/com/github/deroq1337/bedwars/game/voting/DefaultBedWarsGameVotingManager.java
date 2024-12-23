@@ -19,12 +19,13 @@ import java.util.List;
 
 public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager<DefaultBedWarsGameMap> {
 
-    private @NotNull final BedWarsGameVoting<DefaultBedWarsGameMap, BedWarsGameMapVotingVotable, BedWarsGameMapVotingCandidate> gameMapVoting;
-    private @NotNull final BedWarsGameVoting<Boolean, BedWarsGameFreezerVotingVotable, BedWarsGameFreezerVotingCandidate> freezerVoting;
+    private static final int INVENTORY_SIZE = 27;
 
-    @NotNull
+    private final @NotNull BedWarsGameVoting<DefaultBedWarsGameMap, BedWarsGameMapVotingVotable, BedWarsGameMapVotingCandidate> gameMapVoting;
+    private final @NotNull BedWarsGameVoting<Boolean, BedWarsGameFreezerVotingVotable, BedWarsGameFreezerVotingCandidate> freezerVoting;
+
     @Getter
-    private final String inventoryTitle;
+    private final @NotNull String inventoryTitle;
 
     public DefaultBedWarsGameVotingManager(BedWarsGame<DefaultBedWarsGameMap> game) {
         this.gameMapVoting = new BedWarsGameMapVoting(game);
@@ -49,7 +50,7 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
 
     @Override
     public @NotNull Inventory getInventory() {
-        Inventory inventory = Bukkit.createInventory(null, 27, inventoryTitle);
+        Inventory inventory = Bukkit.createInventory(null, INVENTORY_SIZE, inventoryTitle);
         Arrays.asList(gameMapVoting, freezerVoting).forEach(voting -> inventory.setItem(voting.getSlot(), new ItemStack(voting.getDisplayItem())));
         return inventory;
     }

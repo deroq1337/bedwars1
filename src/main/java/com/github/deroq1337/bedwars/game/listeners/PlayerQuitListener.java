@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerQuitListener implements Listener {
 
-    private @NotNull final BedWarsGame<?> game;
+    private final @NotNull BedWarsGame<?> game;
 
     public PlayerQuitListener(@NotNull BedWarsGame game) {
         this.game = game;

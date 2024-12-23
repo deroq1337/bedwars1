@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 public class BedWarsMapCommand implements CommandExecutor {
 
-    private @NotNull final BedWarsGameMapManager<DefaultBedWarsGameMap> gameMapManager;
+    private final @NotNull BedWarsGameMapManager<DefaultBedWarsGameMap> gameMapManager;
 
     public BedWarsMapCommand(@NotNull BedWarsGame<DefaultBedWarsGameMap> game) {
         this.gameMapManager = game.getGameMapManager();

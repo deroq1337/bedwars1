@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerJoinListener implements Listener {
 
-    private @NotNull final BedWarsGame<?> game;
+    private final @NotNull BedWarsGame<?> game;
 
     public PlayerJoinListener(@NotNull BedWarsGame game) {
         this.game = game;

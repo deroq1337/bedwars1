@@ -13,8 +13,8 @@ import java.util.Optional;
 @Getter
 public class BedWarsGameFreezerVotingVotable implements BedWarsGameVotingVotable<Boolean> {
 
-    private @NotNull final Boolean value;
-    private @NotNull final ItemStack displayItem;
+    private final @NotNull Boolean value;
+    private final @NotNull ItemStack displayItem;
     private final int slot;
 
     @Override

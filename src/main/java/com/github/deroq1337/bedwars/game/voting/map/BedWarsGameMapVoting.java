@@ -15,10 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Getter
 public class BedWarsGameMapVoting implements BedWarsGameVoting<DefaultBedWarsGameMap, BedWarsGameMapVotingVotable, BedWarsGameMapVotingCandidate> {
 
-    private @NotNull final List<BedWarsGameMapVotingCandidate> candidates;
-    private @NotNull final ItemStack displayItem;
+    private final @NotNull List<BedWarsGameMapVotingCandidate> candidates;
+    private final @NotNull ItemStack displayItem;
     private final int slot;
-    private @NotNull final String inventoryTitle;
+    private final @NotNull String inventoryTitle;
 
     public BedWarsGameMapVoting(@NotNull BedWarsGame<DefaultBedWarsGameMap> game) {
         AtomicInteger slot = new AtomicInteger(2);

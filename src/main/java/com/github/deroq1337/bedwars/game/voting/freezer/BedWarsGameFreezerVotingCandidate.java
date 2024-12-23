@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public class BedWarsGameFreezerVotingCandidate implements BedWarsGameVotingCandidate<Boolean, BedWarsGameFreezerVotingVotable> {
 
-    private @NotNull final BedWarsGameFreezerVotingVotable votable;
-    private @NotNull final BedWarsGameVotingVotes votes;
+    private final @NotNull BedWarsGameFreezerVotingVotable votable;
+    private final @NotNull BedWarsGameVotingVotes votes;
 
     public BedWarsGameFreezerVotingCandidate(@NotNull Boolean value, @NotNull ItemStack displayItem, int slot) {
         this.votable = new BedWarsGameFreezerVotingVotable(value, displayItem, slot);

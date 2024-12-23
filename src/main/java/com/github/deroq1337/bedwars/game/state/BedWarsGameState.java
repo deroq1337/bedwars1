@@ -13,8 +13,8 @@ import java.util.Optional;
 @Getter
 public abstract class BedWarsGameState {
 
-    private @NotNull final BedWarsGame game;
-    private @NotNull final BedWarsCountdown countdown;
+    private final @NotNull BedWarsGame game;
+    private final @NotNull BedWarsCountdown countdown;
 
     public void enter() {
         game.setGameState(this);

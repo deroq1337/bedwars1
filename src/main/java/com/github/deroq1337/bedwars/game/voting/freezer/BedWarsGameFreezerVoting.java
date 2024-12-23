@@ -25,10 +25,10 @@ public class BedWarsGameFreezerVoting implements BedWarsGameVoting<Boolean, BedW
             .lore("§7Votes: §e0")
             .build();
 
-    private @NotNull final List<BedWarsGameFreezerVotingCandidate> candidates;
-    private @NotNull final ItemStack displayItem;
+    private final @NotNull List<BedWarsGameFreezerVotingCandidate> candidates;
+    private final @NotNull ItemStack displayItem;
     private final int slot;
-    private @NotNull final String inventoryTitle;
+    private final @NotNull String inventoryTitle;
 
     public BedWarsGameFreezerVoting() {
         this.candidates = Arrays.asList(

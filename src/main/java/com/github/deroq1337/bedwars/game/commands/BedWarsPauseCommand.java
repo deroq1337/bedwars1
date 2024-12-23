@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class BedWarsPauseCommand implements CommandExecutor {
 
-    private @NotNull final BedWarsGame<?> game;
+    private final @NotNull BedWarsGame<?> game;
 
     public BedWarsPauseCommand(@NotNull BedWarsGame game) {
         this.game = game;

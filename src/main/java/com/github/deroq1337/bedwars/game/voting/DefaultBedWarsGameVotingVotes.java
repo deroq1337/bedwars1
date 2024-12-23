@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class DefaultBedWarsGameVotingVotes implements BedWarsGameVotingVotes {
 
-    private @NotNull final Set<UUID> votes = new HashSet<>();
+    private final @NotNull Set<UUID> votes = new HashSet<>();
 
     @Override
     public int get() {
@@ -16,17 +16,17 @@ public class DefaultBedWarsGameVotingVotes implements BedWarsGameVotingVotes {
     }
 
     @Override
-    public boolean add(UUID player) {
+    public boolean add(@NotNull UUID player) {
         return votes.add(player);
     }
 
     @Override
-    public void remove(UUID player) {
+    public void remove(@NotNull UUID player) {
         votes.remove(player);
     }
 
     @Override
-    public boolean contains(UUID player) {
+    public boolean contains(@NotNull UUID player) {
         return votes.contains(player);
     }
 }

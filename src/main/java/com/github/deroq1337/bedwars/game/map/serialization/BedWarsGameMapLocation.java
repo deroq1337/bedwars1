@@ -18,7 +18,7 @@ import java.util.Optional;
 @EqualsAndHashCode
 public class BedWarsGameMapLocation {
 
-    private @NotNull final String world;
+    private final @NotNull String world;
     private final double x;
     private final double y;
     private final double z;

@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class DefaultBedWarsUserRegistry implements BedWarsUserRegistry {
 
-    private @NotNull final Map<UUID, BedWarsUser> userMap = new ConcurrentHashMap<>();
+    private final @NotNull Map<UUID, BedWarsUser> userMap = new ConcurrentHashMap<>();
 
     @Override
     public @NotNull BedWarsUser addUser(@NotNull UUID uuid, boolean alive) {

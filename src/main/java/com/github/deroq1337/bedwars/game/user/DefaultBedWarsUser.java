@@ -14,7 +14,7 @@ import java.util.UUID;
 @Setter
 public class DefaultBedWarsUser implements BedWarsUser {
 
-    private @NotNull final UUID uuid;
+    private final @NotNull UUID uuid;
 
     @Getter
     private Optional<BedWarsGameTeam> gameTeam;

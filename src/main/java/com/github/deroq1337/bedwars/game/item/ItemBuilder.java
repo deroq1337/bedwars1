@@ -11,8 +11,8 @@ import java.util.Arrays;
 
 public abstract class ItemBuilder<M extends ItemMeta> {
 
-    private @NotNull final ItemStack item;
-    private @NotNull final M itemMeta;
+    private final @NotNull ItemStack item;
+    private final @NotNull M itemMeta;
 
     public ItemBuilder(@NotNull Material material) {
         this.item = new ItemStack(material);

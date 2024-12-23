@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class PlayerInteractListener implements Listener {
 
-    private @NotNull final BedWarsGame<?> game;
+    private final @NotNull BedWarsGame<?> game;
 
     public PlayerInteractListener(@NotNull BedWarsGame game) {
         this.game = game;

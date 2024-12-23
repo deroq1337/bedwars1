@@ -15,8 +15,8 @@ import java.util.*;
 @Getter
 public class BedWarsGameMapVotingCandidate implements BedWarsGameVotingCandidate<DefaultBedWarsGameMap, BedWarsGameMapVotingVotable> {
 
-    private @NotNull final BedWarsGameMapVotingVotable votable;
-    private @NotNull final BedWarsGameVotingVotes votes;
+    private final @NotNull BedWarsGameMapVotingVotable votable;
+    private final @NotNull BedWarsGameVotingVotes votes;
 
     public BedWarsGameMapVotingCandidate(@NotNull DefaultBedWarsGameMap value, int slot) {
         this.votable = new BedWarsGameMapVotingVotable(value, buildDisplayItem(value), slot);

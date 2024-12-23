@@ -28,10 +28,10 @@ import java.util.Optional;
 @Setter
 public class DefaultBedWarsGame implements BedWarsGame<DefaultBedWarsGameMap> {
 
-    private @NotNull final BedWars bedWars;
-    private @NotNull final BedWarsUserRegistry userRegistry;
-    private @NotNull final BedWarsGameMapManager<DefaultBedWarsGameMap> gameMapManager;
-    private @NotNull final BedWarsGameVotingManager<DefaultBedWarsGameMap> gameVotingManager;
+    private final @NotNull BedWars bedWars;
+    private final @NotNull BedWarsUserRegistry userRegistry;
+    private final @NotNull  BedWarsGameMapManager<DefaultBedWarsGameMap> gameMapManager;
+    private final @NotNull BedWarsGameVotingManager<DefaultBedWarsGameMap> gameVotingManager;
 
     private Optional<BedWarsGameState> gameState;
     private Optional<DefaultBedWarsGameMap> gameMap;

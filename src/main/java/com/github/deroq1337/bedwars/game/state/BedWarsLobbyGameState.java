@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public class BedWarsLobbyGameState extends BedWarsGameState {
 
+    private static final int MIN_PLAYERS = 1;
+
     public BedWarsLobbyGameState(@NotNull BedWarsGame game) {
         super(game, new BedWarsLobbyCountdown(game));
     }
@@ -47,7 +49,7 @@ public class BedWarsLobbyGameState extends BedWarsGameState {
     @Override
     public boolean canStart() {
         return !getGame().getGameVotingManager().getGameMapVoting().getCandidates().isEmpty()
-                && !getGame().getUserRegistry().getUsers().isEmpty();
+                && getGame().getUserRegistry().getUsers().size() == MIN_PLAYERS;
     }
 
     @Override

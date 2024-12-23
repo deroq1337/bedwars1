@@ -14,9 +14,9 @@ import java.util.UUID;
 @Setter
 public class DefaultBedWarsGameTeam implements BedWarsGameTeam {
 
-    private @NotNull final BedWarsGameTeamType teamType;
-    private @NotNull final Set<UUID> players;
-    private @NotNull final ItemStack displayItem;
+    private final @NotNull BedWarsGameTeamType teamType;
+    private final @NotNull Set<UUID> players;
+    private final @NotNull ItemStack displayItem;
     private boolean bedDestroyed = false;
     private boolean eliminated = false;
 

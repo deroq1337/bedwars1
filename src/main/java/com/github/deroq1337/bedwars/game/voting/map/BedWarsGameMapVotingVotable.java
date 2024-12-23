@@ -14,8 +14,8 @@ import java.util.Optional;
 @Getter
 public class BedWarsGameMapVotingVotable implements BedWarsGameVotingVotable<DefaultBedWarsGameMap> {
 
-    private @NotNull final DefaultBedWarsGameMap value;
-    private @NotNull final ItemStack displayItem;
+    private final @NotNull DefaultBedWarsGameMap value;
+    private final @NotNull ItemStack displayItem;
     private final int slot;
 
     @Override

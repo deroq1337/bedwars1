@@ -20,7 +20,7 @@ public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager<Defau
 
     private static final String MAP_COLLECTION_NAME = "maps";
 
-    private @NotNull final MongoCollection<DefaultBedWarsGameMap> mapCollection;
+    private final @NotNull MongoCollection<DefaultBedWarsGameMap> mapCollection;
 
     public DefaultBedWarsGameMapManager(@NotNull BedWarsGame game) {
         this.mapCollection = game.getBedWars().getMongoDB().getMongoCollection(MAP_COLLECTION_NAME, DefaultBedWarsGameMap.class);

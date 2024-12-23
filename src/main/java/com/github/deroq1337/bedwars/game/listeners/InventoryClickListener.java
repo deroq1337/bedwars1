@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class InventoryClickListener implements Listener {
 
-    private @NotNull final BedWarsGameVotingManager<?> gameVotingManager;
+    private final @NotNull BedWarsGameVotingManager<?> gameVotingManager;
 
     public InventoryClickListener(@NotNull BedWarsGame game) {
         this.gameVotingManager = game.getGameVotingManager();

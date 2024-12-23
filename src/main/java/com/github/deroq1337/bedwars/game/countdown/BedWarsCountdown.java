@@ -17,10 +17,10 @@ import java.util.Optional;
 @Setter
 public abstract class BedWarsCountdown {
 
-    private @NotNull final BedWarsGame<?> game;
+    private final @NotNull BedWarsGame<?> game;
     private final int start;
     private final int interval;
-    private @NotNull final List<Integer> specialTicks;
+    private final @NotNull List<Integer> specialTicks;
 
     public BedWarsCountdown(@NotNull BedWarsGame<?> game, int start, int interval, int... specialTicks) {
         this.game = game;
