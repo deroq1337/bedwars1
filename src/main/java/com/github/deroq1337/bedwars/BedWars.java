@@ -1,8 +1,8 @@
 package com.github.deroq1337.bedwars;
 
-import com.github.deroq1337.bedwars.game.DefaultBedWarsGame;
-import com.github.deroq1337.bedwars.game.database.DefaultMongoDB;
-import com.github.deroq1337.bedwars.game.database.MongoDB;
+import com.github.deroq1337.bedwars.data.game.DefaultBedWarsGame;
+import com.github.deroq1337.bedwars.data.game.database.DefaultMongoDB;
+import com.github.deroq1337.bedwars.data.game.database.MongoDB;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
