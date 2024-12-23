@@ -53,6 +53,7 @@ public interface BedWarsGameVoting<T, V extends BedWarsGameVotingVotable<T>, C e
                     .findFirst()
                     .orElseThrow(() -> new NoSuchElementException("No voting candidate for item '" + item.getType() + "' found: " + getClass().getSimpleName()));
             UUID uuid = player.getUniqueId();
+            
             if (!candidate.getVotes().add(uuid)) {
                 candidate.getVotes().remove(uuid);
                 player.sendMessage("§aDein Vote wurde entfernt");
