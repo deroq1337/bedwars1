@@ -1,36 +1,36 @@
 package com.github.deroq1337.bedwars.data.game.voting;
 
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
-public interface BedWarsGameVotingManager<M extends BedWarsGameMap> {
+public interface BedWarsGameVotingManager {
 
-    <V extends BedWarsGameVotingVotable<M>, C extends BedWarsGameVotingCandidate<M, V>> @NotNull BedWarsGameVoting<M, V, C> getGameMapVoting();
+    void determineWinners();
 
-    <V extends BedWarsGameVotingVotable<Boolean>, C extends BedWarsGameVotingCandidate<Boolean, V>> @NotNull BedWarsGameVoting<Boolean, V, C> getFreezerVoting();
+    boolean handleInventoryClick(@NotNull InventoryClickEvent event);
 
-   @NotNull List<BedWarsGameVoting<? extends Object,? extends BedWarsGameVotingVotable<? extends Object>,? extends BedWarsGameVotingCandidate<? extends Object,? extends BedWarsGameVotingVotable<? extends Object>>>> getVotings();
+    @NotNull Collection<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVotings();
 
-    @NotNull Inventory getInventory();
+    <T> Optional<BedWarsGameVoting<T, ? extends BedWarsGameVotingCandidate<T>>> getVoting(
+            @NotNull Class<? extends BedWarsGameVoting<T, ? extends BedWarsGameVotingCandidate<T>>> votingClass, @NotNull Class<T> valueClass);
 
-    @NotNull String getInventoryTitle();
+    Optional<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVoting(
+            @NotNull Class<? extends BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> votingClass);
 
-    default void handleInventoryClick(@NotNull InventoryClickEvent event, @NotNull Player player) {
-        event.setCancelled(true);
+    Optional<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVotingByItem(@NotNull ItemStack item);
 
-        Optional.ofNullable(event.getCurrentItem()).ifPresent(item -> {
-            BedWarsGameVoting<?, ?, ?> votingByItem = getVotings().stream()
-                    .filter(voting -> voting.getDisplayItem().getType() == item.getType())
-                    .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException("No voting found for item '" + item.getType() + "'"));
-            player.openInventory(votingByItem.getInventory());
-        });
-    }
+    <T> Optional<BedWarsGameVotingCandidate<T>> getVotingWinner(
+            @NotNull Class<? extends BedWarsGameVoting<T, ? extends BedWarsGameVotingCandidate<T>>> votingClass, @NotNull Class<T> valueClass);
+
+    Map<Class<? extends BedWarsGameVoting>, BedWarsGameVotingCandidate<?>> getVotingWinnerMap();
+
+    @NotNull ItemStack getVotingItem();
+
+    @NotNull Inventory getVotingInventory();
 }

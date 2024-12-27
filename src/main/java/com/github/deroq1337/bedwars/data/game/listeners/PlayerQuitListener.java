@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerQuitListener implements Listener {
 
-    private final @NotNull BedWarsGame<?> game;
+    private final @NotNull BedWarsGame game;
 
     public PlayerQuitListener(@NotNull BedWarsGame game) {
         this.game = game;
@@ -19,6 +19,6 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         game.getUserRegistry().removeUser(event.getPlayer().getUniqueId());
-        game.getGameState().orElseThrow(() -> new EmptyGameStateException("Player quit error: GameState in BedWarsGame is empty")).check();
+        game.getGameState().orElseThrow(() -> new EmptyGameStateException("Player quit error: No GameState found")).check();
     }
 }

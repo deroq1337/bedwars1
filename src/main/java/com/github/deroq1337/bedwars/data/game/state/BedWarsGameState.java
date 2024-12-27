@@ -1,20 +1,20 @@
 package com.github.deroq1337.bedwars.data.game.state;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.github.deroq1337.bedwars.data.game.countdown.BedWarsCountdown;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.countdown.BedWarsGameCountdown;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Getter
 public abstract class BedWarsGameState {
 
-    private final @NotNull BedWarsGame game;
-    private final @NotNull BedWarsCountdown countdown;
+    protected final @NotNull BedWarsGame game;
+    private final @NotNull BedWarsGameCountdown countdown;
 
     public void enter() {
         game.setGameState(this);
@@ -24,9 +24,9 @@ public abstract class BedWarsGameState {
         game.setGameState(null);
     }
 
-    public abstract boolean canStart();
+    public abstract void onJoin(@NotNull UUID uuid);
 
-    public abstract void onJoin(@NotNull BedWarsUser user);
+    public abstract boolean canStart();
 
     public void check() {
         if (countdown.isStarted()) {

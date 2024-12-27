@@ -9,12 +9,11 @@ import com.github.deroq1337.bedwars.data.game.listeners.PlayerInteractListener;
 import com.github.deroq1337.bedwars.data.game.listeners.PlayerJoinListener;
 import com.github.deroq1337.bedwars.data.game.listeners.PlayerQuitListener;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMapManager;
-import com.github.deroq1337.bedwars.data.game.map.DefaultBedWarsGameMap;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
 import com.github.deroq1337.bedwars.data.game.map.DefaultBedWarsGameMapManager;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
-import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyGameState;
+import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsUserRegistry;
-import com.github.deroq1337.bedwars.data.game.user.DefaultBedWarsUserRegistry;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingManager;
 import com.github.deroq1337.bedwars.data.game.voting.DefaultBedWarsGameVotingManager;
 import lombok.Getter;
@@ -26,23 +25,23 @@ import java.util.Optional;
 
 @Getter
 @Setter
-public class DefaultBedWarsGame implements BedWarsGame<DefaultBedWarsGameMap> {
+public class DefaultBedWarsGame implements BedWarsGame {
 
     private final @NotNull BedWars bedWars;
     private final @NotNull BedWarsUserRegistry userRegistry;
-    private final @NotNull  BedWarsGameMapManager<DefaultBedWarsGameMap> gameMapManager;
-    private final @NotNull BedWarsGameVotingManager<DefaultBedWarsGameMap> gameVotingManager;
+    private final @NotNull BedWarsGameMapManager gameMapManager;
+    private final @NotNull BedWarsGameVotingManager gameVotingManager;
 
     private Optional<BedWarsGameState> gameState;
-    private Optional<DefaultBedWarsGameMap> gameMap;
+    private Optional<BedWarsGameMap> gameMap;
 
     public DefaultBedWarsGame(@NotNull BedWars bedWars) {
         this.bedWars = bedWars;
-        this.userRegistry = new DefaultBedWarsUserRegistry();
+        this.userRegistry = new BedWarsUserRegistry();
         this.gameMapManager = new DefaultBedWarsGameMapManager(this);
         this.gameVotingManager = new DefaultBedWarsGameVotingManager(this);
 
-        this.gameState = Optional.of(new BedWarsLobbyGameState(this));
+        this.gameState = Optional.of(new BedWarsLobbyState(this));
         gameState.get().enter();
 
         registerListeners();
@@ -52,6 +51,11 @@ public class DefaultBedWarsGame implements BedWarsGame<DefaultBedWarsGameMap> {
     @Override
     public void setGameState(@Nullable BedWarsGameState state) {
         this.gameState = Optional.ofNullable(state);
+    }
+
+    @Override
+    public void setGameMap(@NotNull BedWarsGameMap gameMap) {
+        this.gameMap = Optional.of(gameMap);
     }
 
     private void registerListeners() {

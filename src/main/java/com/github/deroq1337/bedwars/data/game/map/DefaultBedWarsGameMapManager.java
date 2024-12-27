@@ -16,18 +16,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager<DefaultBedWarsGameMap> {
+public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager {
 
     private static final String MAP_COLLECTION_NAME = "maps";
 
-    private final @NotNull MongoCollection<DefaultBedWarsGameMap> mapCollection;
+    private final @NotNull MongoCollection<BedWarsGameMap> mapCollection;
 
     public DefaultBedWarsGameMapManager(@NotNull BedWarsGame game) {
-        this.mapCollection = game.getBedWars().getMongoDB().getMongoCollection(MAP_COLLECTION_NAME, DefaultBedWarsGameMap.class);
+        this.mapCollection = game.getBedWars().getMongoDB().getMongoCollection(MAP_COLLECTION_NAME, BedWarsGameMap.class);
     }
 
     @Override
-    public @NotNull CompletableFuture<Boolean> createMap(@NotNull DefaultBedWarsGameMap map) {
+    public @NotNull CompletableFuture<Boolean> createMap(@NotNull BedWarsGameMap map) {
         return CompletableFuture.supplyAsync(() -> {
             final InsertOneResult result = mapCollection.insertOne(map);
             return result.wasAcknowledged();
@@ -35,7 +35,7 @@ public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager<Defau
     }
 
     @Override
-    public @NotNull CompletableFuture<Boolean> updateMap(@NotNull DefaultBedWarsGameMap map) {
+    public @NotNull CompletableFuture<Boolean> updateMap(@NotNull BedWarsGameMap map) {
         return CompletableFuture.supplyAsync(() -> {
             final Bson filter = Filters.eq("_id", map.getId());
             final UpdateResult result = mapCollection.replaceOne(filter, map);
@@ -54,12 +54,12 @@ public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager<Defau
 
 
     @Override
-    public @NotNull CompletableFuture<Optional<DefaultBedWarsGameMap>> getMapByName(@NotNull String name) {
+    public @NotNull CompletableFuture<Optional<BedWarsGameMap>> getMapByName(@NotNull String name) {
         return CompletableFuture.supplyAsync(() -> Optional.ofNullable(mapCollection.find(buildNameFilter(name)).first()));
     }
 
     @Override
-    public @NotNull CompletableFuture<List<DefaultBedWarsGameMap>> getRandomMaps(int count) {
+    public @NotNull CompletableFuture<List<BedWarsGameMap>> getRandomMaps(int count) {
         return CompletableFuture.supplyAsync(() -> {
             final List<Bson> aggregates = Collections.singletonList(Aggregates.sample(count));
             return mapCollection.aggregate(aggregates).into(new ArrayList<>());
@@ -67,7 +67,7 @@ public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager<Defau
     }
 
     @Override
-    public @NotNull CompletableFuture<List<DefaultBedWarsGameMap>> getMaps() {
+    public @NotNull CompletableFuture<List<BedWarsGameMap>> getMaps() {
         return CompletableFuture.supplyAsync(() -> Collections.unmodifiableList(mapCollection.find().into(new ArrayList<>())));
     }
 

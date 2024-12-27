@@ -4,77 +4,157 @@ import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedG
 import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsGameMapLocation;
 import com.github.deroq1337.bedwars.data.game.spawners.BedWarsGameResourceSpawnerType;
 import com.github.deroq1337.bedwars.data.game.teams.BedWarsGameTeamType;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public interface BedWarsGameMap {
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+public class BedWarsGameMap {
 
-    @NotNull ObjectId getId();
+    private @NotNull ObjectId id;
+    private @NotNull String name;
+    private int teamCount;
+    private int teamSize;
+    private int minPlayers;
+    private @Nullable Set<BedWarsGameTeamType> teams;
+    private @Nullable Map<BedWarsGameTeamType, BedWarsDirectedGameMapLocation> teamSpawnLocations;
+    private @Nullable Map<BedWarsGameTeamType, BedWarsGameMapLocation> teamBedLocations;
+    private @Nullable Map<Integer, BedWarsDirectedGameMapLocation> shopLocations;
+    private @Nullable Map<BedWarsGameResourceSpawnerType, Map<Integer, BedWarsGameMapLocation>> spawnerLocations;
+    private @Nullable BedWarsDirectedGameMapLocation respawnLocation;
+    private @Nullable BedWarsDirectedGameMapLocation spectatorLocation;
+    private @Nullable Set<Material> breakableBlocks;
+    private @Nullable Material displayItem;
 
-    @NotNull String getName();
+    public BedWarsGameMap(@NotNull String name, int teamCount, int teamSize, int minPlayers) {
+        this.name = name;
+        this.teamCount = teamCount;
+        this.teamSize = teamSize;
+        this.minPlayers = minPlayers;
+    }
 
-    void setName(@NotNull String name);
+    public boolean addTeam(@NotNull BedWarsGameTeamType teamType) {
+        if (teams == null) {
+            this.teams = new HashSet<>();
+        }
+        return teams.add(teamType);
+    }
 
-    int getTeamCount();
+    public boolean removeTeam(@NotNull BedWarsGameTeamType teamType) {
+        return Optional.ofNullable(teams)
+                .map(teams -> teams.remove(teamType))
+                .orElse(false);
+    }
 
-    void setTeamCount(int teamCount);
+    public boolean hasTeam(@NotNull BedWarsGameTeamType teamType) {
+        return Optional.ofNullable(teams)
+                .map(teams -> teams.contains(teamType))
+                .orElse(false);
+    }
 
-    int getTeamSize();
+    public void addTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsDirectedGameMapLocation location) {
+        if (teamSpawnLocations == null) {
+            this.teamSpawnLocations = new HashMap<>();
+        }
+        teamSpawnLocations.put(teamType, location);
+    }
 
-    void setTeamSize(int teamSize);
+    public boolean removeTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType) {
+        return Optional.ofNullable(teamSpawnLocations)
+                .map(teamSpawnLocations -> teamSpawnLocations.remove(teamType) != null)
+                .orElse(false);
+    }
 
-    @Nullable Set<BedWarsGameTeamType> getTeams();
+    public void addTeamBedLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsGameMapLocation location) {
+        if (teamBedLocations == null) {
+            this.teamBedLocations = new HashMap<>();
+        }
+        teamBedLocations.put(teamType, location);
+    }
 
-    boolean addTeam(@NotNull BedWarsGameTeamType teamType);
+    public boolean removeTeamBedLocation(@NotNull BedWarsGameTeamType teamType) {
+        return Optional.ofNullable(teamBedLocations)
+                .map(teamBedLocations -> teamBedLocations.remove(teamType) != null)
+                .orElse(false);
+    }
 
-    boolean removeTeam(@NotNull BedWarsGameTeamType teamType);
+    public int addShopLocation(@NotNull BedWarsDirectedGameMapLocation location) {
+        if (shopLocations == null) {
+            this.shopLocations = new HashMap<>();
+        }
 
-    boolean hasTeam(@NotNull BedWarsGameTeamType teamType);
+        final int id = shopLocations.size() + 1;
+        shopLocations.put(id, location);
+        return id;
+    }
 
-    @Nullable Map<BedWarsGameTeamType, BedWarsDirectedGameMapLocation> getTeamSpawnLocations();
+    public boolean removeShopLocation(int id) {
+        return Optional.ofNullable(shopLocations)
+                .map(locations -> {
+                    final boolean removed = locations.remove(id) != null;
+                    if (removed) {
+                        locations.keySet().stream()
+                                .filter(i -> i > id)
+                                .forEach(i -> {
+                                    final BedWarsDirectedGameMapLocation location = locations.remove(i);
+                                    locations.put(i - 1, location);
+                                });
+                    }
+                    return removed;
+                }).orElse(false);
+    }
 
-    void addTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsDirectedGameMapLocation location);
+    public void addSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, @NotNull BedWarsDirectedGameMapLocation location) {
+        if (spawnerLocations == null) {
+            this.spawnerLocations = new HashMap<>();
+        }
 
-    boolean removeTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType);
+        final Map<Integer, BedWarsGameMapLocation> idLocations = spawnerLocations.computeIfAbsent(spawnerType, o -> new HashMap<>());
+        idLocations.put(idLocations.size() + 1, location);
+    }
 
-    @Nullable Map<BedWarsGameTeamType, BedWarsGameMapLocation> getTeamBedLocations();
+    public boolean removeSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, int id) {
+        return Optional.ofNullable(spawnerLocations)
+                .map(spawnerLocations -> Optional.ofNullable(spawnerLocations.get(spawnerType))
+                        .map(idLocations -> idLocations.remove(id) != null)
+                        .orElse(false))
+                .orElse(false);
+    }
 
-    void addTeamBedLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsGameMapLocation location);
+    public void setRespawnLocation(@NotNull BedWarsDirectedGameMapLocation location) {
+        this.respawnLocation = location;
+    }
 
-    boolean removeTeamBedLocation(@NotNull BedWarsGameTeamType teamType);
+    public void setSpectatorLocation(@NotNull BedWarsDirectedGameMapLocation location) {
+        this.spectatorLocation = location;
+    }
 
-    @Nullable Map<Integer, BedWarsDirectedGameMapLocation> getShopLocations();
+    public boolean addBreakableBlock(@NotNull Material material) {
+        if (breakableBlocks == null) {
+            this.breakableBlocks = new HashSet<>();
+        }
+        return breakableBlocks.add(material);
+    }
 
-    int addShopLocation(@NotNull BedWarsDirectedGameMapLocation location);
+    public boolean removeBreakableBlock(@NotNull Material material) {
+        return Optional.ofNullable(breakableBlocks)
+                .map(blocks -> blocks.remove(material))
+                .orElse(false);
+    }
 
-    boolean removeShopLocation(int id);
+    public @NotNull Material getDisplayItem() {
+        return Optional.ofNullable(displayItem).orElse(Material.BEDROCK);
+    }
 
-    @Nullable Map<BedWarsGameResourceSpawnerType, Map<Integer, BedWarsGameMapLocation>> getSpawnerLocations();
-
-    void addSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, @NotNull BedWarsDirectedGameMapLocation location);
-
-    boolean removeSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, int id);
-
-    @Nullable BedWarsDirectedGameMapLocation getRespawnLocation();
-
-    void setRespawnLocation(@NotNull BedWarsDirectedGameMapLocation location);
-
-    @Nullable BedWarsDirectedGameMapLocation getSpectatorLocation();
-
-    void setSpectatorLocation(@NotNull BedWarsDirectedGameMapLocation location);
-
-    @Nullable Set<Material> getBreakableBlocks();
-
-    boolean addBreakableBlock(@NotNull Material material);
-
-    boolean removeBreakableBlock(@NotNull Material material);
-
-    @Nullable Material getDisplayItem();
-
-    void setDisplayItem(@NotNull Material material);
+    public void setDisplayItem(@NotNull Material material) {
+        this.displayItem = material;
+    }
 }

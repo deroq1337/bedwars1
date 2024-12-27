@@ -1,10 +1,10 @@
 package com.github.deroq1337.bedwars.data.game.commands;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.github.deroq1337.bedwars.data.game.countdown.BedWarsCountdown;
+import com.github.deroq1337.bedwars.data.game.countdown.BedWarsGameCountdown;
 import com.github.deroq1337.bedwars.data.game.exceptions.EmptyGameStateException;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
-import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyGameState;
+import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class BedWarsPauseCommand implements CommandExecutor {
 
-    private final @NotNull BedWarsGame<?> game;
+    private final @NotNull BedWarsGame game;
 
     public BedWarsPauseCommand(@NotNull BedWarsGame game) {
         this.game = game;
@@ -33,8 +33,8 @@ public class BedWarsPauseCommand implements CommandExecutor {
             return true;
         }
 
-        BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Error force-starting game: GameState in BedWarsGame is empty"));
-        if (!(gameState instanceof BedWarsLobbyGameState)) {
+        BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Error pausing game countdown: No GameState found"));
+        if (!(gameState instanceof BedWarsLobbyState)) {
             player.sendMessage("§cDas Spiel hat bereits begonnen");
             return true;
         }
@@ -44,7 +44,7 @@ public class BedWarsPauseCommand implements CommandExecutor {
             return true;
         }
 
-        BedWarsCountdown countdown = gameState.getCountdown();
+        BedWarsGameCountdown countdown = gameState.getCountdown();
         if (countdown.isRunning()) {
             countdown.pause();
             player.sendMessage("§aDer Countdown wurde pausiert");
