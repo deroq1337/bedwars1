@@ -8,6 +8,7 @@ import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -22,32 +23,52 @@ import java.util.stream.IntStream;
 @Getter
 public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<T>> {
 
-    private static final int INVENTORY_SIZE = 9;
-
     protected final @NotNull BedWarsGame game;
-    private final @NotNull String name;
     private final @NotNull List<C> candidates;
     private final int slot;
-    private final @NotNull String inventoryTitle;
-    private final int[] inventorySlots;
+    private final int inventorySize;
+    private final List<Integer> inventorySlots;
 
     private Optional<C> winner;
 
-    public abstract @NotNull ItemStack getDisplayItem();
+    public BedWarsGameVoting(@NotNull BedWarsGame game, @NotNull String configSectionName, @NotNull List<C> candidates) {
+        this.game = game;
+        this.candidates = candidates;
 
-    public @NotNull Inventory getInventory() {
-        if (inventorySlots.length < candidates.size()) {
-            throw new GameVotingInitializationException("Not enough slots (" + inventorySlots.length + ") defined for the number of candidates (" + candidates.size() + ")");
+        Optional<ConfigurationSection> configSection = Optional.ofNullable(game.getBedWars().getMainConfigManager().getConfig().getConfigurationSection("voting." + configSectionName));
+        this.slot = configSection
+                .map(section -> section.getInt("slot"))
+                .orElse(4);
+
+        this.inventorySize = configSection
+                .map(section -> section.getInt("inventory.size"))
+                .orElse(9);
+
+        this.inventorySlots = configSection
+                .map(section -> section.getIntegerList("inventory.slots"))
+                .orElse(List.of(3, 5));
+    }
+
+    public abstract @NotNull String getName(@NotNull BedWarsUser user);
+
+    public abstract @NotNull String getInventoryTitle(@NotNull BedWarsUser user);
+
+    public abstract @NotNull ItemStack getDisplayItem(@NotNull BedWarsUser user);
+
+    public @NotNull Inventory getInventory(@NotNull BedWarsUser user) {
+        int slotsSize = getInventorySlots().size();
+        if (slotsSize < candidates.size()) {
+            throw new GameVotingInitializationException("Not enough slots (" + slotsSize + ") defined for the number of candidates (" + candidates.size() + ")");
         }
 
-        Inventory inventory = Bukkit.createInventory(null, INVENTORY_SIZE, inventoryTitle);
-        IntStream.range(0, candidates.size()).forEach(i -> inventory.setItem(inventorySlots[i], candidates.get(i).getDisplayItem()));
+        Inventory inventory = Bukkit.createInventory(null, getInventorySize(), getInventoryTitle(user));
+        IntStream.range(0, candidates.size()).forEach(i -> inventory.setItem(inventorySlots.get(i), candidates.get(i).getDisplayItem(user)));
         return inventory;
     }
 
     public boolean handleInventoryClick(@NotNull BedWarsUser user, @NotNull InventoryClickEvent event) {
         return game.getGameState().map(gameState -> {
-            if (!event.getView().getTitle().equals(inventoryTitle)) {
+            if (!event.getView().getTitle().equals(getInventoryTitle(user))) {
                 return false;
             }
 
@@ -60,12 +81,12 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
                 return true;
             }
 
-            Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
-                return getCandidateByItem(item).map(candidate -> {
+            return Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
+                return getCandidateByItem(user, item).map(candidate -> {
                     UUID uuid = user.getUuid();
                     if (!candidate.getVotes().add(uuid)) {
                         candidate.getVotes().remove(uuid);
-                        user.sendMessage("voting_already_voted", candidate.getDisplayTitle());
+                        user.sendMessage("voting_vote_removed", candidate.getDisplayTitle(user));
                         return true;
                     }
 
@@ -74,12 +95,11 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
                             .findFirst()
                             .ifPresent(c -> c.getVotes().remove(uuid));
                     candidate.getVotes().add(uuid);
-                    user.sendMessage("voting_added", candidate.getDisplayTitle());
+                    user.sendMessage("voting_vote_added", candidate.getDisplayTitle(user));
                     event.getWhoClicked().closeInventory();
                     return true;
                 });
-            });
-            return true;
+            }).orElse(true);
         }).orElse(false);
     }
 
@@ -100,10 +120,10 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
                 .findFirst();
     }
 
-    private Optional<C> getCandidateByItem(@NotNull ItemStack item) {
+    private Optional<C> getCandidateByItem(@NotNull BedWarsUser user, @NotNull ItemStack item) {
         return Optional.ofNullable(item.getItemMeta()).flatMap(itemMeta -> {
             return candidates.stream()
-                    .filter(candidate -> candidate.getDisplayItem().getType() == item.getType() && candidate.getDisplayTitle().equals(item.getItemMeta().getDisplayName()))
+                    .filter(candidate -> candidate.getDisplayItem(user).getType() == item.getType() && candidate.getDisplayTitle(user).equals(item.getItemMeta().getDisplayName()))
                     .findFirst();
         });
     }

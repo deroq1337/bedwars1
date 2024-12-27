@@ -45,7 +45,7 @@ public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
     private void announceVotingWinners(@NotNull BedWarsUser user) {
         game.getGameVotingManager().getVotingWinnerMap().forEach((votingClass, winner) -> {
             game.getGameVotingManager().getVoting((Class<? extends BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>>) votingClass).ifPresent(voting -> {
-                user.sendMessage("lobby_countdown_voting_announcement", voting.getName(), winner.getDisplayTitle(), winner.getVotes().size());
+                user.sendMessage("lobby_countdown_voting_announcement", voting.getName(user), winner.getDisplayTitle(user), winner.getVotes().size());
             });
         });
     }

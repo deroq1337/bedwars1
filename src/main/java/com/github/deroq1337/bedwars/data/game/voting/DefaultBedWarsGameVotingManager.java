@@ -3,6 +3,7 @@ package com.github.deroq1337.bedwars.data.game.voting;
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import com.github.deroq1337.bedwars.data.game.voting.map.BedWarsGameMapVoting;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -21,16 +22,9 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     private final @NotNull BedWarsGame game;
     private final @NotNull Map<Class<? extends BedWarsGameVoting>, BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> votingMap = new ConcurrentHashMap<>();
     private final @NotNull Map<Class<? extends BedWarsGameVoting>, BedWarsGameVotingCandidate<?>> votingWinnerMap = new ConcurrentHashMap<>();
-    private final @NotNull ItemStack votingItem;
-    private final @NotNull String inventoryTitle;
 
     public DefaultBedWarsGameVotingManager(@NotNull BedWarsGame game) {
         this.game = game;
-        this.votingItem = ItemBuilders.normal(Material.MAP)
-                .title("§eVoting")
-                .build();
-        this.inventoryTitle = "§8Voting";
-
         votingMap.put(BedWarsGameMapVoting.class, new BedWarsGameMapVoting(game));
     }
 
@@ -40,9 +34,9 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     }
 
     @Override
-    public boolean handleInventoryClick(@NotNull InventoryClickEvent event) {
+    public boolean handleInventoryClick(@NotNull BedWarsUser user, @NotNull InventoryClickEvent event) {
         return game.getGameState().map(gameState -> {
-            if (!event.getView().getTitle().equals(inventoryTitle)) {
+            if (!event.getView().getTitle().equals(getInventoryTitle(user))) {
                 return false;
             }
 
@@ -55,13 +49,12 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
                 return true;
             }
 
-            Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
-                return getVotingByItem(item).map(voting -> {
-                    event.getWhoClicked().openInventory(voting.getInventory());
+            return Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
+                return getVotingByItem(user, item).map(voting -> {
+                    event.getWhoClicked().openInventory(voting.getInventory(user));
                     return true;
                 });
-            });
-            return true;
+            }).orElse(true);
         }).orElse(false);
     }
 
@@ -83,9 +76,9 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     }
 
     @Override
-    public Optional<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVotingByItem(@NotNull ItemStack item) {
+    public Optional<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVotingByItem(@NotNull BedWarsUser user, @NotNull ItemStack item) {
         return getVotings().stream()
-                .filter(voting -> voting.getDisplayItem().getType() == item.getType())
+                .filter(voting -> voting.getDisplayItem(user).getType() == item.getType())
                 .findFirst();
     }
 
@@ -96,9 +89,21 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     }
 
     @Override
-    public @NotNull Inventory getVotingInventory() {
-        Inventory inventory = Bukkit.createInventory(null, 9, inventoryTitle);
-        getVotings().forEach(voting -> inventory.setItem(voting.getSlot(), voting.getDisplayItem()));
+    public @NotNull ItemStack getItem(@NotNull BedWarsUser user) {
+        return ItemBuilders.normal(Material.MAP)
+                .title(user.getMessage("voting_item_name"))
+                .build();
+    }
+
+    @Override
+    public @NotNull Inventory getInventory(@NotNull BedWarsUser user) {
+        Inventory inventory = Bukkit.createInventory(null, 9, getInventoryTitle(user));
+        getVotings().forEach(voting -> inventory.setItem(voting.getSlot(), voting.getDisplayItem(user)));
         return inventory;
+    }
+
+    @Override
+    public @NotNull String getInventoryTitle(@NotNull BedWarsUser user) {
+        return user.getMessage("voting_inventory_title");
     }
 }

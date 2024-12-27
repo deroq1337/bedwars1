@@ -1,6 +1,7 @@
 package com.github.deroq1337.bedwars.data.game.listeners;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -24,12 +25,15 @@ public class PlayerInteractListener implements Listener {
             return;
         }
 
-        Optional.ofNullable(event.getItem()).ifPresent(item -> {
-            if (item.isSimilar(game.getGameVotingManager().getVotingItem())) {
-                event.setCancelled(true);
-                event.getPlayer().openInventory(game.getGameVotingManager().getVotingInventory());
-                return;
-            }
-        });
+        Player player = event.getPlayer();
+        game.getUserRegistry().getUser(player.getUniqueId()).ifPresentOrElse(user -> {
+            Optional.ofNullable(event.getItem()).ifPresent(item -> {
+                if (item.isSimilar(game.getGameVotingManager().getItem(user))) {
+                    event.setCancelled(true);
+                    event.getPlayer().openInventory(game.getGameVotingManager().getInventory(user));
+                    return;
+                }
+            });
+        }, () -> player.sendMessage("§cAn error occurred. Rejoin or contact an administrator."));
     }
 }

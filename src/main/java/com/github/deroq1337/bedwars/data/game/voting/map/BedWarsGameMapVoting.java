@@ -1,45 +1,48 @@
 package com.github.deroq1337.bedwars.data.game.voting.map;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.github.deroq1337.bedwars.data.game.exceptions.GameVotingInitializationException;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVoting;
-import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingCandidate;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 @Getter
 public class BedWarsGameMapVoting extends BedWarsGameVoting<BedWarsGameMap, BedWarsGameMapVotingCandidate> {
 
-    private static final int RANDOM_MAPS_COUNT = 2;
-
     public BedWarsGameMapVoting(@NotNull BedWarsGame game) {
-        super(game, "Map-Voting", game.getGameMapManager().getRandomMaps(RANDOM_MAPS_COUNT).join().stream()
-                        .map(BedWarsGameMapVotingCandidate::new)
-                        .toList(),
-                4, "§8Map-Voting", new int[]{3, 5}
-        );
-
-        int candidatesSize = getCandidates().size();
-        if (candidatesSize != RANDOM_MAPS_COUNT) {
-            throw new GameVotingInitializationException("Expected " + RANDOM_MAPS_COUNT + " map candidates, but found " + candidatesSize);
-        }
+        super(game, "map", new ArrayList<>());
+        getCandidates().addAll(game.getGameMapManager().getRandomMaps(getInventorySlots().size()).join().stream()
+                .map(BedWarsGameMapVotingCandidate::new)
+                .toList());
     }
 
     @Override
-    public @NotNull ItemStack getDisplayItem() {
+    public @NotNull String getName(@NotNull BedWarsUser user) {
+        return user.getMessage("voting_map_name");
+    }
+
+    @Override
+    public @NotNull String getInventoryTitle(@NotNull BedWarsUser user) {
+        return user.getMessage("voting_map_inventory_title");
+    }
+
+    @Override
+    public @NotNull ItemStack getDisplayItem(@NotNull BedWarsUser user) {
         return ItemBuilders.normal(Material.MAP)
-                .title("§cMap-Voting")
-                .lore("§7Aktueller Gewinner: " + getWinnerName())
+                .title(user.getMessage("voting_map_inventory_item_name"))
+                .lore(user.getMessage("voting_map_inventory_current_winner", getWinnerName(user)))
                 .build();
     }
 
-    private @NotNull String getWinnerName() {
+    private @NotNull String getWinnerName(@NotNull BedWarsUser user) {
         return getCurrentWinner()
-                .map(BedWarsGameVotingCandidate::getDisplayTitle)
+                .map(candidate -> candidate.getDisplayTitle(user))
                 .orElse("N/A");
     }
 }

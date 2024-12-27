@@ -18,12 +18,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager {
 
-    private static final String MAP_COLLECTION_NAME = "maps";
-
     private final @NotNull MongoCollection<BedWarsGameMap> mapCollection;
 
     public DefaultBedWarsGameMapManager(@NotNull BedWarsGame game) {
-        this.mapCollection = game.getBedWars().getMongoDB().getMongoCollection(MAP_COLLECTION_NAME, BedWarsGameMap.class);
+        String collectionName = Optional.ofNullable(game.getBedWars().getMainConfigManager().getConfig().getString("map_collection_name"))
+                .orElse("maps");
+        this.mapCollection = game.getBedWars().getMongoDB().getMongoCollection(collectionName, BedWarsGameMap.class);
     }
 
     @Override

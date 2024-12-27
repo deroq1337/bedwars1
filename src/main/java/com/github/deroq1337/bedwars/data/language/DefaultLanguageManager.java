@@ -1,6 +1,5 @@
 package com.github.deroq1337.bedwars.data.language;
 
-import com.github.deroq1337.bedwars.BedWars;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -10,12 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultLanguageManager implements LanguageManager {
 
-    private static final long REFRESH_INTERVAL = 5 * 60 * 20L;
-
     private final @NotNull Map<Locale, Translation> localeTranslationMap = new ConcurrentHashMap<>();
     private final @NotNull File messagesFolder;
 
-    public DefaultLanguageManager(@NotNull BedWars plugin, @NotNull File messagesFolder) {
+    public DefaultLanguageManager(@NotNull File messagesFolder) {
         this.messagesFolder = messagesFolder;
         if (!messagesFolder.exists()) {
             messagesFolder.mkdirs();

@@ -12,10 +12,11 @@ import java.util.UUID;
 
 public class BedWarsLobbyState extends BedWarsGameState {
 
-    private static final int MIN_PLAYERS = 1;
+    private final int minPlayers;
 
     public BedWarsLobbyState(@NotNull BedWarsGame game) {
         super(game, new BedWarsLobbyCountdown(game));
+        this.minPlayers = game.getBedWars().getMainConfigManager().getConfig().getInt("min_players");
     }
 
     @Override
@@ -47,7 +48,7 @@ public class BedWarsLobbyState extends BedWarsGameState {
             player.getInventory().setItem(7, Items.ACHIEVEMENT_ITEM);
             player.getInventory().setItem(8, Items.LOBBY_ITEM);*/
 
-            player.getInventory().setItem(4, game.getGameVotingManager().getVotingItem());
+            player.getInventory().setItem(4, game.getGameVotingManager().getItem(user));
         });
     }
 
@@ -55,7 +56,7 @@ public class BedWarsLobbyState extends BedWarsGameState {
     public boolean canStart() {
         return game.getGameVotingManager().getVoting(BedWarsGameMapVoting.class)
                 .map(voting -> !voting.getCandidates().isEmpty())
-                .orElse(false) && getGame().getUserRegistry().getUsers().size() == MIN_PLAYERS;
+                .orElse(false) && getGame().getUserRegistry().getUsers().size() >= minPlayers;
     }
 
     @Override

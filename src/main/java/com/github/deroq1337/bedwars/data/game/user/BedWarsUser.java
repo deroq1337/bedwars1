@@ -31,8 +31,12 @@ public class BedWarsUser {
 
     public void sendMessage(@NotNull String key, Object... params) {
         getBukkitPlayer().ifPresent(player -> {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageFormat.format(game.getBedWars().getLanguageManager().getMessage(locale, key), params)));
+            player.sendMessage(getMessage(key, params));
         });
+    }
+
+    public @NotNull String getMessage(@NotNull String key, Object... params) {
+        return ChatColor.translateAlternateColorCodes('&', MessageFormat.format(game.getBedWars().getLanguageManager().getMessage(locale, key), params));
     }
 
     public Optional<Player> getBukkitPlayer() {
