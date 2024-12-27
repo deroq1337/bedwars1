@@ -1,21 +1,22 @@
 package com.github.deroq1337.bedwars.data.game.voting;
 
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.Optional;
 
-public interface BedWarsGameVotingCandidate<T, V extends BedWarsGameVotingVotable<T>> {
+public interface BedWarsGameVotingCandidate<T> {
 
-    @NotNull V getVotable();
+    @NotNull T getValue();
 
     @NotNull BedWarsGameVotingVotes getVotes();
 
-    default void updateDisplayItem() {
-        Optional.ofNullable(getVotable().getDisplayItem().getItemMeta()).ifPresent(itemMeta -> {
-            String lore = "§7Votes: §e" + getVotes().get();
-            itemMeta.setLore(Collections.singletonList(lore));
-            getVotable().getDisplayItem().setItemMeta(itemMeta);
-        });
+    @NotNull ItemStack getDisplayItem();
+
+    default @NotNull String getDisplayTitle() {
+        return Optional.ofNullable(getDisplayItem().getItemMeta())
+                .map(ItemMeta::getDisplayName)
+                .orElse("N/A");
     }
 }

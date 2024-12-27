@@ -1,21 +1,37 @@
 package com.github.deroq1337.bedwars.data.game.user;
 
-import com.github.deroq1337.bedwars.data.game.teams.BedWarsGameTeam;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public interface BedWarsUser {
+@Getter
+@Setter
+public class BedWarsUser {
 
-    @NotNull UUID getUuid();
+    private final @NotNull UUID uuid;
 
-    Optional<BedWarsGameTeam> getGameTeam();
+    @Getter
+    private boolean alive;
 
-    boolean isAlive();
+    private BedWarsUser(@NotNull UUID uuid, boolean alive) {
+        this.uuid = uuid;
+        this.alive = alive;
+    }
 
-    void setAlive(boolean alive);
+    public static @NotNull BedWarsUser create(@NotNull UUID uuid, boolean alive) {
+        return new BedWarsUser(uuid, alive);
+    }
 
-    Optional<Player> getBukkitPlayer();
+    public void sendMessage(@NotNull String message) {
+        getBukkitPlayer().ifPresent(player -> player.sendMessage(message));
+    }
+
+    public Optional<Player> getBukkitPlayer() {
+        return Optional.ofNullable(Bukkit.getPlayer(uuid));
+    }
 }

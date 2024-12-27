@@ -1,18 +1,37 @@
 package com.github.deroq1337.bedwars.data.game.user;
 
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-public interface BedWarsUserRegistry {
+@RequiredArgsConstructor
+public class BedWarsUserRegistry {
 
-    @NotNull BedWarsUser addUser(@NotNull UUID uuid, boolean alive);
+    private final @NotNull Map<UUID, BedWarsUser> userMap = new ConcurrentHashMap<>();
 
-    void removeUser(@NotNull UUID uuid);
+    public @NotNull BedWarsUser addUser(@NotNull UUID uuid, boolean alive) {
+        final BedWarsUser user = BedWarsUser.create(uuid, alive);
+        userMap.put(uuid, user);
+        return user;
+    }
 
-    @NotNull List<BedWarsUser> getAliveUsers();
+    public void removeUser(@NotNull UUID uuid) {
+        userMap.remove(uuid);
+    }
 
-    @NotNull Collection<BedWarsUser> getUsers();
+    public Optional<BedWarsUser> getUser(@NotNull UUID uuid) {
+        return Optional.ofNullable(userMap.get(uuid));
+    }
+
+    public @NotNull List<BedWarsUser> getAliveUsers() {
+        return userMap.values().stream()
+                .filter(BedWarsUser::isAlive)
+                .toList();
+    }
+
+    public @NotNull Collection<BedWarsUser> getUsers() {
+        return userMap.values();
+    }
 }

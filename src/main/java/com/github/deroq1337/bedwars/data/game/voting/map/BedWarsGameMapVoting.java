@@ -1,45 +1,45 @@
 package com.github.deroq1337.bedwars.data.game.voting.map;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
+import com.github.deroq1337.bedwars.data.game.exceptions.GameVotingInitializationException;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
-import com.github.deroq1337.bedwars.data.game.map.DefaultBedWarsGameMap;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVoting;
+import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingCandidate;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 @Getter
-public class BedWarsGameMapVoting implements BedWarsGameVoting<DefaultBedWarsGameMap, BedWarsGameMapVotingVotable, BedWarsGameMapVotingCandidate> {
+public class BedWarsGameMapVoting extends BedWarsGameVoting<BedWarsGameMap, BedWarsGameMapVotingCandidate> {
 
-    private final @NotNull List<BedWarsGameMapVotingCandidate> candidates;
-    private final @NotNull ItemStack displayItem;
-    private final int slot;
-    private final @NotNull String inventoryTitle;
+    private static final int RANDOM_MAPS_COUNT = 2;
 
-    public BedWarsGameMapVoting(@NotNull BedWarsGame<DefaultBedWarsGameMap> game) {
-        AtomicInteger slot = new AtomicInteger(2);
-        this.candidates = game.getGameMapManager().getRandomMaps(3).join().stream()
-                .map(map -> new BedWarsGameMapVotingCandidate(map, slot.getAndAdd(2)))
-                .toList();
-        this.displayItem = buildDisplayItem();
-        this.slot = 12;
-        this.inventoryTitle = "§8Map-Voting";
+    public BedWarsGameMapVoting(@NotNull BedWarsGame game) {
+        super(game, "Map-Voting", game.getGameMapManager().getRandomMaps(RANDOM_MAPS_COUNT).join().stream()
+                        .map(BedWarsGameMapVotingCandidate::new)
+                        .toList(),
+                4, "§8Map-Voting", new int[]{3, 5}
+        );
+
+        int candidatesSize = getCandidates().size();
+        if (candidatesSize != RANDOM_MAPS_COUNT) {
+            throw new GameVotingInitializationException("Expected " + RANDOM_MAPS_COUNT + " map candidates, but found " + candidatesSize);
+        }
     }
 
     @Override
-    public @NotNull String getWinnerAsString() {
-        return getWinner().map(winner -> winner.getVotable().getValue().getName())
-                .orElse("N/A");
+    public @NotNull ItemStack getDisplayItem() {
+        return ItemBuilders.normal(Material.MAP)
+                .title("§cMap-Voting")
+                .lore("§7Aktueller Gewinner: " + getWinnerName())
+                .build();
     }
 
-    private @NotNull ItemStack buildDisplayItem() {
-        return ItemBuilders.normal(Material.FILLED_MAP)
-                .title("§cMap-Voting")
-                .lore("§7Aktueller Gewinner: §c" + getWinnerAsString())
-                .build();
+    private @NotNull String getWinnerName() {
+        return getCurrentWinner()
+                .map(BedWarsGameVotingCandidate::getDisplayTitle)
+                .orElse("N/A");
     }
 }

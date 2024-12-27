@@ -1,77 +1,109 @@
 package com.github.deroq1337.bedwars.data.game.voting;
 
+import com.github.deroq1337.bedwars.data.game.BedWarsGame;
+import com.github.deroq1337.bedwars.data.game.exceptions.GameVotingInitializationException;
+import com.github.deroq1337.bedwars.data.game.exceptions.GameVotingWinnerDeterminationException;
+import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.IntStream;
 
-public interface BedWarsGameVoting<T, V extends BedWarsGameVotingVotable<T>, C extends BedWarsGameVotingCandidate<T, V>> {
+@RequiredArgsConstructor
+@Getter
+public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<T>> {
 
-    @NotNull ItemStack getDisplayItem();
+    private static final int INVENTORY_SIZE = 9;
 
-    @NotNull String getInventoryTitle();
+    protected final @NotNull BedWarsGame game;
+    private final @NotNull String name;
+    private final @NotNull List<C> candidates;
+    private final int slot;
+    private final @NotNull String inventoryTitle;
+    private final int[] inventorySlots;
 
-    int getSlot();
+    private Optional<C> winner;
 
-    @NotNull List<C> getCandidates();
+    public abstract @NotNull ItemStack getDisplayItem();
 
-    @NotNull String getWinnerAsString();
-
-    default Optional<C> getWinner() {
-        if (getCandidates().isEmpty()) {
-            System.out.println("No candidates available: " + getClass().getSimpleName());
-            return Optional.empty();
+    public @NotNull Inventory getInventory() {
+        if (inventorySlots.length < candidates.size()) {
+            throw new GameVotingInitializationException("Not enough slots (" + inventorySlots.length + ") defined for the number of candidates (" + candidates.size() + ")");
         }
 
-        return getCandidates().stream()
-                .max((o1, o2) -> -Integer.compare(o2.getVotes().get(), o1.getVotes().get()));
-    }
-
-    default void updateDisplayItem() {
-        Optional.ofNullable(getDisplayItem().getItemMeta()).ifPresent(itemMeta -> {
-            String lore = "§7Aktueller Gewinner: " + getWinnerAsString();
-            itemMeta.setLore(Collections.singletonList(lore));
-            getDisplayItem().setItemMeta(itemMeta);
-        });
-    }
-
-    default @NotNull Inventory getInventory() {
-        Inventory inventory = Bukkit.createInventory(null, 27, getInventoryTitle());
-        getCandidates().forEach(candidate -> inventory.setItem(candidate.getVotable().getSlot(), new ItemStack(candidate.getVotable().getDisplayItem())));
+        Inventory inventory = Bukkit.createInventory(null, INVENTORY_SIZE, inventoryTitle);
+        IntStream.range(0, candidates.size()).forEach(i -> inventory.setItem(inventorySlots[i], candidates.get(i).getDisplayItem()));
         return inventory;
     }
 
-    default void handleInventoryClick(@NotNull InventoryClickEvent event, @NotNull Player player) {
-        Optional.ofNullable(event.getCurrentItem()).ifPresent(item -> {
-            BedWarsGameVotingCandidate<T, ?> candidate = getCandidates().stream()
-                    .filter(c -> c.getVotable().getDisplayItem().isSimilar(item))
-                    .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException("No voting candidate for item '" + item.getType() + "' found: " + getClass().getSimpleName()));
-            UUID uuid = player.getUniqueId();
-            
-            if (!candidate.getVotes().add(uuid)) {
-                candidate.getVotes().remove(uuid);
-                player.sendMessage("§aDein Vote wurde entfernt");
-            } else {
-                getCandidates().stream()
-                        .filter(c -> !c.equals(candidate) && c.getVotes().contains(uuid))
-                        .findFirst()
-                        .ifPresent(c -> {
-                            c.getVotes().remove(uuid);
-                            c.updateDisplayItem();
-                        });
-                player.sendMessage("§aDu hast für " + candidate.getVotable().getDisplayTitle() + " §agevotet");
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 3f, 3f);
+    public boolean handleInventoryClick(@NotNull Player player, @NotNull InventoryClickEvent event) {
+        return game.getGameState().map(gameState -> {
+            if (!event.getView().getTitle().equals(inventoryTitle)) {
+                return false;
             }
 
-            candidate.updateDisplayItem();
-            updateDisplayItem();
-            player.closeInventory();
+            event.setCancelled(true);
+            if (!(gameState instanceof BedWarsLobbyState lobbyState)) {
+                return true;
+            }
+
+            if (lobbyState.getCountdown().getCurrent() <= 10) {
+                return true;
+            }
+
+            Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
+                return getCandidateByItem(item).map(candidate -> {
+                    UUID uuid = player.getUniqueId();
+                    if (!candidate.getVotes().add(uuid)) {
+                        player.sendMessage("§cDu hast diesem Kandidaten bereits deine Stimme geben");
+                        return true;
+                    }
+
+                    candidates.stream()
+                            .filter(c -> c.getVotes().contains(uuid))
+                            .findFirst()
+                            .ifPresent(c -> c.getVotes().remove(uuid));
+                    candidate.getVotes().add(uuid);
+                    player.sendMessage("§aDu hast für " + candidate.getDisplayTitle() + " §agestimmt");
+                    event.getWhoClicked().closeInventory();
+                    return true;
+                });
+            });
+            return true;
+        }).orElse(false);
+    }
+
+    public @NotNull C determineWinner() {
+        Optional<C> winner = getCurrentWinner();
+        if (winner.isEmpty()) {
+            throw new GameVotingWinnerDeterminationException("Could not determine winner: candidates are empty");
+        }
+
+        this.winner = winner;
+        return winner.get();
+    }
+
+    public Optional<C> getCurrentWinner() {
+        return candidates.stream()
+                .max((o1, o2) -> -Integer.compare(o2.getVotes().size(), o1.getVotes().size()))
+                .stream()
+                .findFirst();
+    }
+
+    private Optional<C> getCandidateByItem(@NotNull ItemStack item) {
+        return Optional.ofNullable(item.getItemMeta()).flatMap(itemMeta -> {
+            return candidates.stream()
+                    .filter(candidate -> candidate.getDisplayItem().getType() == item.getType() && candidate.getDisplayTitle().equals(item.getItemMeta().getDisplayName()))
+                    .findFirst();
         });
     }
 }

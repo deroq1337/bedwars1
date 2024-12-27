@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerJoinListener implements Listener {
 
-    private final @NotNull BedWarsGame<?> game;
+    private final @NotNull BedWarsGame game;
 
     public PlayerJoinListener(@NotNull BedWarsGame game) {
         this.game = game;
@@ -21,7 +21,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         BedWarsUser user = game.getUserRegistry().addUser(event.getPlayer().getUniqueId(), true);
-        BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Player join error: GameState in BedWarsGame is empty"));
+        BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Player join error: No GameState found"));
         gameState.onJoin(user);
         gameState.check();
     }

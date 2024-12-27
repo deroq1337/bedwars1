@@ -11,19 +11,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public interface BedWarsGame<M extends BedWarsGameMap> {
+public interface BedWarsGame {
 
     @NotNull BedWars getBedWars();
 
     @NotNull BedWarsUserRegistry getUserRegistry();
 
-    @NotNull BedWarsGameMapManager<M> getGameMapManager();
+    @NotNull BedWarsGameMapManager getGameMapManager();
 
-    @NotNull BedWarsGameVotingManager<M> getGameVotingManager();
+    @NotNull BedWarsGameVotingManager getGameVotingManager();
 
     Optional<BedWarsGameState> getGameState();
 
     void setGameState(@Nullable BedWarsGameState state);
 
-    Optional<M> getGameMap();
+    Optional<BedWarsGameMap> getGameMap();
+
+    void setGameMap(@NotNull BedWarsGameMap gameMap);
 }

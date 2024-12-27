@@ -1,7 +1,7 @@
 package com.github.deroq1337.bedwars.data.game.listeners;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,35 +10,28 @@ import org.jetbrains.annotations.NotNull;
 
 public class InventoryClickListener implements Listener {
 
-    private final @NotNull BedWarsGameVotingManager<?> gameVotingManager;
+    private final @NotNull BedWarsGame game;
 
     public InventoryClickListener(@NotNull BedWarsGame game) {
-        this.gameVotingManager = game.getGameVotingManager();
-        game.getBedWars().getServer().getPluginManager().registerEvents(this, game.getBedWars());
+        this.game = game;
+        Bukkit.getPluginManager().registerEvents(this, game.getBedWars());
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) {
+        if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
 
-        String inventoryTitle = event.getView().getTitle();
-        if (inventoryTitle.isEmpty()) {
-            return;
-        }
+        game.getUserRegistry().getUser(player.getUniqueId()).ifPresentOrElse(user -> {
+            if (game.getGameVotingManager().handleInventoryClick(event)) {
+                return;
+            }
 
-        if (inventoryTitle.equals(gameVotingManager.getInventoryTitle())) {
-            gameVotingManager.handleInventoryClick(event, (Player) event.getWhoClicked());
-            return;
-        }
-
-        gameVotingManager.getVotings().stream()
-                .filter(voting -> voting.getInventoryTitle().equals(inventoryTitle))
-                .findFirst()
-                .ifPresent(voting -> {
-                    event.setCancelled(true);
-                    voting.handleInventoryClick(event, ((Player) event.getWhoClicked()));
-                });
+            if (game.getGameVotingManager().getVotings().stream()
+                    .anyMatch(voting -> voting.handleInventoryClick(player, event))) {
+                return;
+            }
+        }, () -> player.sendMessage("§cEs ist ein Fehler aufgetreten. Versuche zu rejoinen oder kontaktiere einen Administrator"));
     }
 }

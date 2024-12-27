@@ -2,7 +2,7 @@ package com.github.deroq1337.bedwars.data.game.commands;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMapManager;
-import com.github.deroq1337.bedwars.data.game.map.DefaultBedWarsGameMap;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
 import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedGameMapLocation;
 import com.github.deroq1337.bedwars.data.game.teams.BedWarsGameTeamType;
 import org.bukkit.command.Command;
@@ -17,9 +17,9 @@ import java.util.function.Consumer;
 
 public class BedWarsMapCommand implements CommandExecutor {
 
-    private final @NotNull BedWarsGameMapManager<DefaultBedWarsGameMap> gameMapManager;
+    private final @NotNull BedWarsGameMapManager gameMapManager;
 
-    public BedWarsMapCommand(@NotNull BedWarsGame<DefaultBedWarsGameMap> game) {
+    public BedWarsMapCommand(@NotNull BedWarsGame game) {
         this.gameMapManager = game.getGameMapManager();
         Optional.ofNullable(game.getBedWars().getCommand("map")).ifPresent(pluginCommand -> pluginCommand.setExecutor(this));
     }
@@ -107,7 +107,7 @@ public class BedWarsMapCommand implements CommandExecutor {
             return true;
         }
 
-        DefaultBedWarsGameMap gameMap = new DefaultBedWarsGameMap(name, teamCount, teamSize, minPlayers);
+        BedWarsGameMap gameMap = new BedWarsGameMap(name, teamCount, teamSize, minPlayers);
         if (!gameMapManager.createMap(gameMap).join()) {
             player.sendMessage("§cMap konnte nicht erstellt werden");
             return true;
@@ -117,8 +117,8 @@ public class BedWarsMapCommand implements CommandExecutor {
         return true;
     }
 
-    private boolean handleMapOperation(@NotNull Player player, @NotNull String name, @NotNull Consumer<DefaultBedWarsGameMap> operation) {
-        Optional<DefaultBedWarsGameMap> map = gameMapManager.getMapByName(name).join();
+    private boolean handleMapOperation(@NotNull Player player, @NotNull String name, @NotNull Consumer<BedWarsGameMap> operation) {
+        Optional<BedWarsGameMap> map = gameMapManager.getMapByName(name).join();
         if (map.isEmpty()) {
             player.sendMessage("§cEs gibt keine Map mit diesem Namen");
             return true;
@@ -128,7 +128,7 @@ public class BedWarsMapCommand implements CommandExecutor {
         return true;
     }
 
-    private void deleteMap(@NotNull Player player, @NotNull DefaultBedWarsGameMap map) {
+    private void deleteMap(@NotNull Player player, @NotNull BedWarsGameMap map) {
         if (!gameMapManager.deleteMap(map.getName()).join()) {
             player.sendMessage("§cMap konnte nicht gelöscht werden");
             return;
@@ -137,7 +137,7 @@ public class BedWarsMapCommand implements CommandExecutor {
         player.sendMessage("§aMap wurde gelöscht");
     }
 
-    private void setLocation(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, @NotNull String operation) {
+    private void setLocation(@NotNull Player player, @NotNull BedWarsGameMap map, @NotNull String operation) {
         switch (operation) {
             case "setspectator" -> {
                 setSpectatorLocation(player, map);
@@ -150,19 +150,19 @@ public class BedWarsMapCommand implements CommandExecutor {
         }
     }
 
-    private void setSpectatorLocation(@NotNull Player player, @NotNull DefaultBedWarsGameMap map) {
+    private void setSpectatorLocation(@NotNull Player player, @NotNull BedWarsGameMap map) {
         map.setSpectatorLocation(new BedWarsDirectedGameMapLocation(player.getLocation()));
         gameMapManager.updateMap(map);
         player.sendMessage("§aSpectatorlocation wurde gesetzt");
     }
 
-    private void setRespawnLocation(@NotNull Player player, @NotNull DefaultBedWarsGameMap map) {
+    private void setRespawnLocation(@NotNull Player player, @NotNull BedWarsGameMap map) {
         map.setRespawnLocation(new BedWarsDirectedGameMapLocation(player.getLocation()));
         gameMapManager.updateMap(map);
         player.sendMessage("§aRespawnlocation wurde gesetzt");
     }
 
-    private void renameMap(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, @NotNull String newName) {
+    private void renameMap(@NotNull Player player, @NotNull BedWarsGameMap map, @NotNull String newName) {
         if (newName.equals(map.getName()) || gameMapManager.getMapByName(newName).join().isPresent()) {
             player.sendMessage("§cEs gibt bereits eine Map mit diesem Namen");
             return;
@@ -173,13 +173,13 @@ public class BedWarsMapCommand implements CommandExecutor {
         player.sendMessage("§aMap-Name wurde geändert");
     }
 
-    private void addShop(@NotNull Player player, @NotNull DefaultBedWarsGameMap map) {
+    private void addShop(@NotNull Player player, @NotNull BedWarsGameMap map) {
         int id = map.addShopLocation(new BedWarsDirectedGameMapLocation(player.getLocation()));
         gameMapManager.updateMap(map).join();
         player.sendMessage(String.format("§aShop #%s wurde hinzugefügt", id));
     }
 
-    private void handleIntOperation(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, @NotNull String operation, @NotNull String value) {
+    private void handleIntOperation(@NotNull Player player, @NotNull BedWarsGameMap map, @NotNull String operation, @NotNull String value) {
         int intValue;
         try {
             intValue = Integer.parseInt(value);
@@ -206,25 +206,25 @@ public class BedWarsMapCommand implements CommandExecutor {
         }
     }
 
-    private void setTeamCount(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, int count) {
+    private void setTeamCount(@NotNull Player player, @NotNull BedWarsGameMap map, int count) {
         map.setTeamCount(count);
         gameMapManager.updateMap(map).join();
         player.sendMessage("§aTeamanzahl wurde gesetzt");
     }
 
-    private void setTeamSize(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, int size) {
+    private void setTeamSize(@NotNull Player player, @NotNull BedWarsGameMap map, int size) {
         map.setTeamSize(size);
         gameMapManager.updateMap(map).join();
         player.sendMessage("§aTeamgröße wurde gesetzt");
     }
 
-    private void setMinPlayers(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, int min) {
+    private void setMinPlayers(@NotNull Player player, @NotNull BedWarsGameMap map, int min) {
         map.setMinPlayers(min);
         gameMapManager.updateMap(map).join();
         player.sendMessage("§aMindestanzahl an Spielern wurde gesetzt");
     }
 
-    private void removeShop(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, int id) {
+    private void removeShop(@NotNull Player player, @NotNull BedWarsGameMap map, int id) {
         if (!map.removeShopLocation(id)) {
             player.sendMessage("§cEs wurde kein Shop mit dieser ID gefunden");
             return;
@@ -234,7 +234,7 @@ public class BedWarsMapCommand implements CommandExecutor {
         player.sendMessage(String.format("§aShop wurde entfernt", id));
     }
 
-    private void handleTeamOperation(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, @NotNull String operation, @NotNull String teamName) {
+    private void handleTeamOperation(@NotNull Player player, @NotNull BedWarsGameMap map, @NotNull String operation, @NotNull String teamName) {
         BedWarsGameTeamType teamType;
         try {
             teamType = BedWarsGameTeamType.valueOf(teamName.toUpperCase());
@@ -259,7 +259,7 @@ public class BedWarsMapCommand implements CommandExecutor {
         }
     }
 
-    private void addTeam(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, @NotNull BedWarsGameTeamType teamType) {
+    private void addTeam(@NotNull Player player, @NotNull BedWarsGameMap map, @NotNull BedWarsGameTeamType teamType) {
         if (!map.addTeam(teamType)) {
             player.sendMessage("§cDieses Team wurde bereits hinzugefügt");
             return;
@@ -269,13 +269,13 @@ public class BedWarsMapCommand implements CommandExecutor {
         player.sendMessage("§aTeam wurde hinzugefügt");
     }
 
-    private void setTeamSpawn(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, @NotNull BedWarsGameTeamType teamType) {
+    private void setTeamSpawn(@NotNull Player player, @NotNull BedWarsGameMap map, @NotNull BedWarsGameTeamType teamType) {
         map.addTeamSpawnLocation(teamType, new BedWarsDirectedGameMapLocation(player.getLocation()));
         gameMapManager.updateMap(map).join();
         player.sendMessage("§aTeamspawn wurde gesetzt");
     }
 
-    private void setTeamBed(@NotNull Player player, @NotNull DefaultBedWarsGameMap map, @NotNull BedWarsGameTeamType teamType) {
+    private void setTeamBed(@NotNull Player player, @NotNull BedWarsGameMap map, @NotNull BedWarsGameTeamType teamType) {
         map.addTeamBedLocation(teamType, new BedWarsDirectedGameMapLocation(player.getLocation()));
         gameMapManager.updateMap(map).join();
         player.sendMessage("§aTeambett wurde gesetzt");

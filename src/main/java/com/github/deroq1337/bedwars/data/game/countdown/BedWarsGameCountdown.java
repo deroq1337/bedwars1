@@ -15,14 +15,14 @@ import java.util.Optional;
 
 @Getter
 @Setter
-public abstract class BedWarsCountdown {
+public abstract class BedWarsGameCountdown {
 
-    private final @NotNull BedWarsGame<?> game;
+    protected final @NotNull BedWarsGame game;
     private final int start;
     private final int interval;
     private final @NotNull List<Integer> specialTicks;
 
-    public BedWarsCountdown(@NotNull BedWarsGame<?> game, int start, int interval, int... specialTicks) {
+    public BedWarsGameCountdown(@NotNull BedWarsGame game, int start, int interval, int... specialTicks) {
         this.game = game;
         this.start = start;
         this.interval = interval;
@@ -59,13 +59,13 @@ public abstract class BedWarsCountdown {
         this.current = start;
 
         task.ifPresent(BukkitTask::cancel);
-        task = Optional.empty();
+        this.task = Optional.empty();
     }
 
     private void onEnd() {
         cancel();
 
-        final BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Countdown end error: GameState in BedWarsGame is empty"));
+        final BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Countdown end error: No GameState found"));
         gameState.leave();
         gameState.getNextState().ifPresent(BedWarsGameState::enter);
     }
