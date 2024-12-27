@@ -5,6 +5,7 @@ import com.github.deroq1337.bedwars.data.game.countdown.BedWarsGameCountdown;
 import com.github.deroq1337.bedwars.data.game.exceptions.EmptyGameStateException;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,25 +29,32 @@ public class BedWarsStartCommand implements CommandExecutor {
             return true;
         }
 
+        Optional<BedWarsUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
+        if (optionalUser.isEmpty()) {
+            player.sendMessage("§cAn error occurred. Rejoin or contact an administrator.");
+            return true;
+        }
+
+        BedWarsUser user = optionalUser.get();
         if (!player.hasPermission("bedwars.start")) {
-            player.sendMessage("§cKeine Rechte!");
+            user.sendMessage("no_permission");
             return true;
         }
 
         BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Error force starting game: No GameState found"));
         if (!(gameState instanceof BedWarsLobbyState)) {
-            player.sendMessage("§cDas Spiel hat bereits begonnen");
+            user.sendMessage("game_already_started");
             return true;
         }
 
         if (!gameState.canStart()) {
-            player.sendMessage("§cEs sind zu wenige Spieler in der Lobby");
+            user.sendMessage("not_enough_players");
             return true;
         }
 
         BedWarsGameCountdown countdown = gameState.getCountdown();
         if (countdown.getCurrent() <= 10) {
-            player.sendMessage("§cDas Spiel startet bereits");
+            user.sendMessage("game_already_starting");
             return true;
         }
 
@@ -55,7 +63,7 @@ public class BedWarsStartCommand implements CommandExecutor {
             countdown.setRunning(true);
         }
 
-        player.sendMessage("§aDas Spiel wird gestartet");
+        user.sendMessage("game_force_started");
         return true;
     }
 }

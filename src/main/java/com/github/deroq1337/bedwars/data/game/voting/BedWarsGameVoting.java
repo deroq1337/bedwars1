@@ -4,10 +4,10 @@ import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.exceptions.GameVotingInitializationException;
 import com.github.deroq1337.bedwars.data.game.exceptions.GameVotingWinnerDeterminationException;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -45,7 +45,7 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
         return inventory;
     }
 
-    public boolean handleInventoryClick(@NotNull Player player, @NotNull InventoryClickEvent event) {
+    public boolean handleInventoryClick(@NotNull BedWarsUser user, @NotNull InventoryClickEvent event) {
         return game.getGameState().map(gameState -> {
             if (!event.getView().getTitle().equals(inventoryTitle)) {
                 return false;
@@ -62,9 +62,10 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
 
             Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
                 return getCandidateByItem(item).map(candidate -> {
-                    UUID uuid = player.getUniqueId();
+                    UUID uuid = user.getUuid();
                     if (!candidate.getVotes().add(uuid)) {
-                        player.sendMessage("§cDu hast diesem Kandidaten bereits deine Stimme geben");
+                        candidate.getVotes().remove(uuid);
+                        user.sendMessage("voting_already_voted", candidate.getDisplayTitle());
                         return true;
                     }
 
@@ -73,7 +74,7 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
                             .findFirst()
                             .ifPresent(c -> c.getVotes().remove(uuid));
                     candidate.getVotes().add(uuid);
-                    player.sendMessage("§aDu hast für " + candidate.getDisplayTitle() + " §agestimmt");
+                    user.sendMessage("voting_added", candidate.getDisplayTitle());
                     event.getWhoClicked().closeInventory();
                     return true;
                 });

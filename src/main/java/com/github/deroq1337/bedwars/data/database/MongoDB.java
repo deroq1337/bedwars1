@@ -1,4 +1,4 @@
-package com.github.deroq1337.bedwars.data.game.database;
+package com.github.deroq1337.bedwars.data.database;
 
 import com.mongodb.client.MongoCollection;
 import org.jetbrains.annotations.NotNull;

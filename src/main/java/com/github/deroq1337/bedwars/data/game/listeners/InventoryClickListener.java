@@ -29,9 +29,9 @@ public class InventoryClickListener implements Listener {
             }
 
             if (game.getGameVotingManager().getVotings().stream()
-                    .anyMatch(voting -> voting.handleInventoryClick(player, event))) {
+                    .anyMatch(voting -> voting.handleInventoryClick(user, event))) {
                 return;
             }
-        }, () -> player.sendMessage("§cEs ist ein Fehler aufgetreten. Versuche zu rejoinen oder kontaktiere einen Administrator"));
+        }, () -> player.sendMessage("§cAn error occurred. Rejoin or contact an administrator."));
     }
 }

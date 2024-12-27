@@ -5,6 +5,7 @@ import com.github.deroq1337.bedwars.data.game.countdown.BedWarsGameCountdown;
 import com.github.deroq1337.bedwars.data.game.exceptions.EmptyGameStateException;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,29 +29,31 @@ public class BedWarsPauseCommand implements CommandExecutor {
             return true;
         }
 
+        Optional<BedWarsUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
+        if (optionalUser.isEmpty()) {
+            player.sendMessage("§cAn error occurred. Rejoin or contact an administrator.");
+            return true;
+        }
+
+        BedWarsUser user = optionalUser.get();
         if (!player.hasPermission("bedwars.pause")) {
-            player.sendMessage("§cKeine Rechte!");
+            user.sendMessage("no_permission");
             return true;
         }
 
         BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Error pausing game countdown: No GameState found"));
         if (!(gameState instanceof BedWarsLobbyState)) {
-            player.sendMessage("§cDas Spiel hat bereits begonnen");
-            return true;
-        }
-
-        if (!gameState.canStart()) {
-            player.sendMessage("§cEs sind zu wenige Spieler in der Lobby");
+            user.sendMessage("game_already_started");
             return true;
         }
 
         BedWarsGameCountdown countdown = gameState.getCountdown();
         if (countdown.isRunning()) {
             countdown.pause();
-            player.sendMessage("§aDer Countdown wurde pausiert");
+            user.sendMessage("countdown_paused");
         } else {
             countdown.unpause();
-            player.sendMessage("§aDer Countdown wird fortgesetzt");
+            user.sendMessage("countdown_resumed");
         }
         return true;
     }

@@ -37,7 +37,7 @@ public class DefaultBedWarsGame implements BedWarsGame {
 
     public DefaultBedWarsGame(@NotNull BedWars bedWars) {
         this.bedWars = bedWars;
-        this.userRegistry = new BedWarsUserRegistry();
+        this.userRegistry = new BedWarsUserRegistry(this);
         this.gameMapManager = new DefaultBedWarsGameMapManager(this);
         this.gameVotingManager = new DefaultBedWarsGameVotingManager(this);
 

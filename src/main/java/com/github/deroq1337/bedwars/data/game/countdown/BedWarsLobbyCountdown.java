@@ -2,11 +2,11 @@ package com.github.deroq1337.bedwars.data.game.countdown;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVoting;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingCandidate;
 import com.github.deroq1337.bedwars.data.game.voting.map.BedWarsGameMapVoting;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
@@ -25,26 +25,28 @@ public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
 
     @Override
     public void onSpecialTick(int tick) {
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            player.sendMessage("§aDas Spiel beginnt in §e" + getCurrent() + " Sekunden");
-
+        game.getUserRegistry().getAliveUsers().forEach(user -> {
             if (tick == 10) {
                 game.getGameVotingManager().determineWinners();
                 game.getGameVotingManager().getVoting(BedWarsGameMapVoting.class, BedWarsGameMap.class)
                         .flatMap(BedWarsGameVoting::getWinner)
                         .ifPresent(winner -> game.setGameMap(winner.getValue()));
-                announceVotingWinners(player);
+                announceVotingWinners(user);
+            }
+
+            if (tick == 1) {
+                user.sendMessage("lobby_countdown_one");
+            } else {
+                user.sendMessage("lobby_countdown", tick);
             }
         });
     }
 
-    private void announceVotingWinners(@NotNull Player player) {
-        player.sendMessage("-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    private void announceVotingWinners(@NotNull BedWarsUser user) {
         game.getGameVotingManager().getVotingWinnerMap().forEach((votingClass, winner) -> {
             game.getGameVotingManager().getVoting((Class<? extends BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>>) votingClass).ifPresent(voting -> {
-                player.sendMessage(voting.getName() + ": " + winner.getDisplayTitle());
+                user.sendMessage("lobby_countdown_voting_announcement", voting.getName(), winner.getDisplayTitle(), winner.getVotes().size());
             });
         });
-        player.sendMessage("-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     }
 }
