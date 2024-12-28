@@ -51,6 +51,9 @@ public class DefaultConfigManager implements ConfigManager {
     private void saveDefaultConfig() {
         config.set("min_players", 1);
         config.set("map_collection_name", "maps");
+        config.set("team.count", 8);
+        config.set("team.size", 1);
+        config.set("team.slots", List.of(0, 1, 2, 3, 5, 6, 7, 8));
         config.set("voting.map.slot", 4);
         config.set("voting.map.inventory.size", 9);
         config.set("voting.map.inventory.slots", List.of(3, 5));

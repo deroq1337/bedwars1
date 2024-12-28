@@ -1,4 +1,4 @@
-package com.github.deroq1337.bedwars.data.game.teams;
+package com.github.deroq1337.bedwars.data.game.team;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +20,4 @@ public enum BedWarsGameTeamType {
     private final Material material;
     private final String colorCode;
     private final String name;
-
-
 }

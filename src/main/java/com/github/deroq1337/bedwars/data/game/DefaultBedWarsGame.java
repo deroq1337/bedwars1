@@ -1,7 +1,7 @@
 package com.github.deroq1337.bedwars.data.game;
 
 import com.github.deroq1337.bedwars.BedWars;
-import com.github.deroq1337.bedwars.data.game.commands.BedWarsMapCommand;
+import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapCommand;
 import com.github.deroq1337.bedwars.data.game.commands.BedWarsPauseCommand;
 import com.github.deroq1337.bedwars.data.game.commands.BedWarsStartCommand;
 import com.github.deroq1337.bedwars.data.game.listeners.InventoryClickListener;

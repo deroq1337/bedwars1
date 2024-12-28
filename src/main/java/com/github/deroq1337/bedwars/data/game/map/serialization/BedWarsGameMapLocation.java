@@ -1,9 +1,6 @@
 package com.github.deroq1337.bedwars.data.game.map.serialization;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.generator.WorldInfo;
@@ -11,16 +8,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
 public class BedWarsGameMapLocation {
 
-    private final @NotNull String world;
-    private final double x;
-    private final double y;
-    private final double z;
+    private @NotNull String world;
+    private double x;
+    private double y;
+    private double z;
 
     public BedWarsGameMapLocation(@NotNull Location location) {
         this.world = Optional.ofNullable(location.getWorld())

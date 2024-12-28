@@ -1,21 +1,20 @@
 package com.github.deroq1337.bedwars.data.game.map.serialization;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class BedWarsDirectedGameMapLocation extends BedWarsGameMapLocation {
 
-    private final float yaw;
-    private final float pitch;
+    private float yaw;
+    private float pitch;
 
     public BedWarsDirectedGameMapLocation(@NotNull Location location) {
         super(location);
