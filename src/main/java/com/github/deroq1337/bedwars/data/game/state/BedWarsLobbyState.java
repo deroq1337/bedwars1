@@ -16,7 +16,7 @@ public class BedWarsLobbyState extends BedWarsGameState {
 
     public BedWarsLobbyState(@NotNull BedWarsGame game) {
         super(game, new BedWarsLobbyCountdown(game));
-        this.minPlayers = game.getBedWars().getMainConfigManager().getConfig().getInt("min_players");
+        this.minPlayers = game.getMainConfig().getMinPlayers();
     }
 
     @Override

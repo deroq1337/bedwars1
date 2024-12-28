@@ -8,7 +8,6 @@ import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -30,24 +29,6 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
     private final List<Integer> inventorySlots;
 
     private Optional<C> winner;
-
-    public BedWarsGameVoting(@NotNull BedWarsGame game, @NotNull String configSectionName, @NotNull List<C> candidates) {
-        this.game = game;
-        this.candidates = candidates;
-
-        Optional<ConfigurationSection> configSection = Optional.ofNullable(game.getBedWars().getMainConfigManager().getConfig().getConfigurationSection("voting." + configSectionName));
-        this.slot = configSection
-                .map(section -> section.getInt("slot"))
-                .orElse(4);
-
-        this.inventorySize = configSection
-                .map(section -> section.getInt("inventory.size"))
-                .orElse(9);
-
-        this.inventorySlots = configSection
-                .map(section -> section.getIntegerList("inventory.slots"))
-                .orElse(List.of(3, 5));
-    }
 
     public abstract @NotNull String getName(@NotNull BedWarsUser user);
 

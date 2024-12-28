@@ -21,8 +21,7 @@ public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager {
     private final @NotNull MongoCollection<BedWarsGameMap> mapCollection;
 
     public DefaultBedWarsGameMapManager(@NotNull BedWarsGame game) {
-        String collectionName = Optional.ofNullable(game.getBedWars().getMainConfigManager().getConfig().getString("map_collection_name"))
-                .orElse("maps");
+        String collectionName = "maps";
         this.mapCollection = game.getBedWars().getMongoDB().getMongoCollection(collectionName, BedWarsGameMap.class);
     }
 

@@ -4,6 +4,7 @@ import com.github.deroq1337.bedwars.BedWars;
 import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapCommand;
 import com.github.deroq1337.bedwars.data.game.commands.BedWarsPauseCommand;
 import com.github.deroq1337.bedwars.data.game.commands.BedWarsStartCommand;
+import com.github.deroq1337.bedwars.data.game.config.MainConfig;
 import com.github.deroq1337.bedwars.data.game.listeners.InventoryClickListener;
 import com.github.deroq1337.bedwars.data.game.listeners.PlayerInteractListener;
 import com.github.deroq1337.bedwars.data.game.listeners.PlayerJoinListener;
@@ -28,6 +29,7 @@ import java.util.Optional;
 public class DefaultBedWarsGame implements BedWarsGame {
 
     private final @NotNull BedWars bedWars;
+    private final @NotNull MainConfig mainConfig;
     private final @NotNull BedWarsUserRegistry userRegistry;
     private final @NotNull BedWarsGameMapManager gameMapManager;
     private final @NotNull BedWarsGameVotingManager gameVotingManager;
@@ -37,6 +39,7 @@ public class DefaultBedWarsGame implements BedWarsGame {
 
     public DefaultBedWarsGame(@NotNull BedWars bedWars) {
         this.bedWars = bedWars;
+        this.mainConfig = new MainConfig();
         this.userRegistry = new BedWarsUserRegistry(this);
         this.gameMapManager = new DefaultBedWarsGameMapManager(this);
         this.gameVotingManager = new DefaultBedWarsGameVotingManager(this);

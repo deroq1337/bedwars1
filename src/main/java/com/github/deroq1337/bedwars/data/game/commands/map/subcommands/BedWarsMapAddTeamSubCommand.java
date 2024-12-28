@@ -41,7 +41,7 @@ public class BedWarsMapAddTeamSubCommand extends BedWarsMapSubCommand {
         }
 
         BedWarsGameMap gameMap = optionalGameMap.get();
-        if (gameMap.getTeamCount() >= game.getBedWars().getMainConfigManager().getConfig().getInt("team.count")) {
+        if (gameMap.getTeamCount() >= game.getMainConfig().getTeamCount()) {
             user.sendMessage("command_map_enough_teams_added");
             return;
         }

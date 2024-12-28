@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class BedWarsGameMapVoting extends BedWarsGameVoting<BedWarsGameMap, BedWarsGameMapVotingCandidate> {
 
     public BedWarsGameMapVoting(@NotNull BedWarsGame game) {
-        super(game, "map", new ArrayList<>());
+        super(game, new ArrayList<>(), game.getMainConfig().getMapVotingSlot(), game.getMainConfig().getMapVotingInventorySize(), game.getMainConfig().getMapVotingInventorySlots());
         getCandidates().addAll(game.getGameMapManager().getRandomMaps(getInventorySlots().size()).join().stream()
                 .map(BedWarsGameMapVotingCandidate::new)
                 .toList());
