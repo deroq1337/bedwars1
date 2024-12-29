@@ -26,7 +26,7 @@ public class BedWarsMapCreateSubCommand extends BedWarsMapSubCommand {
             return;
         }
 
-        if (!gameMapManager.createMap(BedWarsGameMap.create(mapName)).join()) {
+        if (!gameMapManager.saveMap(new BedWarsGameMap(mapName)).join()) {
             user.sendMessage("command_map_not_created");
             return;
         }

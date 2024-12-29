@@ -8,9 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface BedWarsGameMapManager {
 
-    @NotNull CompletableFuture<Boolean> createMap(@NotNull BedWarsGameMap map);
-
-    @NotNull CompletableFuture<Boolean> updateMap(@NotNull BedWarsGameMap map);
+    @NotNull CompletableFuture<Boolean> saveMap(@NotNull BedWarsGameMap map);
 
     @NotNull CompletableFuture<Boolean> deleteMap(@NotNull String name);
 

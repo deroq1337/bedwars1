@@ -1,25 +1,29 @@
 package com.github.deroq1337.bedwars.data.game.map;
 
+import com.github.deroq1337.bedwars.data.game.map.converters.BedWarsDirectedGameMapLocationConverter;
+import com.github.deroq1337.bedwars.data.game.map.converters.BedWarsGameMapLocationConverter;
 import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedGameMapLocation;
 import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsGameMapLocation;
+import com.github.deroq1337.bedwars.data.game.map.converters.EnumConverter;
 import com.github.deroq1337.bedwars.data.game.spawners.BedWarsGameResourceSpawnerType;
 import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamType;
 import lombok.*;
-import org.bson.types.ObjectId;
+import net.cubespace.Yamler.Config.InvalidConfigurationException;
+import net.cubespace.Yamler.Config.InvalidConverterException;
+import net.cubespace.Yamler.Config.YamlConfig;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.*;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-public class BedWarsGameMap {
+@EqualsAndHashCode(callSuper = false)
+public class BedWarsGameMap extends YamlConfig {
 
-    private @NotNull ObjectId id;
     private @NotNull String name;
     private @Nullable Set<BedWarsGameTeamType> teams;
     private @Nullable Map<BedWarsGameTeamType, BedWarsDirectedGameMapLocation> teamSpawnLocations;
@@ -31,12 +35,40 @@ public class BedWarsGameMap {
     private @Nullable Set<Material> breakableBlocks;
     private @Nullable Material displayItem;
 
-    private BedWarsGameMap(@NotNull String name) {
+    public BedWarsGameMap(@NotNull File file) {
+        this.CONFIG_FILE = file;
+
+        try {
+            addConverter(EnumConverter.class);
+            addConverter(BedWarsGameMapLocationConverter.class);
+            addConverter(BedWarsDirectedGameMapLocationConverter.class);
+        } catch (InvalidConverterException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BedWarsGameMap(@NotNull File file, boolean load) {
+        this(file);
+        if (load) {
+            try {
+                init();
+            } catch (InvalidConfigurationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public BedWarsGameMap(@NotNull String name) {
+        this(new File("plugins/bedwars/maps/" + name.toLowerCase() + ".yml"));
         this.name = name;
     }
 
-    public static @NotNull BedWarsGameMap create(@NotNull String name) {
-        return new BedWarsGameMap(name);
+    public boolean delete() {
+        return CONFIG_FILE.delete();
+    }
+
+    public boolean exists() {
+        return CONFIG_FILE.exists();
     }
 
     public boolean addTeam(@NotNull BedWarsGameTeamType teamType) {
@@ -110,7 +142,9 @@ public class BedWarsGameMap {
         }
 
         Map<Integer, BedWarsGameMapLocation> idLocations = spawnerLocations.computeIfAbsent(spawnerType, o -> new HashMap<>());
+        System.out.println("size : " + idLocations.size());
         final int id = idLocations.size() + 1;
+        System.out.println("id : " + id);
         idLocations.put(id, location);
         return id;
     }
@@ -130,9 +164,10 @@ public class BedWarsGameMap {
                 return false;
             }
 
-            map.keySet().stream()
+            List<Integer> keysToUpdate = map.keySet().stream()
                     .filter(i -> i > id)
-                    .forEach(i -> map.put(i - 1, map.remove(i)));
+                    .toList();
+            keysToUpdate.forEach(i -> map.put(i - 1, map.remove(i)));
             return true;
         }).orElse(false);
     }

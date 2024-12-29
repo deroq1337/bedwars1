@@ -38,7 +38,7 @@ public class BedWarsMapSetNameSubCommand extends BedWarsMapSubCommand {
         BedWarsGameMap gameMap = optionalGameMap.get();
         gameMap.setName(newName);
 
-        if (!gameMapManager.updateMap(gameMap).join()) {
+        if (!gameMapManager.saveMap(gameMap).join()) {
             user.sendMessage("command_map_not_updated");
             return;
         }

@@ -33,7 +33,7 @@ public class BedWarsMapSetRespawnLocationSubCommand extends BedWarsMapSubCommand
         BedWarsGameMap gameMap = optionalGameMap.get();
         gameMap.setRespawnLocation(new BedWarsDirectedGameMapLocation(player.getLocation()));
 
-        if (!gameMapManager.updateMap(gameMap).join()) {
+        if (!gameMapManager.saveMap(gameMap).join()) {
             user.sendMessage("command_map_not_updated");
             return;
         }

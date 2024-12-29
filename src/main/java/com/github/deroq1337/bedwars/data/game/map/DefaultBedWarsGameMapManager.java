@@ -1,77 +1,85 @@
 package com.github.deroq1337.bedwars.data.game.map;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.InsertOneResult;
-import com.mongodb.client.result.UpdateResult;
-import org.bson.conversions.Bson;
+import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager {
 
-    private final @NotNull MongoCollection<BedWarsGameMap> mapCollection;
+    private final @NotNull File mapsDirectory;
 
     public DefaultBedWarsGameMapManager(@NotNull BedWarsGame game) {
-        String collectionName = "maps";
-        this.mapCollection = game.getBedWars().getMongoDB().getMongoCollection(collectionName, BedWarsGameMap.class);
+        this.mapsDirectory = new File("plugins/bedwars/maps/");
+        mapsDirectory.mkdirs();
     }
 
     @Override
-    public @NotNull CompletableFuture<Boolean> createMap(@NotNull BedWarsGameMap map) {
+    public @NotNull CompletableFuture<Boolean> saveMap(@NotNull BedWarsGameMap map) {
         return CompletableFuture.supplyAsync(() -> {
-            final InsertOneResult result = mapCollection.insertOne(map);
-            return result.wasAcknowledged();
-        });
-    }
-
-    @Override
-    public @NotNull CompletableFuture<Boolean> updateMap(@NotNull BedWarsGameMap map) {
-        return CompletableFuture.supplyAsync(() -> {
-            final Bson filter = Filters.eq("_id", map.getId());
-            final UpdateResult result = mapCollection.replaceOne(filter, map);
-            return result.getModifiedCount() != 0;
+            try {
+                map.save();
+                return true;
+            } catch (InvalidConfigurationException e) {
+                System.err.println("Could not save map: " + e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
         });
     }
 
     @Override
     public @NotNull CompletableFuture<Boolean> deleteMap(@NotNull String name) {
         return CompletableFuture.supplyAsync(() -> {
-            final Bson filter = buildNameFilter(name);
-            final DeleteResult result = mapCollection.deleteMany(filter);
-            return result.getDeletedCount() != 0;
+            return new BedWarsGameMap(name).delete();
         });
     }
 
-
     @Override
     public @NotNull CompletableFuture<Optional<BedWarsGameMap>> getMapByName(@NotNull String name) {
-        return CompletableFuture.supplyAsync(() -> Optional.ofNullable(mapCollection.find(buildNameFilter(name)).first()));
+        return CompletableFuture.supplyAsync(() -> {
+            BedWarsGameMap gameMap = new BedWarsGameMap(name);
+            if (!gameMap.exists()) {
+                return Optional.empty();
+            }
+
+            try {
+                gameMap.load();
+                return Optional.of(gameMap);
+            } catch (InvalidConfigurationException e) {
+                System.err.println("Could not load map: " + e.getMessage());
+                e.printStackTrace();
+                return Optional.empty();
+            }
+        });
     }
 
     @Override
     public @NotNull CompletableFuture<List<BedWarsGameMap>> getRandomMaps(int count) {
         return CompletableFuture.supplyAsync(() -> {
-            final List<Bson> aggregates = Collections.singletonList(Aggregates.sample(count));
-            return mapCollection.aggregate(aggregates).into(new ArrayList<>());
+            return Optional.ofNullable(mapsDirectory.listFiles()).map(files -> {
+                List<File> fileList = new ArrayList<>(Arrays.stream(files).toList());
+                Collections.shuffle(fileList);
+
+                return Arrays.stream(files)
+                        .limit(Math.min(count, files.length))
+                        .map(file -> new BedWarsGameMap(file, true))
+                        .toList();
+            }).orElse(Collections.emptyList());
         });
     }
 
     @Override
     public @NotNull CompletableFuture<List<BedWarsGameMap>> getMaps() {
-        return CompletableFuture.supplyAsync(() -> Collections.unmodifiableList(mapCollection.find().into(new ArrayList<>())));
-    }
-
-    private @NotNull Bson buildNameFilter(@NotNull String name) {
-        final String regex = "^" + name + "$";
-        return Filters.regex("name", regex, "i");
+        return CompletableFuture.supplyAsync(() -> {
+            return Optional.ofNullable(mapsDirectory.listFiles()).map(files -> {
+                return Arrays.stream(files)
+                        .map(file -> new BedWarsGameMap(file, true))
+                        .toList();
+            }).orElse(Collections.emptyList());
+        });
     }
 }

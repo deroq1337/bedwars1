@@ -15,16 +15,12 @@ repositories {
         }
     }
 
-    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
     mavenCentral()
-    // mavenLocal()
+    mavenLocal()
 }
 
 dependencies {
-    implementation 'org.mongodb:mongodb-driver-core:5.2.0'
-    implementation 'org.mongodb:mongodb-driver-sync:5.2.0'
-    implementation 'org.mongodb:bson:5.2.0'
+    implementation 'net.cubespace:Yamler-Core:2.4.0-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT'
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
@@ -33,9 +29,7 @@ dependencies {
 
 shadowJar {
     dependencies {
-        include dependency("org.mongodb:mongodb-driver-core:5.2.0")
-        include dependency("org.mongodb:mongodb-driver-sync:5.2.0")
-        include dependency("org.mongodb:bson:5.2.0")
+        include dependency("net.cubespace:Yamler-Core:2.4.0-SNAPSHOT")
     }
 }
 

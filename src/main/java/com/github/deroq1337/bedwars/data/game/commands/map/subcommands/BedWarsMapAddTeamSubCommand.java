@@ -51,7 +51,7 @@ public class BedWarsMapAddTeamSubCommand extends BedWarsMapSubCommand {
             return;
         }
 
-        if (!gameMapManager.updateMap(gameMap).join()) {
+        if (!gameMapManager.saveMap(gameMap).join()) {
             user.sendMessage("command_map_not_updated");
             return;
         }

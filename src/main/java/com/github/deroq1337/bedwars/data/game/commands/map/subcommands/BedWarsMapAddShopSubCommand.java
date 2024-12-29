@@ -33,7 +33,7 @@ public class BedWarsMapAddShopSubCommand extends BedWarsMapSubCommand {
         BedWarsGameMap gameMap = optionalGameMap.get();
         int id = gameMap.addShopLocation(new BedWarsDirectedGameMapLocation(player.getLocation()));
 
-        if (!gameMapManager.updateMap(gameMap).join()) {
+        if (!gameMapManager.saveMap(gameMap).join()) {
             user.sendMessage("command_map_not_updated");
             return;
         }

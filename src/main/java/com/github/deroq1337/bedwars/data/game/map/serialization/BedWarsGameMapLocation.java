@@ -6,6 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.generator.WorldInfo;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -30,7 +32,23 @@ public class BedWarsGameMapLocation {
         this.z = location.getZ();
     }
 
+    public BedWarsGameMapLocation(@NotNull Map<String, Object> map) {
+        this.world = (String) map.getOrDefault("world", "world");
+        this.x = (double) map.get("x");
+        this.y = (double) map.get("y");
+        this.z = (double) map.get("z");
+    }
+
     public @NotNull Location toBukkitLocation() {
         return new Location(Bukkit.getWorld(world), x, y, z);
+    }
+
+    public @NotNull Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("world", world);
+        map.put("x", x);
+        map.put("y", y);
+        map.put("z", z);
+        return map;
     }
 }

@@ -5,7 +5,6 @@ import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapSubCommand;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
 import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedGameMapLocation;
 import com.github.deroq1337.bedwars.data.game.spawners.BedWarsGameResourceSpawnerType;
-import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamType;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +44,7 @@ public class BedWarsMapAddSpawnerSubCommand extends BedWarsMapSubCommand {
         BedWarsGameMap gameMap = optionalGameMap.get();
         gameMap.addSpawnerLocation(resourceSpawnerType, new BedWarsDirectedGameMapLocation(player.getLocation()));
 
-        if (!gameMapManager.updateMap(gameMap).join()) {
+        if (!gameMapManager.saveMap(gameMap).join()) {
             user.sendMessage("command_map_not_updated");
             return;
         }

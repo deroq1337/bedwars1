@@ -42,7 +42,7 @@ public class BedWarsMapSetDisplayItemSubCommand extends BedWarsMapSubCommand {
         BedWarsGameMap gameMap = optionalGameMap.get();
         gameMap.setDisplayItem(material);
 
-        if (!gameMapManager.updateMap(gameMap).join()) {
+        if (!gameMapManager.saveMap(gameMap).join()) {
             user.sendMessage("command_map_not_updated");
             return;
         }
