@@ -31,4 +31,8 @@ public interface BedWarsGame {
     Optional<BedWarsGameMap> getGameMap();
 
     void setGameMap(@NotNull BedWarsGameMap gameMap);
+
+    boolean isForceMapped();
+
+    void forceMap(@NotNull BedWarsGameMap gameMap);
 }

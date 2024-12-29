@@ -40,6 +40,11 @@ public class BedWarsGameMapVoting extends BedWarsGameVoting<BedWarsGameMap, BedW
                 .build();
     }
 
+    @Override
+    public boolean canVote() {
+        return super.canVote() && !game.isForceMapped();
+    }
+
     private @NotNull String getWinnerName(@NotNull BedWarsUser user) {
         return getCurrentWinner()
                 .map(candidate -> candidate.getDisplayTitle(user))

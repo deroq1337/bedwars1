@@ -36,6 +36,12 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
 
     public abstract @NotNull ItemStack getDisplayItem(@NotNull BedWarsUser user);
 
+    public boolean canVote() {
+        return game.getGameState()
+                .map(gameState -> gameState instanceof BedWarsLobbyState && gameState.getCountdown().getCurrent() > 10)
+                .orElse(false);
+    }
+
     public @NotNull Inventory getInventory(@NotNull BedWarsUser user) {
         int slotsSize = getInventorySlots().size();
         if (slotsSize < candidates.size()) {
@@ -54,11 +60,7 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
             }
 
             event.setCancelled(true);
-            if (!(gameState instanceof BedWarsLobbyState lobbyState)) {
-                return true;
-            }
-
-            if (lobbyState.getCountdown().getCurrent() <= 10) {
+            if (!canVote()) {
                 return true;
             }
 

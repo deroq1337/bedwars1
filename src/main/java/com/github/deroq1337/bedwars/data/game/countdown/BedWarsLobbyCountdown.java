@@ -28,10 +28,13 @@ public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
         game.getUserRegistry().getAliveUsers().forEach(user -> {
             if (tick == 10) {
                 game.getGameVotingManager().determineWinners();
-                game.getGameVotingManager().getVoting(BedWarsGameMapVoting.class, BedWarsGameMap.class)
-                        .flatMap(BedWarsGameVoting::getWinner)
-                        .ifPresent(winner -> game.setGameMap(winner.getValue()));
                 announceVotingWinners(user);
+
+                if (!game.isForceMapped()) {
+                    game.getGameVotingManager().getVoting(BedWarsGameMapVoting.class, BedWarsGameMap.class)
+                            .flatMap(BedWarsGameVoting::getWinner)
+                            .ifPresent(winner -> game.setGameMap(winner.getValue()));
+                }
             }
 
             if (tick == 1) {

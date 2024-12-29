@@ -1,6 +1,7 @@
 package com.github.deroq1337.bedwars.data.game;
 
 import com.github.deroq1337.bedwars.BedWars;
+import com.github.deroq1337.bedwars.data.game.commands.BedWarsForceMapCommand;
 import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapCommand;
 import com.github.deroq1337.bedwars.data.game.commands.BedWarsPauseCommand;
 import com.github.deroq1337.bedwars.data.game.commands.BedWarsStartCommand;
@@ -36,6 +37,7 @@ public class DefaultBedWarsGame implements BedWarsGame {
 
     private Optional<BedWarsGameState> gameState;
     private Optional<BedWarsGameMap> gameMap;
+    private boolean forceMapped = false;
 
     public DefaultBedWarsGame(@NotNull BedWars bedWars) {
         this.bedWars = bedWars;
@@ -61,6 +63,13 @@ public class DefaultBedWarsGame implements BedWarsGame {
         this.gameMap = Optional.of(gameMap);
     }
 
+    @Override
+    public void forceMap(@NotNull BedWarsGameMap gameMap) {
+        // TODO: load world etc
+        this.gameMap = Optional.of(gameMap);
+        this.forceMapped = true;
+    }
+
     private void registerListeners() {
         new PlayerJoinListener(this);
         new PlayerQuitListener(this);
@@ -72,5 +81,6 @@ public class DefaultBedWarsGame implements BedWarsGame {
         new BedWarsStartCommand(this);
         new BedWarsPauseCommand(this);
         new BedWarsMapCommand(this);
+        new BedWarsForceMapCommand(this);
     }
 }

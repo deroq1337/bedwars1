@@ -51,7 +51,9 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
 
             return Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
                 return getVotingByItem(user, item).map(voting -> {
-                    event.getWhoClicked().openInventory(voting.getInventory(user));
+                    if (voting.canVote()) {
+                        event.getWhoClicked().openInventory(voting.getInventory(user));
+                    }
                     return true;
                 });
             }).orElse(true);
