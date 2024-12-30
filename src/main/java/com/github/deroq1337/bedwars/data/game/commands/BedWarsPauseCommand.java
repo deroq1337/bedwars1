@@ -5,7 +5,7 @@ import com.github.deroq1337.bedwars.data.game.countdown.BedWarsGameCountdown;
 import com.github.deroq1337.bedwars.data.game.exceptions.EmptyGameStateException;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,13 +29,13 @@ public class BedWarsPauseCommand implements CommandExecutor {
             return true;
         }
 
-        Optional<BedWarsUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
+        Optional<BedWarsGameUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
         if (optionalUser.isEmpty()) {
             player.sendMessage("§cAn error occurred. Rejoin or contact an administrator.");
             return true;
         }
 
-        BedWarsUser user = optionalUser.get();
+        BedWarsGameUser user = optionalUser.get();
         if (!player.hasPermission("bedwars.pause")) {
             user.sendMessage("no_permission");
             return true;

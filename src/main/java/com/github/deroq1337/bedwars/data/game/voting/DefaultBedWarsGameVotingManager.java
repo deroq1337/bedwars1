@@ -3,7 +3,7 @@ package com.github.deroq1337.bedwars.data.game.voting;
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import com.github.deroq1337.bedwars.data.game.voting.map.BedWarsGameMapVoting;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -34,7 +34,7 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     }
 
     @Override
-    public boolean handleInventoryClick(@NotNull BedWarsUser user, @NotNull InventoryClickEvent event) {
+    public boolean handleInventoryClick(@NotNull BedWarsGameUser user, @NotNull InventoryClickEvent event) {
         return game.getGameState().map(gameState -> {
             if (!event.getView().getTitle().equals(getInventoryTitle(user))) {
                 return false;
@@ -78,7 +78,7 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     }
 
     @Override
-    public Optional<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVotingByItem(@NotNull BedWarsUser user, @NotNull ItemStack item) {
+    public Optional<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVotingByItem(@NotNull BedWarsGameUser user, @NotNull ItemStack item) {
         return getVotings().stream()
                 .filter(voting -> voting.getDisplayItem(user).getType() == item.getType())
                 .findFirst();
@@ -91,21 +91,21 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     }
 
     @Override
-    public @NotNull ItemStack getItem(@NotNull BedWarsUser user) {
+    public @NotNull ItemStack getItem(@NotNull BedWarsGameUser user) {
         return ItemBuilders.normal(Material.MAP)
                 .title(user.getMessage("voting_item_name"))
                 .build();
     }
 
     @Override
-    public @NotNull Inventory getInventory(@NotNull BedWarsUser user) {
+    public @NotNull Inventory getInventory(@NotNull BedWarsGameUser user) {
         Inventory inventory = Bukkit.createInventory(null, 9, getInventoryTitle(user));
         getVotings().forEach(voting -> inventory.setItem(voting.getSlot(), voting.getDisplayItem(user)));
         return inventory;
     }
 
     @Override
-    public @NotNull String getInventoryTitle(@NotNull BedWarsUser user) {
+    public @NotNull String getInventoryTitle(@NotNull BedWarsGameUser user) {
         return user.getMessage("voting_inventory_title");
     }
 }

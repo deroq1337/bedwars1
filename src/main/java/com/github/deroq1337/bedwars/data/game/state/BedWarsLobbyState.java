@@ -2,7 +2,8 @@ package com.github.deroq1337.bedwars.data.game.state;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.countdown.BedWarsLobbyCountdown;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.scoreboard.BedWarsLobbyScoreboard;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import com.github.deroq1337.bedwars.data.game.voting.map.BedWarsGameMapVoting;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,7 @@ public class BedWarsLobbyState extends BedWarsGameState {
 
     @Override
     public void onJoin(@NotNull UUID uuid) {
-        BedWarsUser user = game.getUserRegistry().addUser(uuid, true);
+        BedWarsGameUser user = game.getUserRegistry().addUser(uuid, true);
 
         user.getBukkitPlayer().ifPresent(player -> {
             player.getInventory().clear();
@@ -49,6 +50,8 @@ public class BedWarsLobbyState extends BedWarsGameState {
             player.getInventory().setItem(8, Items.LOBBY_ITEM);*/
 
             player.getInventory().setItem(4, game.getGameVotingManager().getItem(user));
+
+            new BedWarsLobbyScoreboard(game).setScoreboard(user);
         });
     }
 

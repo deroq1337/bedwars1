@@ -2,7 +2,7 @@ package com.github.deroq1337.bedwars.data.game.countdown;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVoting;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingCandidate;
 import com.github.deroq1337.bedwars.data.game.voting.map.BedWarsGameMapVoting;
@@ -45,7 +45,7 @@ public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
         });
     }
 
-    private void announceVotingWinners(@NotNull BedWarsUser user) {
+    private void announceVotingWinners(@NotNull BedWarsGameUser user) {
         game.getGameVotingManager().getVotingWinnerMap().forEach((votingClass, winner) -> {
             game.getGameVotingManager().getVoting((Class<? extends BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>>) votingClass).ifPresent(voting -> {
                 user.sendMessage("lobby_countdown_voting_announcement", voting.getName(user), winner.getDisplayTitle(user), winner.getVotes().size());

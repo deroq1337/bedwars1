@@ -3,7 +3,7 @@ package com.github.deroq1337.bedwars.data.game.voting.map;
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVoting;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -23,17 +23,17 @@ public class BedWarsGameMapVoting extends BedWarsGameVoting<BedWarsGameMap, BedW
     }
 
     @Override
-    public @NotNull String getName(@NotNull BedWarsUser user) {
+    public @NotNull String getName(@NotNull BedWarsGameUser user) {
         return user.getMessage("voting_map_name");
     }
 
     @Override
-    public @NotNull String getInventoryTitle(@NotNull BedWarsUser user) {
+    public @NotNull String getInventoryTitle(@NotNull BedWarsGameUser user) {
         return user.getMessage("voting_map_inventory_title");
     }
 
     @Override
-    public @NotNull ItemStack getDisplayItem(@NotNull BedWarsUser user) {
+    public @NotNull ItemStack getDisplayItem(@NotNull BedWarsGameUser user) {
         return ItemBuilders.normal(Material.MAP)
                 .title(user.getMessage("voting_map_inventory_item_name"))
                 .lore(user.getMessage("voting_map_inventory_current_winner", getWinnerName(user)))
@@ -45,7 +45,7 @@ public class BedWarsGameMapVoting extends BedWarsGameVoting<BedWarsGameMap, BedW
         return super.canVote() && !game.isForceMapped();
     }
 
-    private @NotNull String getWinnerName(@NotNull BedWarsUser user) {
+    private @NotNull String getWinnerName(@NotNull BedWarsGameUser user) {
         return getCurrentWinner()
                 .map(candidate -> candidate.getDisplayTitle(user))
                 .orElse("N/A");

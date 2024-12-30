@@ -2,7 +2,7 @@ package com.github.deroq1337.bedwars.data.game.commands.map;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMapManager;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -20,5 +20,5 @@ public abstract class BedWarsMapSubCommand {
         this.name = name;
     }
 
-    protected abstract void execute(@NotNull BedWarsUser user, @NotNull Player player, @NotNull String[] args);
+    protected abstract void execute(@NotNull BedWarsGameUser user, @NotNull Player player, @NotNull String[] args);
 }

@@ -10,3 +10,5 @@ commands:
     description: Pausiert den Lobby-Countdown
   map:
     description: Verwaltet die Maps
+  forcemap:
+    description: Forciert eine Map

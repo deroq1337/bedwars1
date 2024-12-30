@@ -4,7 +4,7 @@ import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapSubCommand;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
 import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamType;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ public class BedWarsMapRemoveTeamSubCommand extends BedWarsMapSubCommand {
     }
 
     @Override
-    protected void execute(@NotNull BedWarsUser user, @NotNull Player player, @NotNull String[] args) {
+    protected void execute(@NotNull BedWarsGameUser user, @NotNull Player player, @NotNull String[] args) {
         if (args.length < 2) {
             user.sendMessage("command_map_remove_team_syntax");
             return;

@@ -3,6 +3,7 @@ package com.github.deroq1337.bedwars.data.language;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,7 +44,7 @@ public class Translation {
         }
     }
 
-    public @NotNull String getMessage(@NotNull String key) {
-        return messages.getOrDefault(key, "N/A");
+    public Optional<String> getMessage(@NotNull String key) {
+        return Optional.ofNullable(messages.get(key));
     }
 }

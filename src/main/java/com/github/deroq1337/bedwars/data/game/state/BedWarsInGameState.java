@@ -2,7 +2,7 @@ package com.github.deroq1337.bedwars.data.game.state;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.countdown.BedWarsInGameCountdown;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -16,7 +16,7 @@ public class BedWarsInGameState extends BedWarsGameState {
 
     @Override
     public void onJoin(@NotNull UUID uuid) {
-        BedWarsUser user = game.getUserRegistry().addUser(uuid, false);
+        BedWarsGameUser user = game.getUserRegistry().addUser(uuid, false);
     }
 
     @Override

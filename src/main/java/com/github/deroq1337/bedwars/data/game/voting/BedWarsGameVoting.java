@@ -4,7 +4,7 @@ import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.exceptions.GameVotingInitializationException;
 import com.github.deroq1337.bedwars.data.game.exceptions.GameVotingWinnerDeterminationException;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -30,11 +30,11 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
 
     private Optional<C> winner;
 
-    public abstract @NotNull String getName(@NotNull BedWarsUser user);
+    public abstract @NotNull String getName(@NotNull BedWarsGameUser user);
 
-    public abstract @NotNull String getInventoryTitle(@NotNull BedWarsUser user);
+    public abstract @NotNull String getInventoryTitle(@NotNull BedWarsGameUser user);
 
-    public abstract @NotNull ItemStack getDisplayItem(@NotNull BedWarsUser user);
+    public abstract @NotNull ItemStack getDisplayItem(@NotNull BedWarsGameUser user);
 
     public boolean canVote() {
         return game.getGameState()
@@ -42,7 +42,7 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
                 .orElse(false);
     }
 
-    public @NotNull Inventory getInventory(@NotNull BedWarsUser user) {
+    public @NotNull Inventory getInventory(@NotNull BedWarsGameUser user) {
         int slotsSize = getInventorySlots().size();
         if (slotsSize < candidates.size()) {
             throw new GameVotingInitializationException("Not enough slots (" + slotsSize + ") defined for the number of candidates (" + candidates.size() + ")");
@@ -53,7 +53,7 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
         return inventory;
     }
 
-    public boolean handleInventoryClick(@NotNull BedWarsUser user, @NotNull InventoryClickEvent event) {
+    public boolean handleInventoryClick(@NotNull BedWarsGameUser user, @NotNull InventoryClickEvent event) {
         return game.getGameState().map(gameState -> {
             if (!event.getView().getTitle().equals(getInventoryTitle(user))) {
                 return false;
@@ -103,7 +103,7 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
                 .findFirst();
     }
 
-    private Optional<C> getCandidateByItem(@NotNull BedWarsUser user, @NotNull ItemStack item) {
+    private Optional<C> getCandidateByItem(@NotNull BedWarsGameUser user, @NotNull ItemStack item) {
         return Optional.ofNullable(item.getItemMeta()).flatMap(itemMeta -> {
             return candidates.stream()
                     .filter(candidate -> candidate.getDisplayItem(user).getType() == item.getType() && candidate.getDisplayTitle(user).equals(item.getItemMeta().getDisplayName()))

@@ -58,9 +58,13 @@ public class DefaultLanguageManager implements LanguageManager {
 
     @Override
     public @NotNull String getMessage(@NotNull Locale locale, @NotNull String key) {
+        return getMessageOptional(locale, key).orElse("N/A");
+    }
+
+    @Override
+    public Optional<String> getMessageOptional(@NotNull Locale locale, @NotNull String key) {
         return Optional.ofNullable(localeTranslationMap.get(locale))
-                .map(translation -> translation.getMessage(key))
-                .orElse("N/A");
+                .flatMap(translation -> translation.getMessage(key));
     }
 
     @Override

@@ -15,14 +15,14 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class BedWarsUser {
+public class BedWarsGameUser {
 
     private final @NotNull BedWarsGame game;
     private final @NotNull UUID uuid;
     private boolean alive;
     private @NotNull Locale locale;
 
-    public BedWarsUser(@NotNull BedWarsGame game, @NotNull UUID uuid, boolean alive) {
+    public BedWarsGameUser(@NotNull BedWarsGame game, @NotNull UUID uuid, boolean alive) {
         this.game = game;
         this.uuid = uuid;
         this.alive = alive;
@@ -38,6 +38,13 @@ public class BedWarsUser {
     public @NotNull String getMessage(@NotNull String key, Object... params) {
         return ChatColor.translateAlternateColorCodes('&', MessageFormat.format(game.getBedWars().getLanguageManager().getMessage(locale, key), params));
     }
+
+    public Optional<String> getMessageOptional(@NotNull String key, Object... params) {
+        return game.getBedWars().getLanguageManager().getMessageOptional(locale, key).map(message -> {
+            return ChatColor.translateAlternateColorCodes('&', MessageFormat.format(message, params));
+        });
+    }
+
 
     public Optional<Player> getBukkitPlayer() {
         return Optional.ofNullable(Bukkit.getPlayer(uuid));

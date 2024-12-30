@@ -3,9 +3,8 @@ package com.github.deroq1337.bedwars.data.game.commands.map.subcommands;
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapSubCommand;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedGameMapLocation;
 import com.github.deroq1337.bedwars.data.game.spawners.BedWarsGameResourceSpawnerType;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +18,7 @@ public class BedWarsMapRemoveSpawnerSubCommand extends BedWarsMapSubCommand {
     }
 
     @Override
-    protected void execute(@NotNull BedWarsUser user, @NotNull Player player, @NotNull String[] args) {
+    protected void execute(@NotNull BedWarsGameUser user, @NotNull Player player, @NotNull String[] args) {
         if (args.length < 3) {
             user.sendMessage("command_map_remove_spawner_syntax");
             return;

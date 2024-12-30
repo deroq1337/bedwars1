@@ -2,7 +2,7 @@ package com.github.deroq1337.bedwars.data.game.commands.map;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.commands.map.subcommands.*;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -46,13 +46,13 @@ public class BedWarsMapCommand implements CommandExecutor {
             return true;
         }
 
-        Optional<BedWarsUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
+        Optional<BedWarsGameUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
         if (optionalUser.isEmpty()) {
             player.sendMessage("§cAn error occurred. Rejoin or contact an administrator.");
             return true;
         }
 
-        BedWarsUser user = optionalUser.get();
+        BedWarsGameUser user = optionalUser.get();
         if (!player.hasPermission("bedwars.map")) {
             user.sendMessage("no_permission");
             return true;
