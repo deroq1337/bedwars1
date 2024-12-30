@@ -3,6 +3,8 @@ package com.github.deroq1337.bedwars.data.game.team;
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.config.MainConfig;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
+import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedGameMapLocation;
+import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsGameMapLocation;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import lombok.Getter;
@@ -53,6 +55,18 @@ public class DefaultBedWarsGameTeamManager implements BedWarsGameTeamManager {
 
             teamIndex++;
         }
+    }
+
+    @Override
+    public void initLocations() {
+        game.getGameMap().ifPresent(gameMap -> {
+            teams.forEach(team -> {
+                team.setSpawnLocation(gameMap.getTeamSpawnLocation(team.getTeamType())
+                        .map(BedWarsDirectedGameMapLocation::toBukkitLocation));
+                team.setBedLocation(gameMap.getTeamBedLocation(team.getTeamType())
+                        .map(BedWarsGameMapLocation::toBukkitLocation));
+            });
+        });
     }
 
     @Override

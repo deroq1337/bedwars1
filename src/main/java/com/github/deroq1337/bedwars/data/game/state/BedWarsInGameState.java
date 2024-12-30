@@ -2,6 +2,7 @@ package com.github.deroq1337.bedwars.data.game.state;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.countdown.BedWarsInGameCountdown;
+import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeam;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +18,13 @@ public class BedWarsInGameState extends BedWarsGameState {
     @Override
     public void enter() {
         game.getGameTeamManager().fillTeams();
-        game.getUserRegistry().getAliveUsers().forEach(this::announceTeam);
+        game.getGameTeamManager().initLocations();
+        game.getUserRegistry().getAliveUsers().forEach(user -> {
+            user.getTeam().ifPresent(team -> {
+                team.teleport(user);
+                team.announce(user);
+            });
+        });
     }
 
     @Override
@@ -38,9 +45,5 @@ public class BedWarsInGameState extends BedWarsGameState {
     @Override
     public Optional<BedWarsGameState> getNextState() {
         return Optional.empty();
-    }
-
-    private void announceTeam(@NotNull BedWarsGameUser user) {
-        user.getTeam().ifPresent(team -> user.sendMessage("team_announcement", team.getNameWithColor(user)));
     }
 }

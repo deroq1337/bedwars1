@@ -13,6 +13,8 @@ public interface BedWarsGameTeamManager {
 
     void fillTeams();
 
+    void initLocations();
+
     boolean handleInventoryClick(@NotNull BedWarsGameUser user, @NotNull InventoryClickEvent event);
 
     @NotNull List<BedWarsGameTeam> getTeams();

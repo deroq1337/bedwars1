@@ -3,24 +3,26 @@ package com.github.deroq1337.bedwars.data.game.team;
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Getter
+@Setter
 @ToString
 @EqualsAndHashCode
 public class BedWarsGameTeam {
 
     private final @NotNull BedWarsGame game;
     private final @NotNull BedWarsGameTeamType teamType;
+    private Optional<Location> spawnLocation = Optional.empty();
+    private Optional<Location> bedLocation = Optional.empty();
     private boolean bedDestroyed;
     private boolean eliminated;
 
@@ -33,6 +35,16 @@ public class BedWarsGameTeam {
                         .map(name -> user.getMessage("team_selector_inventory_item_lore", getColor(user) + name))
                         .toList().toArray(new String[0]))
                 .build();
+    }
+
+    public void teleport(@NotNull BedWarsGameUser user) {
+        spawnLocation.ifPresent(location -> {
+            user.getBukkitPlayer().ifPresent(player -> player.teleport(location));
+        });
+    }
+
+    public void announce(@NotNull BedWarsGameUser user) {
+        user.sendMessage("team_announcement", getNameWithColor(user));
     }
 
     public @NotNull List<BedWarsGameUser> getUsers() {
