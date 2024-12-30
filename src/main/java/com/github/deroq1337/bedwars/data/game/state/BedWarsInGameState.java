@@ -15,6 +15,12 @@ public class BedWarsInGameState extends BedWarsGameState {
     }
 
     @Override
+    public void enter() {
+        game.getGameTeamManager().fillTeams();
+        game.getUserRegistry().getAliveUsers().forEach(this::announceTeam);
+    }
+
+    @Override
     public void onJoin(@NotNull UUID uuid) {
         BedWarsGameUser user = game.getUserRegistry().addUser(uuid, false);
     }
@@ -32,5 +38,9 @@ public class BedWarsInGameState extends BedWarsGameState {
     @Override
     public Optional<BedWarsGameState> getNextState() {
         return Optional.empty();
+    }
+
+    private void announceTeam(@NotNull BedWarsGameUser user) {
+        user.getTeam().ifPresent(team -> user.sendMessage("team_announcement", team.getNameWithColor(user)));
     }
 }

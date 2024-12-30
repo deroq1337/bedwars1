@@ -1,6 +1,7 @@
 package com.github.deroq1337.bedwars.data.game.user;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
+import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeam;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -20,13 +21,13 @@ public class BedWarsGameUser {
     private final @NotNull BedWarsGame game;
     private final @NotNull UUID uuid;
     private boolean alive;
-    private @NotNull Locale locale;
+    private @NotNull Locale locale = Locale.forLanguageTag("de-DE");
+    private Optional<BedWarsGameTeam> team = Optional.empty();
 
     public BedWarsGameUser(@NotNull BedWarsGame game, @NotNull UUID uuid, boolean alive) {
         this.game = game;
         this.uuid = uuid;
         this.alive = alive;
-        this.locale = Locale.forLanguageTag("de-DE");
     }
 
     public void sendMessage(@NotNull String key, Object... params) {

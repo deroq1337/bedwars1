@@ -5,6 +5,7 @@ import com.github.deroq1337.bedwars.data.game.config.MainConfig;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMapManager;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
+import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamManager;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUserRegistry;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingManager;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,8 @@ public interface BedWarsGame {
     @NotNull BedWarsGameMapManager getGameMapManager();
 
     @NotNull BedWarsGameVotingManager getGameVotingManager();
+
+    @NotNull BedWarsGameTeamManager getGameTeamManager();
 
     Optional<BedWarsGameState> getGameState();
 

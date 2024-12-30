@@ -41,12 +41,12 @@ public class BedWarsMapSetTeamBedSubCommand extends BedWarsMapSubCommand {
             return;
         }
 
-        BedWarsGameMap gameMap = optionalGameMap.get();
-        if (!gameMap.hasTeam(teamType)) {
+        if (!game.getMainConfig().getTeams().contains(teamType)) {
             user.sendMessage("command_map_team_not_added");
             return;
         }
 
+        BedWarsGameMap gameMap = optionalGameMap.get();
         gameMap.addTeamBedLocation(teamType, new BedWarsDirectedGameMapLocation(player.getTargetBlock(null, 6).getLocation()));
         if (!gameMapManager.saveMap(gameMap).join()) {
             user.sendMessage("command_map_not_updated");

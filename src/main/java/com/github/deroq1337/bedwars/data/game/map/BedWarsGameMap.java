@@ -25,7 +25,6 @@ import java.util.*;
 public class BedWarsGameMap extends YamlConfig {
 
     private @NotNull String name;
-    private @Nullable Set<BedWarsGameTeamType> teams;
     private @Nullable Map<BedWarsGameTeamType, BedWarsDirectedGameMapLocation> teamSpawnLocations;
     private @Nullable Map<BedWarsGameTeamType, BedWarsGameMapLocation> teamBedLocations;
     private @Nullable Map<Integer, BedWarsDirectedGameMapLocation> shopLocations;
@@ -69,31 +68,6 @@ public class BedWarsGameMap extends YamlConfig {
 
     public boolean exists() {
         return CONFIG_FILE.exists();
-    }
-
-    public boolean addTeam(@NotNull BedWarsGameTeamType teamType) {
-        if (teams == null) {
-            this.teams = new HashSet<>();
-        }
-        return teams.add(teamType);
-    }
-
-    public boolean removeTeam(@NotNull BedWarsGameTeamType teamType) {
-        return Optional.ofNullable(teams)
-                .map(teams -> teams.remove(teamType))
-                .orElse(false);
-    }
-
-    public boolean hasTeam(@NotNull BedWarsGameTeamType teamType) {
-        return Optional.ofNullable(teams)
-                .map(teams -> teams.contains(teamType))
-                .orElse(false);
-    }
-
-    public int getTeamCount() {
-        return Optional.ofNullable(teams)
-                .map(Set::size)
-                .orElse(0);
     }
 
     public void addTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsDirectedGameMapLocation location) {

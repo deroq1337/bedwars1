@@ -7,6 +7,7 @@ import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVoting;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingCandidate;
 import com.github.deroq1337.bedwars.data.game.voting.map.BedWarsGameMapVoting;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 
 public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
@@ -37,11 +38,9 @@ public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
                 }
             }
 
-            if (tick == 1) {
-                user.sendMessage("lobby_countdown_one");
-            } else {
-                user.sendMessage("lobby_countdown", tick);
-            }
+            String message = "lobby_countdown" + (tick == 1 ? "_one" : "");
+            user.sendMessage(message, tick);
+            user.getBukkitPlayer().ifPresent(player -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 1f));
         });
     }
 

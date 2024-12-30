@@ -64,7 +64,7 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
                 return true;
             }
 
-            return Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
+            Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
                 return getCandidateByItem(user, item).map(candidate -> {
                     UUID uuid = user.getUuid();
                     if (!candidate.getVotes().add(uuid)) {
@@ -82,7 +82,8 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
                     event.getWhoClicked().closeInventory();
                     return true;
                 });
-            }).orElse(true);
+            });
+            return true;
         }).orElse(false);
     }
 

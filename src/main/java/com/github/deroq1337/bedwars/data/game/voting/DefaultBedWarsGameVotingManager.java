@@ -61,14 +61,15 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
                 return true;
             }
 
-            return Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
+            Optional.ofNullable(event.getCurrentItem()).flatMap(item -> {
                 return getVotingByItem(user, item).map(voting -> {
                     if (voting.canVote()) {
                         event.getWhoClicked().openInventory(voting.getInventory(user));
                     }
                     return true;
                 });
-            }).orElse(true);
+            });
+            return true;
         }).orElse(false);
     }
 
@@ -116,8 +117,7 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
         return inventory;
     }
 
-    @Override
-    public @NotNull String getInventoryTitle(@NotNull BedWarsGameUser user) {
+    private @NotNull String getInventoryTitle(@NotNull BedWarsGameUser user) {
         return user.getMessage("voting_inventory_title");
     }
 }

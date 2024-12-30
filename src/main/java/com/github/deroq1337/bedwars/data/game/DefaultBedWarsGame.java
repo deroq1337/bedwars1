@@ -15,6 +15,8 @@ import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
 import com.github.deroq1337.bedwars.data.game.map.DefaultBedWarsGameMapManager;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
+import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamManager;
+import com.github.deroq1337.bedwars.data.game.team.DefaultBedWarsGameTeamManager;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUserRegistry;
 import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingManager;
 import com.github.deroq1337.bedwars.data.game.voting.DefaultBedWarsGameVotingManager;
@@ -34,6 +36,7 @@ public class DefaultBedWarsGame implements BedWarsGame {
     private final @NotNull BedWarsGameUserRegistry userRegistry;
     private final @NotNull BedWarsGameMapManager gameMapManager;
     private final @NotNull BedWarsGameVotingManager gameVotingManager;
+    private final @NotNull BedWarsGameTeamManager gameTeamManager;
 
     private Optional<BedWarsGameState> gameState = Optional.empty();
     private Optional<BedWarsGameMap> gameMap = Optional.empty();
@@ -45,6 +48,7 @@ public class DefaultBedWarsGame implements BedWarsGame {
         this.userRegistry = new BedWarsGameUserRegistry(this);
         this.gameMapManager = new DefaultBedWarsGameMapManager(this);
         this.gameVotingManager = new DefaultBedWarsGameVotingManager(this);
+        this.gameTeamManager = new DefaultBedWarsGameTeamManager(this);
 
         this.gameState = Optional.of(new BedWarsLobbyState(this));
         gameState.get().enter();

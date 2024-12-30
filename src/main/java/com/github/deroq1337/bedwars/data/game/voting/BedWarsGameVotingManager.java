@@ -39,6 +39,4 @@ public interface BedWarsGameVotingManager {
     @NotNull ItemStack getItem(@NotNull BedWarsGameUser user);
 
     @NotNull Inventory getInventory(@NotNull BedWarsGameUser user);
-
-    @NotNull String getInventoryTitle(@NotNull BedWarsGameUser user);
 }

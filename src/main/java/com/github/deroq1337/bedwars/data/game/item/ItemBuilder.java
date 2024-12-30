@@ -40,6 +40,10 @@ public abstract class ItemBuilder<M extends ItemMeta> {
     }
 
     public @NotNull ItemBuilder<M> lore(@NotNull String... lore) {
+        if (lore.length == 0 || (lore.length == 1 && lore[0].isEmpty())) {
+            return this;
+        }
+
         itemMeta.setLore(Arrays.stream(lore).toList());
         return this;
     }

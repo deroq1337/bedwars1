@@ -33,6 +33,12 @@ public class PlayerInteractListener implements Listener {
                     event.getPlayer().openInventory(game.getGameVotingManager().getInventory(user));
                     return;
                 }
+
+                if (item.isSimilar(game.getGameTeamManager().getItem(user))) {
+                    event.setCancelled(true);
+                    event.getPlayer().openInventory(game.getGameTeamManager().getInventory(user));
+                    return;
+                }
             });
         }, () -> player.sendMessage("§cAn error occurred. Rejoin or contact an administrator."));
     }

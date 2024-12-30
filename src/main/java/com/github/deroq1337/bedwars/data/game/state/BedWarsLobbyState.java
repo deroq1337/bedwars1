@@ -55,11 +55,7 @@ public class BedWarsLobbyState extends BedWarsGameState {
             player.setOp(false);
             player.setGameMode(GameMode.SURVIVAL);
 
-            /*player.getInventory().setItem(0, Items.TEAM_SELECTOR_ITEM);
-            player.getInventory().setItem(4, Items.VOTING_ITEM_ITEM);
-            player.getInventory().setItem(7, Items.ACHIEVEMENT_ITEM);
-            player.getInventory().setItem(8, Items.LOBBY_ITEM);*/
-
+            player.getInventory().setItem(0, game.getGameTeamManager().getItem(user));
             player.getInventory().setItem(4, game.getGameVotingManager().getItem(user));
 
             new BedWarsLobbyScoreboard(game).setScoreboard(user);
