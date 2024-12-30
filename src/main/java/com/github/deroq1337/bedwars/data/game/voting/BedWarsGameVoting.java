@@ -103,6 +103,10 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
                 .findFirst();
     }
 
+    public void resetWinner() {
+        this.winner = Optional.empty();
+    }
+
     private Optional<C> getCandidateByItem(@NotNull BedWarsGameUser user, @NotNull ItemStack item) {
         return Optional.ofNullable(item.getItemMeta()).flatMap(itemMeta -> {
             return candidates.stream()
