@@ -30,7 +30,6 @@ public abstract class BedWarsGameScoreboard {
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
             int scoreIndex = scoreboardScores.size() * 2 + (scoreboardScores.size() - 1);
-
             for (BedWarsGameScoreboardScore scoreboardScore : scoreboardScores) {
                 setEmptyScore(objective, scoreIndex);
                 scoreIndex--;
@@ -68,9 +67,9 @@ public abstract class BedWarsGameScoreboard {
         }.runTaskTimer(game.getBedWars(), 0, 20L);
     }
 
-    private void setEmptyScore(@NotNull Objective objective, int i) {
-        Score score = objective.getScore(" ");
-        score.setScore(i);
+    private void setEmptyScore(@NotNull Objective objective, int scoreIndex) {
+        Score score = objective.getScore(" ".repeat(Math.max(0, scoreIndex)));
+        score.setScore(scoreIndex);
     }
 
     private @NotNull Team getTeam(@NotNull Scoreboard scoreboard, @NotNull BedWarsGameScoreboardScore scoreboardScore) {
@@ -85,7 +84,6 @@ public abstract class BedWarsGameScoreboard {
                     values[ThreadLocalRandom.current().nextInt(values.length)] + "" +
                     values[ThreadLocalRandom.current().nextInt(values.length)];
             if (scoreboard.getEntryTeam(entry) == null) {
-                System.out.println("Random entry : " + entry);
                 return entry;
             }
         }
