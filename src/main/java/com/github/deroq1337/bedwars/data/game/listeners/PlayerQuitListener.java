@@ -2,6 +2,7 @@ package com.github.deroq1337.bedwars.data.game.listeners;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.exceptions.EmptyGameStateException;
+import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -18,7 +19,8 @@ public class PlayerQuitListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        game.getUserRegistry().removeUser(event.getPlayer().getUniqueId());
-        game.getGameState().orElseThrow(() -> new EmptyGameStateException("Player quit error: No GameState found")).check();
+        BedWarsGameState gameState = game.getGameState().orElseThrow(() -> new EmptyGameStateException("Player quit error: No GameState found"));
+        gameState.onQuit(event.getPlayer().getUniqueId());
+        gameState.check();
     }
 }

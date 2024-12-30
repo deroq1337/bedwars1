@@ -20,7 +20,7 @@ public class BedWarsInGameState extends BedWarsGameState {
     }
 
     @Override
-    public void enter() {
+    public void onQuit(@NotNull UUID uuid) {
 
     }
 

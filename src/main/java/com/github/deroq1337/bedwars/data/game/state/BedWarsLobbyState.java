@@ -31,9 +31,20 @@ public class BedWarsLobbyState extends BedWarsGameState {
     }
 
     @Override
+    public boolean check() {
+        boolean check = super.check();
+        if (!check) {
+            game.getGameVotingManager().resetWinners();
+            if (!game.isForceMapped()) {
+                game.setGameMap(null);
+            }
+        }
+        return check;
+    }
+
+    @Override
     public void onJoin(@NotNull UUID uuid) {
         BedWarsGameUser user = game.getUserRegistry().addUser(uuid, true);
-
         user.getBukkitPlayer().ifPresent(player -> {
             player.getInventory().clear();
             player.setHealth(20);
@@ -52,6 +63,14 @@ public class BedWarsLobbyState extends BedWarsGameState {
             player.getInventory().setItem(4, game.getGameVotingManager().getItem(user));
 
             new BedWarsLobbyScoreboard(game).setScoreboard(user);
+        });
+    }
+
+    @Override
+    public void onQuit(@NotNull UUID uuid) {
+        game.getUserRegistry().getUser(uuid).ifPresent(user -> {
+            game.getGameVotingManager().clearVotes(user.getUuid());
+            game.getUserRegistry().removeUser(uuid);
         });
     }
 

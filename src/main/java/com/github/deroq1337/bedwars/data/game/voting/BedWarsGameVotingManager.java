@@ -9,8 +9,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface BedWarsGameVotingManager {
+
+    void clearVotes(@NotNull UUID player);
+
+    void resetWinners();
 
     void determineWinners();
 

@@ -29,6 +29,18 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     }
 
     @Override
+    public void clearVotes(@NotNull UUID player) {
+        getVotings().forEach(voting -> voting.getCandidates().stream()
+                .filter(candidate -> candidate.getVotes().contains(player))
+                .forEach(candidate -> candidate.getVotes().remove(player)));
+    }
+
+    @Override
+    public void resetWinners() {
+        getVotings().forEach(BedWarsGameVoting::resetWinner);
+    }
+
+    @Override
     public void determineWinners() {
         getVotings().forEach(voting -> votingWinnerMap.put(voting.getClass(), voting.determineWinner()));
     }

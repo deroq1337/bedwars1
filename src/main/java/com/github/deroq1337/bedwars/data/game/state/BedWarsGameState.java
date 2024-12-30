@@ -26,21 +26,26 @@ public abstract class BedWarsGameState {
 
     public abstract void onJoin(@NotNull UUID uuid);
 
+    public abstract void onQuit(@NotNull UUID uuid);
+
     public abstract boolean canStart();
 
-    public void check() {
+    public boolean check() {
         if (countdown.isStarted()) {
             if (!canStart()) {
                 countdown.cancel();
-                return;
+                return false;
             }
         }
 
         if (!countdown.isStarted()) {
             if (canStart()) {
                 countdown.start();
+                return true;
             }
         }
+
+        return false;
     }
 
     public abstract Optional<BedWarsGameState> getNextState();

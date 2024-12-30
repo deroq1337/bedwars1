@@ -59,8 +59,8 @@ public class DefaultBedWarsGame implements BedWarsGame {
     }
 
     @Override
-    public void setGameMap(@NotNull BedWarsGameMap gameMap) {
-        this.gameMap = Optional.of(gameMap);
+    public void setGameMap(@Nullable BedWarsGameMap gameMap) {
+        this.gameMap = Optional.ofNullable(gameMap);
     }
 
     @Override
