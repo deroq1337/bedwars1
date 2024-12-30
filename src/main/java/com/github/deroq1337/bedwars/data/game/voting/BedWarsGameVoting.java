@@ -26,7 +26,7 @@ public abstract class BedWarsGameVoting<T, C extends BedWarsGameVotingCandidate<
     private final @NotNull List<C> candidates;
     private final int slot;
     private final int inventorySize;
-    private final List<Integer> inventorySlots;
+    private final @NotNull List<Integer> inventorySlots;
 
     private Optional<C> winner;
 
