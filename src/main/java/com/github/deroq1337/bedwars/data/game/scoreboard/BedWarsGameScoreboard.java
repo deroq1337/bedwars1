@@ -1,6 +1,7 @@
 package com.github.deroq1337.bedwars.data.game.scoreboard;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
+import com.github.deroq1337.bedwars.data.game.scoreboard.models.BedWarsGameScoreboardScore;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import org.bukkit.Bukkit;

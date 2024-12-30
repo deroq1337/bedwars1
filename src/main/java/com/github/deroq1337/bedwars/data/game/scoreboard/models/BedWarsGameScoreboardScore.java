@@ -1,4 +1,4 @@
-package com.github.deroq1337.bedwars.data.game.scoreboard;
+package com.github.deroq1337.bedwars.data.game.scoreboard.models;
 
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
