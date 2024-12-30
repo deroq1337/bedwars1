@@ -33,7 +33,8 @@ public class BedWarsGameTeam {
                         getNameWithColor(user), users.size(), game.getMainConfig().getTeamSize()))
                 .lore(getUsernames(users).stream()
                         .map(name -> user.getMessage("team_selector_inventory_item_lore", getColor(user) + name))
-                        .toList().toArray(new String[0]))
+                        .toList()
+                        .toArray(new String[0]))
                 .build();
     }
 
