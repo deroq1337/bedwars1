@@ -7,6 +7,7 @@ import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsGameMapLo
 import com.github.deroq1337.bedwars.data.game.map.converters.EnumConverter;
 import com.github.deroq1337.bedwars.data.game.spawners.BedWarsGameResourceSpawnerType;
 import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamType;
+import com.github.deroq1337.bedwars.data.game.utils.EnumMapFix;
 import lombok.*;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.cubespace.Yamler.Config.InvalidConverterException;
@@ -62,6 +63,14 @@ public class BedWarsGameMap extends YamlConfig {
         this.name = name;
     }
 
+    @Override
+    public void init() throws InvalidConfigurationException {
+        super.init();
+        this.teamSpawnLocations = EnumMapFix.fixMapKeys(teamSpawnLocations, BedWarsGameTeamType.class);
+        this.teamBedLocations = EnumMapFix.fixMapKeys(teamBedLocations, BedWarsGameTeamType.class);
+        this.spawnerLocations = EnumMapFix.fixMapKeys(spawnerLocations, BedWarsGameResourceSpawnerType.class);
+    }
+
     public boolean delete() {
         return CONFIG_FILE.delete();
     }
@@ -83,6 +92,11 @@ public class BedWarsGameMap extends YamlConfig {
                 .orElse(false);
     }
 
+    public Optional<BedWarsDirectedGameMapLocation> getTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType) {
+        return Optional.ofNullable(teamSpawnLocations)
+                .flatMap(teamSpawnLocations -> Optional.ofNullable(teamSpawnLocations.get(teamType)));
+    }
+
     public void addTeamBedLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsGameMapLocation location) {
         if (teamBedLocations == null) {
             this.teamBedLocations = new HashMap<>();
@@ -94,6 +108,11 @@ public class BedWarsGameMap extends YamlConfig {
         return Optional.ofNullable(teamBedLocations)
                 .map(teamBedLocations -> teamBedLocations.remove(teamType) != null)
                 .orElse(false);
+    }
+
+    public Optional<BedWarsGameMapLocation> getTeamBedLocation(@NotNull BedWarsGameTeamType teamType) {
+        return Optional.ofNullable(teamBedLocations)
+                .flatMap(teamBedLocations -> Optional.ofNullable(teamBedLocations.get(teamType)));
     }
 
     public int addShopLocation(@NotNull BedWarsDirectedGameMapLocation location) {
