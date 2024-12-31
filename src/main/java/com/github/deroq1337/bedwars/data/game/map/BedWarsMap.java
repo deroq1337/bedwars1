@@ -1,12 +1,12 @@
 package com.github.deroq1337.bedwars.data.game.map;
 
-import com.github.deroq1337.bedwars.data.game.map.converters.BedWarsDirectedGameMapLocationConverter;
-import com.github.deroq1337.bedwars.data.game.map.converters.BedWarsGameMapLocationConverter;
-import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedGameMapLocation;
-import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsGameMapLocation;
+import com.github.deroq1337.bedwars.data.game.map.converters.BedWarsMapDirectedLocationConverter;
+import com.github.deroq1337.bedwars.data.game.map.converters.BedWarsMapLocationConverter;
+import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsMapDirectedLocation;
+import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsMapLocation;
 import com.github.deroq1337.bedwars.data.game.map.converters.EnumConverter;
-import com.github.deroq1337.bedwars.data.game.spawners.BedWarsGameResourceSpawnerType;
-import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamType;
+import com.github.deroq1337.bedwars.data.game.spawners.BedWarsResourceSpawnerType;
+import com.github.deroq1337.bedwars.data.game.team.BedWarsTeamType;
 import com.github.deroq1337.bedwars.data.game.utils.EnumMapFix;
 import lombok.*;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
@@ -23,31 +23,31 @@ import java.util.*;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class BedWarsGameMap extends YamlConfig {
+public class BedWarsMap extends YamlConfig {
 
     private @NotNull String name;
-    private @Nullable Map<BedWarsGameTeamType, BedWarsDirectedGameMapLocation> teamSpawnLocations;
-    private @Nullable Map<BedWarsGameTeamType, BedWarsGameMapLocation> teamBedLocations;
-    private @Nullable Map<Integer, BedWarsDirectedGameMapLocation> shopLocations;
-    private @Nullable Map<BedWarsGameResourceSpawnerType, Map<Integer, BedWarsGameMapLocation>> spawnerLocations;
-    private @Nullable BedWarsDirectedGameMapLocation respawnLocation;
-    private @Nullable BedWarsDirectedGameMapLocation spectatorLocation;
+    private @Nullable Map<BedWarsTeamType, BedWarsMapDirectedLocation> teamSpawnLocations;
+    private @Nullable Map<BedWarsTeamType, BedWarsMapLocation> teamBedLocations;
+    private @Nullable Map<Integer, BedWarsMapDirectedLocation> shopLocations;
+    private @Nullable Map<BedWarsResourceSpawnerType, Map<Integer, BedWarsMapLocation>> spawnerLocations;
+    private @Nullable BedWarsMapDirectedLocation respawnLocation;
+    private @Nullable BedWarsMapDirectedLocation spectatorLocation;
     private @Nullable Set<Material> breakableBlocks;
     private @Nullable Material displayItem;
 
-    public BedWarsGameMap(@NotNull File file) {
+    public BedWarsMap(@NotNull File file) {
         this.CONFIG_FILE = file;
 
         try {
             addConverter(EnumConverter.class);
-            addConverter(BedWarsGameMapLocationConverter.class);
-            addConverter(BedWarsDirectedGameMapLocationConverter.class);
+            addConverter(BedWarsMapLocationConverter.class);
+            addConverter(BedWarsMapDirectedLocationConverter.class);
         } catch (InvalidConverterException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public BedWarsGameMap(@NotNull File file, boolean load) {
+    public BedWarsMap(@NotNull File file, boolean load) {
         this(file);
         if (load) {
             try {
@@ -58,7 +58,7 @@ public class BedWarsGameMap extends YamlConfig {
         }
     }
 
-    public BedWarsGameMap(@NotNull String name) {
+    public BedWarsMap(@NotNull String name) {
         this(new File("plugins/bedwars/maps/" + name.toLowerCase() + ".yml"));
         this.name = name;
     }
@@ -66,9 +66,9 @@ public class BedWarsGameMap extends YamlConfig {
     @Override
     public void init() throws InvalidConfigurationException {
         super.init();
-        this.teamSpawnLocations = EnumMapFix.fixMapKeys(teamSpawnLocations, BedWarsGameTeamType.class);
-        this.teamBedLocations = EnumMapFix.fixMapKeys(teamBedLocations, BedWarsGameTeamType.class);
-        this.spawnerLocations = EnumMapFix.fixMapKeys(spawnerLocations, BedWarsGameResourceSpawnerType.class);
+        this.teamSpawnLocations = EnumMapFix.fixMapKeys(teamSpawnLocations, BedWarsTeamType.class);
+        this.teamBedLocations = EnumMapFix.fixMapKeys(teamBedLocations, BedWarsTeamType.class);
+        this.spawnerLocations = EnumMapFix.fixMapKeys(spawnerLocations, BedWarsResourceSpawnerType.class);
     }
 
     public boolean delete() {
@@ -79,43 +79,43 @@ public class BedWarsGameMap extends YamlConfig {
         return CONFIG_FILE.exists();
     }
 
-    public void addTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsDirectedGameMapLocation location) {
+    public void addTeamSpawnLocation(@NotNull BedWarsTeamType teamType, @NotNull BedWarsMapDirectedLocation location) {
         if (teamSpawnLocations == null) {
             this.teamSpawnLocations = new HashMap<>();
         }
         teamSpawnLocations.put(teamType, location);
     }
 
-    public boolean removeTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType) {
+    public boolean removeTeamSpawnLocation(@NotNull BedWarsTeamType teamType) {
         return Optional.ofNullable(teamSpawnLocations)
                 .map(teamSpawnLocations -> teamSpawnLocations.remove(teamType) != null)
                 .orElse(false);
     }
 
-    public Optional<BedWarsDirectedGameMapLocation> getTeamSpawnLocation(@NotNull BedWarsGameTeamType teamType) {
+    public Optional<BedWarsMapDirectedLocation> getTeamSpawnLocation(@NotNull BedWarsTeamType teamType) {
         return Optional.ofNullable(teamSpawnLocations)
                 .flatMap(teamSpawnLocations -> Optional.ofNullable(teamSpawnLocations.get(teamType)));
     }
 
-    public void addTeamBedLocation(@NotNull BedWarsGameTeamType teamType, @NotNull BedWarsGameMapLocation location) {
+    public void addTeamBedLocation(@NotNull BedWarsTeamType teamType, @NotNull BedWarsMapLocation location) {
         if (teamBedLocations == null) {
             this.teamBedLocations = new HashMap<>();
         }
         teamBedLocations.put(teamType, location);
     }
 
-    public boolean removeTeamBedLocation(@NotNull BedWarsGameTeamType teamType) {
+    public boolean removeTeamBedLocation(@NotNull BedWarsTeamType teamType) {
         return Optional.ofNullable(teamBedLocations)
                 .map(teamBedLocations -> teamBedLocations.remove(teamType) != null)
                 .orElse(false);
     }
 
-    public Optional<BedWarsGameMapLocation> getTeamBedLocation(@NotNull BedWarsGameTeamType teamType) {
+    public Optional<BedWarsMapLocation> getTeamBedLocation(@NotNull BedWarsTeamType teamType) {
         return Optional.ofNullable(teamBedLocations)
                 .flatMap(teamBedLocations -> Optional.ofNullable(teamBedLocations.get(teamType)));
     }
 
-    public int addShopLocation(@NotNull BedWarsDirectedGameMapLocation location) {
+    public int addShopLocation(@NotNull BedWarsMapDirectedLocation location) {
         if (shopLocations == null) {
             this.shopLocations = new HashMap<>();
         }
@@ -129,12 +129,12 @@ public class BedWarsGameMap extends YamlConfig {
         return removeAndUpdateMap(shopLocations, id);
     }
 
-    public int addSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, @NotNull BedWarsDirectedGameMapLocation location) {
+    public int addSpawnerLocation(@NotNull BedWarsResourceSpawnerType spawnerType, @NotNull BedWarsMapDirectedLocation location) {
         if (spawnerLocations == null) {
             this.spawnerLocations = new HashMap<>();
         }
 
-        Map<Integer, BedWarsGameMapLocation> idLocations = spawnerLocations.computeIfAbsent(spawnerType, o -> new HashMap<>());
+        Map<Integer, BedWarsMapLocation> idLocations = spawnerLocations.computeIfAbsent(spawnerType, o -> new HashMap<>());
         System.out.println("size : " + idLocations.size());
         final int id = idLocations.size() + 1;
         System.out.println("id : " + id);
@@ -142,7 +142,7 @@ public class BedWarsGameMap extends YamlConfig {
         return id;
     }
 
-    public boolean removeSpawnerLocation(@NotNull BedWarsGameResourceSpawnerType spawnerType, int id) {
+    public boolean removeSpawnerLocation(@NotNull BedWarsResourceSpawnerType spawnerType, int id) {
         return Optional.ofNullable(spawnerLocations).map(spawnerLocations -> {
             return Optional.ofNullable(spawnerLocations.get(spawnerType)).map(spawnerTypeLocation -> {
                 return removeAndUpdateMap(spawnerTypeLocation, id);
@@ -165,11 +165,11 @@ public class BedWarsGameMap extends YamlConfig {
         }).orElse(false);
     }
 
-    public void setRespawnLocation(@NotNull BedWarsDirectedGameMapLocation location) {
+    public void setRespawnLocation(@NotNull BedWarsMapDirectedLocation location) {
         this.respawnLocation = location;
     }
 
-    public void setSpectatorLocation(@NotNull BedWarsDirectedGameMapLocation location) {
+    public void setSpectatorLocation(@NotNull BedWarsMapDirectedLocation location) {
         this.spectatorLocation = location;
     }
 

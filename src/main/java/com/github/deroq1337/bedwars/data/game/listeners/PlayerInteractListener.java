@@ -28,15 +28,15 @@ public class PlayerInteractListener implements Listener {
         Player player = event.getPlayer();
         game.getUserRegistry().getUser(player.getUniqueId()).ifPresentOrElse(user -> {
             Optional.ofNullable(event.getItem()).ifPresent(item -> {
-                if (item.isSimilar(game.getGameVotingManager().getItem(user))) {
+                if (item.isSimilar(game.getVotingManager().getItem(user))) {
                     event.setCancelled(true);
-                    event.getPlayer().openInventory(game.getGameVotingManager().getInventory(user));
+                    event.getPlayer().openInventory(game.getVotingManager().getInventory(user));
                     return;
                 }
 
-                if (item.isSimilar(game.getGameTeamManager().getItem(user))) {
+                if (item.isSimilar(game.getTeamManager().getItem(user))) {
                     event.setCancelled(true);
-                    event.getPlayer().openInventory(game.getGameTeamManager().getInventory(user));
+                    event.getPlayer().openInventory(game.getTeamManager().getInventory(user));
                     return;
                 }
             });

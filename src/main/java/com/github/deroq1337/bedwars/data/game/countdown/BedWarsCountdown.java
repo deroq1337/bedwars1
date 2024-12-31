@@ -15,14 +15,14 @@ import java.util.Optional;
 
 @Getter
 @Setter
-public abstract class BedWarsGameCountdown {
+public abstract class BedWarsCountdown {
 
     protected final @NotNull BedWarsGame game;
     private final int start;
     private final int interval;
     private final @NotNull List<Integer> specialTicks;
 
-    public BedWarsGameCountdown(@NotNull BedWarsGame game, int start, int interval, int... specialTicks) {
+    public BedWarsCountdown(@NotNull BedWarsGame game, int start, int interval, int... specialTicks) {
         this.game = game;
         this.start = start;
         this.interval = interval;

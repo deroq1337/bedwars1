@@ -16,14 +16,14 @@ import java.util.Optional;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class BedWarsGameMapLocation {
+public class BedWarsMapLocation {
 
     private @NotNull String world;
     private double x;
     private double y;
     private double z;
 
-    public BedWarsGameMapLocation(@NotNull Location location) {
+    public BedWarsMapLocation(@NotNull Location location) {
         this.world = Optional.ofNullable(location.getWorld())
                 .map(WorldInfo::getName)
                 .orElseThrow(() -> new IllegalStateException("BedWarsGameMapLocation: world of bukkit location is null"));
@@ -32,7 +32,7 @@ public class BedWarsGameMapLocation {
         this.z = location.getZ();
     }
 
-    public BedWarsGameMapLocation(@NotNull Map<String, Object> map) {
+    public BedWarsMapLocation(@NotNull Map<String, Object> map) {
         this.world = (String) map.getOrDefault("world", "world");
         this.x = (double) map.get("x");
         this.y = (double) map.get("y");

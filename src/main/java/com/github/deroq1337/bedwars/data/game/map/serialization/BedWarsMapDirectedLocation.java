@@ -13,18 +13,18 @@ import java.util.Map;
 @Setter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class BedWarsDirectedGameMapLocation extends BedWarsGameMapLocation {
+public class BedWarsMapDirectedLocation extends BedWarsMapLocation {
 
     private float yaw;
     private float pitch;
 
-    public BedWarsDirectedGameMapLocation(@NotNull Location location) {
+    public BedWarsMapDirectedLocation(@NotNull Location location) {
         super(location);
         this.yaw = location.getYaw();
         this.pitch = location.getPitch();
     }
 
-    public BedWarsDirectedGameMapLocation(@NotNull Map<String, Object> map) {
+    public BedWarsMapDirectedLocation(@NotNull Map<String, Object> map) {
       super(map);
       this.yaw = Double.valueOf((double) map.get("yaw")).floatValue();
       this.pitch = Double.valueOf((double) map.get("pitch")).floatValue();

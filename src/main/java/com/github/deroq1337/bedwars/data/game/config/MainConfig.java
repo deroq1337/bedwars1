@@ -1,7 +1,7 @@
 package com.github.deroq1337.bedwars.data.game.config;
 
 import com.github.deroq1337.bedwars.data.game.map.converters.EnumConverter;
-import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamType;
+import com.github.deroq1337.bedwars.data.game.team.BedWarsTeamType;
 import lombok.Getter;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.cubespace.Yamler.Config.InvalidConverterException;
@@ -35,7 +35,7 @@ public class MainConfig extends YamlConfig {
     private int teamSize = 2;
 
     @Path("team.teams")
-    private @NotNull List<BedWarsGameTeamType> teams = List.of(BedWarsGameTeamType.RED, BedWarsGameTeamType.BLUE, BedWarsGameTeamType.GREEN, BedWarsGameTeamType.YELLOW);
+    private @NotNull List<BedWarsTeamType> teams = List.of(BedWarsTeamType.RED, BedWarsTeamType.BLUE, BedWarsTeamType.GREEN, BedWarsTeamType.YELLOW);
 
     @Path("team.inventory.slots")
     private @NotNull List<Integer> teamSlots = List.of(1, 3, 5, 7);

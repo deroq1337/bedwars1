@@ -3,7 +3,7 @@ package com.github.deroq1337.bedwars.data.game.voting;
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import com.github.deroq1337.bedwars.data.game.voting.map.BedWarsGameMapVoting;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -17,13 +17,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
-public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager {
+public class DefaultBedWarsVotingManager implements BedWarsVotingManager {
 
     private final @NotNull BedWarsGame game;
-    private final @NotNull Map<Class<? extends BedWarsGameVoting>, BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> votingMap = new ConcurrentHashMap<>();
-    private final @NotNull Map<Class<? extends BedWarsGameVoting>, BedWarsGameVotingCandidate<?>> votingWinnerMap = new ConcurrentHashMap<>();
+    private final @NotNull Map<Class<? extends BedWarsVoting>, BedWarsVoting<?, ? extends BedWarsVotingCandidate<?>>> votingMap = new ConcurrentHashMap<>();
+    private final @NotNull Map<Class<? extends BedWarsVoting>, BedWarsVotingCandidate<?>> votingWinnerMap = new ConcurrentHashMap<>();
 
-    public DefaultBedWarsGameVotingManager(@NotNull BedWarsGame game) {
+    public DefaultBedWarsVotingManager(@NotNull BedWarsGame game) {
         this.game = game;
         votingMap.put(BedWarsGameMapVoting.class, new BedWarsGameMapVoting(game));
     }
@@ -37,7 +37,7 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
 
     @Override
     public void resetWinners() {
-        getVotings().forEach(BedWarsGameVoting::resetWinner);
+        getVotings().forEach(BedWarsVoting::resetWinner);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     }
 
     @Override
-    public boolean handleInventoryClick(@NotNull BedWarsGameUser user, @NotNull InventoryClickEvent event) {
+    public boolean handleInventoryClick(@NotNull BedWarsUser user, @NotNull InventoryClickEvent event) {
         return game.getGameState().map(gameState -> {
             if (!event.getView().getTitle().equals(getInventoryTitle(user))) {
                 return false;
@@ -74,50 +74,50 @@ public class DefaultBedWarsGameVotingManager implements BedWarsGameVotingManager
     }
 
     @Override
-    public @NotNull Collection<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVotings() {
+    public @NotNull Collection<BedWarsVoting<?, ? extends BedWarsVotingCandidate<?>>> getVotings() {
         return votingMap.values();
     }
 
     @Override
-    public <T> Optional<BedWarsGameVoting<T, ? extends BedWarsGameVotingCandidate<T>>> getVoting(
-            @NotNull Class<? extends BedWarsGameVoting<T, ? extends BedWarsGameVotingCandidate<T>>> votingClass, @NotNull Class<T> valueClass) {
-        return Optional.ofNullable((BedWarsGameVoting<T, ? extends BedWarsGameVotingCandidate<T>>) votingMap.get(votingClass));
+    public <T> Optional<BedWarsVoting<T, ? extends BedWarsVotingCandidate<T>>> getVoting(
+            @NotNull Class<? extends BedWarsVoting<T, ? extends BedWarsVotingCandidate<T>>> votingClass, @NotNull Class<T> valueClass) {
+        return Optional.ofNullable((BedWarsVoting<T, ? extends BedWarsVotingCandidate<T>>) votingMap.get(votingClass));
     }
 
     @Override
-    public Optional<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVoting(
-            @NotNull Class<? extends BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> votingClass) {
+    public Optional<BedWarsVoting<?, ? extends BedWarsVotingCandidate<?>>> getVoting(
+            @NotNull Class<? extends BedWarsVoting<?, ? extends BedWarsVotingCandidate<?>>> votingClass) {
         return Optional.ofNullable(votingMap.get(votingClass));
     }
 
     @Override
-    public Optional<BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>> getVotingByItem(@NotNull BedWarsGameUser user, @NotNull ItemStack item) {
+    public Optional<BedWarsVoting<?, ? extends BedWarsVotingCandidate<?>>> getVotingByItem(@NotNull BedWarsUser user, @NotNull ItemStack item) {
         return getVotings().stream()
                 .filter(voting -> voting.getDisplayItem(user).getType() == item.getType())
                 .findFirst();
     }
 
     @Override
-    public <T> Optional<BedWarsGameVotingCandidate<T>> getVotingWinner(
-            @NotNull Class<? extends BedWarsGameVoting<T, ? extends BedWarsGameVotingCandidate<T>>> votingClass, @NotNull Class<T> valueClass) {
-        return Optional.ofNullable((BedWarsGameVotingCandidate<T>) votingWinnerMap.get(votingClass));
+    public <T> Optional<BedWarsVotingCandidate<T>> getVotingWinner(
+            @NotNull Class<? extends BedWarsVoting<T, ? extends BedWarsVotingCandidate<T>>> votingClass, @NotNull Class<T> valueClass) {
+        return Optional.ofNullable((BedWarsVotingCandidate<T>) votingWinnerMap.get(votingClass));
     }
 
     @Override
-    public @NotNull ItemStack getItem(@NotNull BedWarsGameUser user) {
+    public @NotNull ItemStack getItem(@NotNull BedWarsUser user) {
         return ItemBuilders.normal(Material.MAP)
                 .title(user.getMessage("voting_item_name"))
                 .build();
     }
 
     @Override
-    public @NotNull Inventory getInventory(@NotNull BedWarsGameUser user) {
+    public @NotNull Inventory getInventory(@NotNull BedWarsUser user) {
         Inventory inventory = Bukkit.createInventory(null, 9, getInventoryTitle(user));
         getVotings().forEach(voting -> inventory.setItem(voting.getSlot(), voting.getDisplayItem(user)));
         return inventory;
     }
 
-    private @NotNull String getInventoryTitle(@NotNull BedWarsGameUser user) {
+    private @NotNull String getInventoryTitle(@NotNull BedWarsUser user) {
         return user.getMessage("voting_inventory_title");
     }
 }

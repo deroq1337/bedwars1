@@ -10,16 +10,16 @@ import com.github.deroq1337.bedwars.data.game.listeners.InventoryClickListener;
 import com.github.deroq1337.bedwars.data.game.listeners.PlayerInteractListener;
 import com.github.deroq1337.bedwars.data.game.listeners.PlayerJoinListener;
 import com.github.deroq1337.bedwars.data.game.listeners.PlayerQuitListener;
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMapManager;
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.map.DefaultBedWarsGameMapManager;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMapManager;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMap;
+import com.github.deroq1337.bedwars.data.game.map.DefaultBedWarsMapManager;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
-import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamManager;
-import com.github.deroq1337.bedwars.data.game.team.DefaultBedWarsGameTeamManager;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUserRegistry;
-import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingManager;
-import com.github.deroq1337.bedwars.data.game.voting.DefaultBedWarsGameVotingManager;
+import com.github.deroq1337.bedwars.data.game.team.BedWarsTeamManager;
+import com.github.deroq1337.bedwars.data.game.team.DefaultBedWarsTeamManager;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUserRegistry;
+import com.github.deroq1337.bedwars.data.game.voting.BedWarsVotingManager;
+import com.github.deroq1337.bedwars.data.game.voting.DefaultBedWarsVotingManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -33,22 +33,22 @@ public class DefaultBedWarsGame implements BedWarsGame {
 
     private final @NotNull BedWars bedWars;
     private final @NotNull MainConfig mainConfig;
-    private final @NotNull BedWarsGameUserRegistry userRegistry;
-    private final @NotNull BedWarsGameMapManager gameMapManager;
-    private final @NotNull BedWarsGameVotingManager gameVotingManager;
-    private final @NotNull BedWarsGameTeamManager gameTeamManager;
+    private final @NotNull BedWarsUserRegistry userRegistry;
+    private final @NotNull BedWarsMapManager mapManager;
+    private final @NotNull BedWarsVotingManager votingManager;
+    private final @NotNull BedWarsTeamManager teamManager;
 
     private Optional<BedWarsGameState> gameState = Optional.empty();
-    private Optional<BedWarsGameMap> gameMap = Optional.empty();
+    private Optional<BedWarsMap> currentMap = Optional.empty();
     private boolean forceMapped = false;
 
     public DefaultBedWarsGame(@NotNull BedWars bedWars) {
         this.bedWars = bedWars;
         this.mainConfig = new MainConfig();
-        this.userRegistry = new BedWarsGameUserRegistry(this);
-        this.gameMapManager = new DefaultBedWarsGameMapManager(this);
-        this.gameVotingManager = new DefaultBedWarsGameVotingManager(this);
-        this.gameTeamManager = new DefaultBedWarsGameTeamManager(this);
+        this.userRegistry = new BedWarsUserRegistry(this);
+        this.mapManager = new DefaultBedWarsMapManager(this);
+        this.votingManager = new DefaultBedWarsVotingManager(this);
+        this.teamManager = new DefaultBedWarsTeamManager(this);
 
         this.gameState = Optional.of(new BedWarsLobbyState(this));
         gameState.get().enter();
@@ -63,14 +63,14 @@ public class DefaultBedWarsGame implements BedWarsGame {
     }
 
     @Override
-    public void setGameMap(@Nullable BedWarsGameMap gameMap) {
-        this.gameMap = Optional.ofNullable(gameMap);
+    public void setCurrentMap(@Nullable BedWarsMap map) {
+        this.currentMap = Optional.ofNullable(map);
     }
 
     @Override
-    public void forceMap(@NotNull BedWarsGameMap gameMap) {
+    public void forceMap(@NotNull BedWarsMap map) {
         // TODO: load world etc
-        this.gameMap = Optional.of(gameMap);
+        this.currentMap = Optional.of(map);
         this.forceMapped = true;
     }
 

@@ -1,16 +1,16 @@
 package com.github.deroq1337.bedwars.data.game.countdown;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
-import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVoting;
-import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingCandidate;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMap;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
+import com.github.deroq1337.bedwars.data.game.voting.BedWarsVoting;
+import com.github.deroq1337.bedwars.data.game.voting.BedWarsVotingCandidate;
 import com.github.deroq1337.bedwars.data.game.voting.map.BedWarsGameMapVoting;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 
-public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
+public class BedWarsLobbyCountdown extends BedWarsCountdown {
 
     public BedWarsLobbyCountdown(@NotNull BedWarsGame game) {
         super(game, 60, 20, 60, 30, 10, 5, 4, 3, 2, 1);
@@ -28,13 +28,13 @@ public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
     public void onSpecialTick(int tick) {
         game.getUserRegistry().getAliveUsers().forEach(user -> {
             if (tick == 10) {
-                game.getGameVotingManager().determineWinners();
+                game.getVotingManager().determineWinners();
                 announceVotingWinners(user);
 
                 if (!game.isForceMapped()) {
-                    game.getGameVotingManager().getVoting(BedWarsGameMapVoting.class, BedWarsGameMap.class)
-                            .flatMap(BedWarsGameVoting::getWinner)
-                            .ifPresent(winner -> game.setGameMap(winner.getValue()));
+                    game.getVotingManager().getVoting(BedWarsGameMapVoting.class, BedWarsMap.class)
+                            .flatMap(BedWarsVoting::getWinner)
+                            .ifPresent(winner -> game.setCurrentMap(winner.getValue()));
                 }
             }
 
@@ -44,9 +44,9 @@ public class BedWarsLobbyCountdown extends BedWarsGameCountdown {
         });
     }
 
-    private void announceVotingWinners(@NotNull BedWarsGameUser user) {
-        game.getGameVotingManager().getVotingWinnerMap().forEach((votingClass, winner) -> {
-            game.getGameVotingManager().getVoting((Class<? extends BedWarsGameVoting<?, ? extends BedWarsGameVotingCandidate<?>>>) votingClass).ifPresent(voting -> {
+    private void announceVotingWinners(@NotNull BedWarsUser user) {
+        game.getVotingManager().getVotingWinnerMap().forEach((votingClass, winner) -> {
+            game.getVotingManager().getVoting((Class<? extends BedWarsVoting<?, ? extends BedWarsVotingCandidate<?>>>) votingClass).ifPresent(voting -> {
                 user.sendMessage("lobby_countdown_voting_announcement", voting.getName(user), winner.getDisplayTitle(user), winner.getVotes().size());
             });
         });

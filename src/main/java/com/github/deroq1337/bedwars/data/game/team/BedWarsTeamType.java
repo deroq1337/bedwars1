@@ -6,7 +6,7 @@ import org.bukkit.Material;
 
 @RequiredArgsConstructor
 @Getter
-public enum BedWarsGameTeamType {
+public enum BedWarsTeamType {
 
     RED(Material.RED_WOOL, "team_red_color", "team_red_name"),
     BLUE(Material.BLUE_WOOL, "team_blue_color", "team_blue_name"),

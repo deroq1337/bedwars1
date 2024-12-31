@@ -3,7 +3,7 @@ package com.github.deroq1337.bedwars.data.game.state;
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.countdown.BedWarsLobbyCountdown;
 import com.github.deroq1337.bedwars.data.game.scoreboard.BedWarsLobbyScoreboard;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import com.github.deroq1337.bedwars.data.game.voting.map.BedWarsGameMapVoting;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
@@ -34,9 +34,9 @@ public class BedWarsLobbyState extends BedWarsGameState {
     public boolean check() {
         boolean check = super.check();
         if (!check) {
-            game.getGameVotingManager().resetWinners();
+            game.getVotingManager().resetWinners();
             if (!game.isForceMapped()) {
-                game.setGameMap(null);
+                game.setCurrentMap(null);
             }
         }
         return check;
@@ -44,7 +44,7 @@ public class BedWarsLobbyState extends BedWarsGameState {
 
     @Override
     public void onJoin(@NotNull UUID uuid) {
-        BedWarsGameUser user = game.getUserRegistry().addUser(uuid, true);
+        BedWarsUser user = game.getUserRegistry().addUser(uuid, true);
         user.getBukkitPlayer().ifPresent(player -> {
             player.getInventory().clear();
             player.setHealth(20);
@@ -55,8 +55,8 @@ public class BedWarsLobbyState extends BedWarsGameState {
             player.setOp(false);
             player.setGameMode(GameMode.SURVIVAL);
 
-            player.getInventory().setItem(0, game.getGameTeamManager().getItem(user));
-            player.getInventory().setItem(4, game.getGameVotingManager().getItem(user));
+            player.getInventory().setItem(0, game.getTeamManager().getItem(user));
+            player.getInventory().setItem(4, game.getVotingManager().getItem(user));
 
             new BedWarsLobbyScoreboard(game).setScoreboard(user);
         });
@@ -65,14 +65,14 @@ public class BedWarsLobbyState extends BedWarsGameState {
     @Override
     public void onQuit(@NotNull UUID uuid) {
         game.getUserRegistry().getUser(uuid).ifPresent(user -> {
-            game.getGameVotingManager().clearVotes(user.getUuid());
+            game.getVotingManager().clearVotes(user.getUuid());
             game.getUserRegistry().removeUser(uuid);
         });
     }
 
     @Override
     public boolean canStart() {
-        return game.getGameVotingManager().getVoting(BedWarsGameMapVoting.class)
+        return game.getVotingManager().getVoting(BedWarsGameMapVoting.class)
                 .map(voting -> !voting.getCandidates().isEmpty())
                 .orElse(false) && getGame().getUserRegistry().getUsers().size() >= minPlayers;
     }

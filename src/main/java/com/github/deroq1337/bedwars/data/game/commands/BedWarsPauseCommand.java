@@ -1,11 +1,11 @@
 package com.github.deroq1337.bedwars.data.game.commands;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.github.deroq1337.bedwars.data.game.countdown.BedWarsGameCountdown;
+import com.github.deroq1337.bedwars.data.game.countdown.BedWarsCountdown;
 import com.github.deroq1337.bedwars.data.game.exceptions.EmptyGameStateException;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,13 +29,13 @@ public class BedWarsPauseCommand implements CommandExecutor {
             return true;
         }
 
-        Optional<BedWarsGameUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
+        Optional<BedWarsUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
         if (optionalUser.isEmpty()) {
             player.sendMessage("§cAn error occurred. Rejoin or contact an administrator.");
             return true;
         }
 
-        BedWarsGameUser user = optionalUser.get();
+        BedWarsUser user = optionalUser.get();
         if (!player.hasPermission("bedwars.pause")) {
             user.sendMessage("no_permission");
             return true;
@@ -47,7 +47,7 @@ public class BedWarsPauseCommand implements CommandExecutor {
             return true;
         }
 
-        BedWarsGameCountdown countdown = gameState.getCountdown();
+        BedWarsCountdown countdown = gameState.getCountdown();
         if (countdown.isRunning()) {
             countdown.pause();
             user.sendMessage("countdown_paused");

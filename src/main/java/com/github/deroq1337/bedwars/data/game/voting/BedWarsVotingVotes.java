@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class BedWarsGameVotingVotes {
+public class BedWarsVotingVotes {
 
     private final @NotNull Set<UUID> votes = new HashSet<>();
 

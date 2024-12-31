@@ -3,10 +3,10 @@ package com.github.deroq1337.bedwars.data.game.team;
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.config.MainConfig;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
-import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedGameMapLocation;
-import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsGameMapLocation;
+import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsMapDirectedLocation;
+import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsMapLocation;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,23 +22,23 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Getter
-public class DefaultBedWarsGameTeamManager implements BedWarsGameTeamManager {
+public class DefaultBedWarsTeamManager implements BedWarsTeamManager {
 
     private final @NotNull BedWarsGame game;
     private final @NotNull MainConfig mainConfig;
-    private final @NotNull List<BedWarsGameTeam> teams;
+    private final @NotNull List<BedWarsTeam> teams;
 
-    public DefaultBedWarsGameTeamManager(@NotNull BedWarsGame game) {
+    public DefaultBedWarsTeamManager(@NotNull BedWarsGame game) {
         this.game = game;
         this.mainConfig = game.getMainConfig();
         this.teams = game.getMainConfig().getTeams()
-                .stream().map(teamType -> new BedWarsGameTeam(game, teamType))
+                .stream().map(teamType -> new BedWarsTeam(game, teamType))
                 .toList();
     }
 
     @Override
     public void fillTeams() {
-        Iterator<BedWarsGameUser> usersWithoutTeam = game.getUserRegistry().getAliveUsers().stream()
+        Iterator<BedWarsUser> usersWithoutTeam = game.getUserRegistry().getAliveUsers().stream()
                 .filter(user -> user.getTeam().isEmpty())
                 .toList().iterator();
         int teamIndex = teams.indexOf(teams.stream()
@@ -46,7 +46,7 @@ public class DefaultBedWarsGameTeamManager implements BedWarsGameTeamManager {
                 .orElse(teams.getLast()));
         
         while (usersWithoutTeam.hasNext()) {
-            BedWarsGameTeam team = teams.get(teamIndex);
+            BedWarsTeam team = teams.get(teamIndex);
             if (team.getUsers().size() >= mainConfig.getTeamSize()) {
                 teamIndex = updateIndex(teamIndex);
                 continue;
@@ -67,25 +67,25 @@ public class DefaultBedWarsGameTeamManager implements BedWarsGameTeamManager {
 
     @Override
     public void initLocations() {
-        game.getGameMap().ifPresent(gameMap -> {
+        game.getCurrentMap().ifPresent(map -> {
             teams.forEach(team -> {
-                team.setSpawnLocation(gameMap.getTeamSpawnLocation(team.getTeamType())
-                        .map(BedWarsDirectedGameMapLocation::toBukkitLocation));
-                team.setBedLocation(gameMap.getTeamBedLocation(team.getTeamType())
-                        .map(BedWarsGameMapLocation::toBukkitLocation));
+                team.setSpawnLocation(map.getTeamSpawnLocation(team.getTeamType())
+                        .map(BedWarsMapDirectedLocation::toBukkitLocation));
+                team.setBedLocation(map.getTeamBedLocation(team.getTeamType())
+                        .map(BedWarsMapLocation::toBukkitLocation));
             });
         });
     }
 
     @Override
-    public void destroyBeds(@NotNull List<BedWarsGameTeam> teams) {
+    public void destroyBeds(@NotNull List<BedWarsTeam> teams) {
         teams.stream()
                 .filter(team -> team.getUsers().isEmpty())
-                .forEach(BedWarsGameTeam::destroyBed);
+                .forEach(BedWarsTeam::destroyBed);
     }
 
     @Override
-    public boolean handleInventoryClick(@NotNull BedWarsGameUser user, @NotNull InventoryClickEvent event) {
+    public boolean handleInventoryClick(@NotNull BedWarsUser user, @NotNull InventoryClickEvent event) {
         return game.getGameState().map(gameState -> {
             if (!event.getView().getTitle().equals(getInventoryTitle(user))) {
                 return false;
@@ -122,34 +122,34 @@ public class DefaultBedWarsGameTeamManager implements BedWarsGameTeamManager {
     }
 
     @Override
-    public Optional<BedWarsGameTeam> getTeamByType(@NotNull BedWarsGameTeamType teamType) {
+    public Optional<BedWarsTeam> getTeamByType(@NotNull BedWarsTeamType teamType) {
         return teams.stream()
                 .filter(team -> team.getTeamType() == teamType)
                 .findFirst();
     }
 
     @Override
-    public Optional<BedWarsGameTeam> getTeamByItem(@NotNull BedWarsGameUser user, @NotNull ItemStack item) {
+    public Optional<BedWarsTeam> getTeamByItem(@NotNull BedWarsUser user, @NotNull ItemStack item) {
         return teams.stream()
                 .filter(team -> team.getDisplayItem(user).getType() == item.getType())
                 .findFirst();
     }
 
     @Override
-    public @NotNull ItemStack getItem(@NotNull BedWarsGameUser user) {
+    public @NotNull ItemStack getItem(@NotNull BedWarsUser user) {
         return ItemBuilders.normal(Material.RED_BED)
                 .title(user.getMessage("team_selector_item_name"))
                 .build();
     }
 
     @Override
-    public @NotNull Inventory getInventory(@NotNull BedWarsGameUser user) {
+    public @NotNull Inventory getInventory(@NotNull BedWarsUser user) {
         Inventory inventory = Bukkit.createInventory(null, 9, getInventoryTitle(user));
         IntStream.range(0, mainConfig.getTeamCount()).forEach(i -> inventory.setItem(mainConfig.getTeamSlots().get(i), teams.get(i).getDisplayItem(user)));
         return inventory;
     }
 
-    private @NotNull String getInventoryTitle(@NotNull BedWarsGameUser user) {
+    private @NotNull String getInventoryTitle(@NotNull BedWarsUser user) {
         return user.getMessage("team_selector_inventory_title");
     }
 }

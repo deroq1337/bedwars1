@@ -2,8 +2,8 @@ package com.github.deroq1337.bedwars.data.game.commands.map.subcommands;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapSubCommand;
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMap;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,14 +16,14 @@ public class BedWarsMapRemoveShopSubCommand extends BedWarsMapSubCommand {
     }
 
     @Override
-    protected void execute(@NotNull BedWarsGameUser user, @NotNull Player player, @NotNull String[] args) {
+    protected void execute(@NotNull BedWarsUser user, @NotNull Player player, @NotNull String[] args) {
         if (args.length < 2) {
             user.sendMessage("command_map_remove_shop_syntax");
             return;
         }
 
         String mapName = args[0];
-        Optional<BedWarsGameMap> optionalGameMap = gameMapManager.getMapByName(mapName).join();
+        Optional<BedWarsMap> optionalGameMap = mapManager.getMapByName(mapName).join();
         if (optionalGameMap.isEmpty()) {
             user.sendMessage("command_map_not_found");
             return;
@@ -37,13 +37,13 @@ public class BedWarsMapRemoveShopSubCommand extends BedWarsMapSubCommand {
             return;
         }
 
-        BedWarsGameMap gameMap = optionalGameMap.get();
-        if (!gameMap.removeShopLocation(id)) {
+        BedWarsMap map = optionalGameMap.get();
+        if (!map.removeShopLocation(id)) {
             user.sendMessage("command_map_shop_not_found");
             return;
         }
 
-        if (!gameMapManager.saveMap(gameMap).join()) {
+        if (!mapManager.saveMap(map).join()) {
             user.sendMessage("command_map_not_updated");
             return;
         }

@@ -24,15 +24,15 @@ public class InventoryClickListener implements Listener {
         }
 
         game.getUserRegistry().getUser(player.getUniqueId()).ifPresentOrElse(user -> {
-            if (game.getGameTeamManager().handleInventoryClick(user, event)) {
+            if (game.getTeamManager().handleInventoryClick(user, event)) {
                 return;
             }
 
-            if (game.getGameVotingManager().handleInventoryClick(user, event)) {
+            if (game.getVotingManager().handleInventoryClick(user, event)) {
                 return;
             }
 
-            if (game.getGameVotingManager().getVotings().stream()
+            if (game.getVotingManager().getVotings().stream()
                     .anyMatch(voting -> voting.handleInventoryClick(user, event))) {
                 return;
             }

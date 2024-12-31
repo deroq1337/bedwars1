@@ -4,7 +4,7 @@ import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.exceptions.EmptyGameStateException;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,13 +29,13 @@ public class BedWarsForceMapCommand implements CommandExecutor {
             return true;
         }
 
-        Optional<BedWarsGameUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
+        Optional<BedWarsUser> optionalUser = game.getUserRegistry().getUser(player.getUniqueId());
         if (optionalUser.isEmpty()) {
             player.sendMessage("§cAn error occurred. Rejoin or contact an administrator.");
             return true;
         }
 
-        BedWarsGameUser user = optionalUser.get();
+        BedWarsUser user = optionalUser.get();
         if (!player.hasPermission("bedwars.forcemap")) {
             user.sendMessage("no_permission");
             return true;
@@ -58,19 +58,19 @@ public class BedWarsForceMapCommand implements CommandExecutor {
         }
 
         String mapName = args[0];
-        if (game.getGameMap().isPresent() && game.getGameMap().get().getName().equals(mapName)) {
+        if (game.getCurrentMap().isPresent() && game.getCurrentMap().get().getName().equals(mapName)) {
             user.sendMessage("already_forcemapped");
             return true;
         }
 
-        game.getGameMapManager().getMapByName(mapName).thenAccept(gameMap -> {
+        game.getMapManager().getMapByName(mapName).thenAccept(map -> {
             Bukkit.getScheduler().runTask(game.getBedWars(), () -> {
-                if (gameMap.isEmpty()) {
+                if (map.isEmpty()) {
                     user.sendMessage("command_map_not_found");
                     return;
                 }
 
-                game.forceMap(gameMap.get());
+                game.forceMap(map.get());
                 user.sendMessage("game_force_mapped");
             });
         });

@@ -1,25 +1,25 @@
 package com.github.deroq1337.bedwars.data.game.scoreboard;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.github.deroq1337.bedwars.data.game.scoreboard.models.BedWarsGameScoreboardScore;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.scoreboard.models.BedWarsScoreboardScore;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
 
-public class BedWarsLobbyScoreboard extends BedWarsGameScoreboard {
+public class BedWarsLobbyScoreboard extends BedWarsScoreboard {
 
     public BedWarsLobbyScoreboard(@NotNull BedWarsGame game) {
         super(game);
     }
 
     @Override
-    public void updateScoreboard(@NotNull BedWarsGameUser user) {
+    public void updateScoreboard(@NotNull BedWarsUser user) {
         user.getBukkitPlayer().ifPresent(player -> {
             Scoreboard scoreboard = player.getScoreboard();
-            String mapPrefix = game.getGameMap().map(map -> user.getMessage("scoreboard_lobby_map_value", map.getName()))
+            String mapPrefix = game.getCurrentMap().map(map -> user.getMessage("scoreboard_lobby_map_value", map.getName()))
                     .orElseGet(() -> user.getMessage("scoreboard_lobby_map_value", user.getMessage("scoreboard_lobby_map_value_voting")));
             updatePrefix(scoreboard, "map", mapPrefix);
 
@@ -30,10 +30,10 @@ public class BedWarsLobbyScoreboard extends BedWarsGameScoreboard {
     }
 
     @Override
-    public @NotNull List<BedWarsGameScoreboardScore> getScoreboardScores() {
+    public @NotNull List<BedWarsScoreboardScore> getScoreboardScores() {
         return List.of(
-                new BedWarsGameScoreboardScore(Optional.of("scoreboard_lobby_map"), "map", "scoreboard_lobby_map_value", true),
-                new BedWarsGameScoreboardScore(Optional.of("scoreboard_lobby_team_size"), "teamSize", "scoreboard_lobby_team_size_value", false)
+                new BedWarsScoreboardScore(Optional.of("scoreboard_lobby_map"), "map", "scoreboard_lobby_map_value", true),
+                new BedWarsScoreboardScore(Optional.of("scoreboard_lobby_team_size"), "teamSize", "scoreboard_lobby_team_size_value", false)
         );
     }
 

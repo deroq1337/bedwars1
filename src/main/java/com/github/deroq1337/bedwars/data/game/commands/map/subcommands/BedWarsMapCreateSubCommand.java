@@ -2,8 +2,8 @@ package com.github.deroq1337.bedwars.data.game.commands.map.subcommands;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapSubCommand;
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMap;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,19 +14,19 @@ public class BedWarsMapCreateSubCommand extends BedWarsMapSubCommand {
     }
 
     @Override
-    protected void execute(@NotNull BedWarsGameUser user, @NotNull Player player, @NotNull String[] args) {
+    protected void execute(@NotNull BedWarsUser user, @NotNull Player player, @NotNull String[] args) {
         if (args.length < 1) {
             user.sendMessage("command_map_create_syntax");
             return;
         }
 
         String mapName = args[0];
-        if (gameMapManager.getMapByName(mapName).join().isPresent()) {
+        if (mapManager.getMapByName(mapName).join().isPresent()) {
             user.sendMessage("command_map_already_exists");
             return;
         }
 
-        if (!gameMapManager.saveMap(new BedWarsGameMap(mapName)).join()) {
+        if (!mapManager.saveMap(new BedWarsMap(mapName)).join()) {
             user.sendMessage("command_map_not_created");
             return;
         }

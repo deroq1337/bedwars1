@@ -2,8 +2,8 @@ package com.github.deroq1337.bedwars.data.game.commands.map.subcommands;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapSubCommand;
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMap;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,14 +17,14 @@ public class BedWarsMapSetDisplayItemSubCommand extends BedWarsMapSubCommand {
     }
 
     @Override
-    protected void execute(@NotNull BedWarsGameUser user, @NotNull Player player, @NotNull String[] args) {
+    protected void execute(@NotNull BedWarsUser user, @NotNull Player player, @NotNull String[] args) {
         if (args.length < 2) {
             user.sendMessage("command_map_set_item_syntax");
             return;
         }
 
         String mapName = args[0];
-        Optional<BedWarsGameMap> optionalGameMap = gameMapManager.getMapByName(mapName).join();
+        Optional<BedWarsMap> optionalGameMap = mapManager.getMapByName(mapName).join();
         if (optionalGameMap.isEmpty()) {
             user.sendMessage("command_map_not_found");
             return;
@@ -39,10 +39,10 @@ public class BedWarsMapSetDisplayItemSubCommand extends BedWarsMapSubCommand {
             return;
         }
 
-        BedWarsGameMap gameMap = optionalGameMap.get();
-        gameMap.setDisplayItem(material);
+        BedWarsMap map = optionalGameMap.get();
+        map.setDisplayItem(material);
 
-        if (!gameMapManager.saveMap(gameMap).join()) {
+        if (!mapManager.saveMap(map).join()) {
             user.sendMessage("command_map_not_updated");
             return;
         }

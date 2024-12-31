@@ -2,7 +2,7 @@ package com.github.deroq1337.bedwars.data.game.team;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import lombok.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,17 +19,17 @@ import java.util.Optional;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class BedWarsGameTeam {
+public class BedWarsTeam {
 
     private final @NotNull BedWarsGame game;
-    private final @NotNull BedWarsGameTeamType teamType;
+    private final @NotNull BedWarsTeamType teamType;
     private Optional<Location> spawnLocation = Optional.empty();
     private Optional<Location> bedLocation = Optional.empty();
     private boolean bedDestroyed;
     private boolean eliminated;
 
-    public @NotNull ItemStack getDisplayItem(@NotNull BedWarsGameUser user) {
-        List<BedWarsGameUser> users = getUsers();
+    public @NotNull ItemStack getDisplayItem(@NotNull BedWarsUser user) {
+        List<BedWarsUser> users = getUsers();
         return ItemBuilders.normal(teamType.getMaterial())
                 .title(user.getMessage("team_selector_inventory_item_name",
                         getNameWithColor(user), users.size(), game.getMainConfig().getTeamSize()))
@@ -40,7 +40,7 @@ public class BedWarsGameTeam {
                 .build();
     }
 
-    public void teleport(@NotNull BedWarsGameUser user) {
+    public void teleport(@NotNull BedWarsUser user) {
         spawnLocation.ifPresent(location -> {
             user.getBukkitPlayer().ifPresent(player -> player.teleport(location));
         });
@@ -50,16 +50,16 @@ public class BedWarsGameTeam {
         bedLocation.ifPresent(location -> {
             if (Tag.BEDS.isTagged(location.getBlock().getType())) {
                 location.getBlock().setType(Material.AIR);
-                this.bedDestroyed = true;
             }
         });
+        this.bedDestroyed = true;
     }
 
-    public void announce(@NotNull BedWarsGameUser user) {
+    public void announce(@NotNull BedWarsUser user) {
         user.sendMessage("team_announcement", getNameWithColor(user));
     }
 
-    public @NotNull List<BedWarsGameUser> getUsers() {
+    public @NotNull List<BedWarsUser> getUsers() {
         return game.getUserRegistry().getUsers().stream()
                 .filter(u -> u.getTeam()
                         .map(team -> team.equals(this))
@@ -67,7 +67,7 @@ public class BedWarsGameTeam {
                 .toList();
     }
 
-    public @NotNull List<BedWarsGameUser> getAliveUsers() {
+    public @NotNull List<BedWarsUser> getAliveUsers() {
         return game.getUserRegistry().getAliveUsers().stream()
                 .filter(u -> u.getTeam()
                         .map(team -> team.equals(this))
@@ -75,7 +75,7 @@ public class BedWarsGameTeam {
                 .toList();
     }
 
-    private @NotNull List<String> getUsernames(@NotNull List<BedWarsGameUser> users) {
+    private @NotNull List<String> getUsernames(@NotNull List<BedWarsUser> users) {
         return users.stream()
                 .map(u -> u.getBukkitPlayer()
                         .map(Player::getName)
@@ -83,15 +83,15 @@ public class BedWarsGameTeam {
                 .toList();
     }
 
-    public @NotNull String getColor(@NotNull BedWarsGameUser user) {
+    public @NotNull String getColor(@NotNull BedWarsUser user) {
         return user.getMessage(teamType.getColorCode());
     }
 
-    public @NotNull String getName(@NotNull BedWarsGameUser user) {
+    public @NotNull String getName(@NotNull BedWarsUser user) {
         return user.getMessage(teamType.getName());
     }
 
-    public @NotNull String getNameWithColor(@NotNull BedWarsGameUser user) {
+    public @NotNull String getNameWithColor(@NotNull BedWarsUser user) {
         return getColor(user) + getName(user);
     }
 }

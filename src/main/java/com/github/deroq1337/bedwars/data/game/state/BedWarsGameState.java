@@ -1,7 +1,7 @@
 package com.github.deroq1337.bedwars.data.game.state;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.github.deroq1337.bedwars.data.game.countdown.BedWarsGameCountdown;
+import com.github.deroq1337.bedwars.data.game.countdown.BedWarsCountdown;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import java.util.UUID;
 public abstract class BedWarsGameState {
 
     protected final @NotNull BedWarsGame game;
-    private final @NotNull BedWarsGameCountdown countdown;
+    private final @NotNull BedWarsCountdown countdown;
 
     public void enter() {
         game.setGameState(this);

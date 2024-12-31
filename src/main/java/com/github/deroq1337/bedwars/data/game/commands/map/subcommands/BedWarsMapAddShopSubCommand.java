@@ -2,9 +2,9 @@ package com.github.deroq1337.bedwars.data.game.commands.map.subcommands;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapSubCommand;
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedGameMapLocation;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMap;
+import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsMapDirectedLocation;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,23 +17,23 @@ public class BedWarsMapAddShopSubCommand extends BedWarsMapSubCommand {
     }
 
     @Override
-    protected void execute(@NotNull BedWarsGameUser user, @NotNull Player player, @NotNull String[] args) {
+    protected void execute(@NotNull BedWarsUser user, @NotNull Player player, @NotNull String[] args) {
         if (args.length < 1) {
             user.sendMessage("command_map_add_shop_syntax");
             return;
         }
 
         String mapName = args[0];
-        Optional<BedWarsGameMap> optionalGameMap = gameMapManager.getMapByName(mapName).join();
+        Optional<BedWarsMap> optionalGameMap = mapManager.getMapByName(mapName).join();
         if (optionalGameMap.isEmpty()) {
             user.sendMessage("command_map_not_found");
             return;
         }
 
-        BedWarsGameMap gameMap = optionalGameMap.get();
-        int id = gameMap.addShopLocation(new BedWarsDirectedGameMapLocation(player.getLocation()));
+        BedWarsMap map = optionalGameMap.get();
+        int id = map.addShopLocation(new BedWarsMapDirectedLocation(player.getLocation()));
 
-        if (!gameMapManager.saveMap(gameMap).join()) {
+        if (!mapManager.saveMap(map).join()) {
             user.sendMessage("command_map_not_updated");
             return;
         }

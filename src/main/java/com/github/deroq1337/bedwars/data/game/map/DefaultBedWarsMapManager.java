@@ -8,17 +8,17 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager {
+public class DefaultBedWarsMapManager implements BedWarsMapManager {
 
     private final @NotNull File mapsDirectory;
 
-    public DefaultBedWarsGameMapManager(@NotNull BedWarsGame game) {
+    public DefaultBedWarsMapManager(@NotNull BedWarsGame game) {
         this.mapsDirectory = new File("plugins/bedwars/maps/");
         mapsDirectory.mkdirs();
     }
 
     @Override
-    public @NotNull CompletableFuture<Boolean> saveMap(@NotNull BedWarsGameMap map) {
+    public @NotNull CompletableFuture<Boolean> saveMap(@NotNull BedWarsMap map) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 map.save();
@@ -34,21 +34,21 @@ public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager {
     @Override
     public @NotNull CompletableFuture<Boolean> deleteMap(@NotNull String name) {
         return CompletableFuture.supplyAsync(() -> {
-            return new BedWarsGameMap(name).delete();
+            return new BedWarsMap(name).delete();
         });
     }
 
     @Override
-    public @NotNull CompletableFuture<Optional<BedWarsGameMap>> getMapByName(@NotNull String name) {
+    public @NotNull CompletableFuture<Optional<BedWarsMap>> getMapByName(@NotNull String name) {
         return CompletableFuture.supplyAsync(() -> {
-            BedWarsGameMap gameMap = new BedWarsGameMap(name);
-            if (!gameMap.exists()) {
+            BedWarsMap map = new BedWarsMap(name);
+            if (!map.exists()) {
                 return Optional.empty();
             }
 
             try {
-                gameMap.load();
-                return Optional.of(gameMap);
+                map.load();
+                return Optional.of(map);
             } catch (InvalidConfigurationException e) {
                 System.err.println("Could not load map: " + e.getMessage());
                 e.printStackTrace();
@@ -58,7 +58,7 @@ public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager {
     }
 
     @Override
-    public @NotNull CompletableFuture<List<BedWarsGameMap>> getRandomMaps(int count) {
+    public @NotNull CompletableFuture<List<BedWarsMap>> getRandomMaps(int count) {
         return CompletableFuture.supplyAsync(() -> {
             return Optional.ofNullable(mapsDirectory.listFiles()).map(files -> {
                 List<File> fileList = new ArrayList<>(Arrays.stream(files).toList());
@@ -66,18 +66,18 @@ public class DefaultBedWarsGameMapManager implements BedWarsGameMapManager {
 
                 return Arrays.stream(files)
                         .limit(Math.min(count, files.length))
-                        .map(file -> new BedWarsGameMap(file, true))
+                        .map(file -> new BedWarsMap(file, true))
                         .toList();
             }).orElse(Collections.emptyList());
         });
     }
 
     @Override
-    public @NotNull CompletableFuture<List<BedWarsGameMap>> getMaps() {
+    public @NotNull CompletableFuture<List<BedWarsMap>> getMaps() {
         return CompletableFuture.supplyAsync(() -> {
             return Optional.ofNullable(mapsDirectory.listFiles()).map(files -> {
                 return Arrays.stream(files)
-                        .map(file -> new BedWarsGameMap(file, true))
+                        .map(file -> new BedWarsMap(file, true))
                         .toList();
             }).orElse(Collections.emptyList());
         });

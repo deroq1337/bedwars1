@@ -1,9 +1,9 @@
 package com.github.deroq1337.bedwars.data.game.scoreboard;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
-import com.github.deroq1337.bedwars.data.game.scoreboard.models.BedWarsGameScoreboardScore;
+import com.github.deroq1337.bedwars.data.game.scoreboard.models.BedWarsScoreboardScore;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -15,17 +15,17 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class BedWarsGameScoreboard {
+public abstract class BedWarsScoreboard {
 
     protected final @NotNull BedWarsGame game;
-    protected final @NotNull List<BedWarsGameScoreboardScore> scoreboardScores;
+    protected final @NotNull List<BedWarsScoreboardScore> scoreboardScores;
 
-    public BedWarsGameScoreboard(@NotNull BedWarsGame game) {
+    public BedWarsScoreboard(@NotNull BedWarsGame game) {
         this.game = game;
         this.scoreboardScores = getScoreboardScores();
     }
 
-    public void setScoreboard(@NotNull BedWarsGameUser user) {
+    public void setScoreboard(@NotNull BedWarsUser user) {
         Optional.ofNullable(Bukkit.getScoreboardManager()).ifPresent(scoreboardManager -> {
             Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
             Objective objective = scoreboard.registerNewObjective("bedwars", Criteria.DUMMY, "§lGommeHD Test");
@@ -36,7 +36,7 @@ public abstract class BedWarsGameScoreboard {
             setEmptyScore(objective, scoreIndex.get());
             scoreIndex.getAndDecrement();
 
-            for (BedWarsGameScoreboardScore scoreboardScore : scoreboardScores) {
+            for (BedWarsScoreboardScore scoreboardScore : scoreboardScores) {
                 scoreboardScore.getName().ifPresent(scoreName -> {
                     Score score = objective.getScore(user.getMessage(scoreName));
                     score.setScore(scoreIndex.get());
@@ -62,11 +62,11 @@ public abstract class BedWarsGameScoreboard {
         });
     }
 
-    public abstract void updateScoreboard(@NotNull BedWarsGameUser user);
+    public abstract void updateScoreboard(@NotNull BedWarsUser user);
 
-    public abstract @NotNull List<BedWarsGameScoreboardScore> getScoreboardScores();
+    public abstract @NotNull List<BedWarsScoreboardScore> getScoreboardScores();
 
-    private void startUpdateScoreboardTask(@NotNull BedWarsGameUser user) {
+    private void startUpdateScoreboardTask(@NotNull BedWarsUser user) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -85,7 +85,7 @@ public abstract class BedWarsGameScoreboard {
         score.setScore(scoreIndex);
     }
 
-    private @NotNull Team getTeam(@NotNull Scoreboard scoreboard, @NotNull BedWarsGameScoreboardScore scoreboardScore) {
+    private @NotNull Team getTeam(@NotNull Scoreboard scoreboard, @NotNull BedWarsScoreboardScore scoreboardScore) {
         return Optional.ofNullable(scoreboard.getTeam(scoreboardScore.getTeamName()))
                 .orElseGet(() -> scoreboard.registerNewTeam(scoreboardScore.getTeamName()));
     }

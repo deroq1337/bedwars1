@@ -1,6 +1,6 @@
 package com.github.deroq1337.bedwars.data.game.map.converters;
 
-import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsDirectedGameMapLocation;
+import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsMapDirectedLocation;
 import lombok.RequiredArgsConstructor;
 import net.cubespace.Yamler.Config.ConfigSection;
 import net.cubespace.Yamler.Config.Converter.Converter;
@@ -9,13 +9,13 @@ import net.cubespace.Yamler.Config.InternalConverter;
 import java.lang.reflect.ParameterizedType;
 
 @RequiredArgsConstructor
-public class BedWarsDirectedGameMapLocationConverter implements Converter {
+public class BedWarsMapDirectedLocationConverter implements Converter {
 
     private final InternalConverter internalConverter;
 
     @Override
     public Object toConfig(Class<?> aClass, Object o, ParameterizedType parameterizedType) {
-        return ((BedWarsDirectedGameMapLocation) o).toMap();
+        return ((BedWarsMapDirectedLocation) o).toMap();
     }
 
     @Override
@@ -28,11 +28,11 @@ public class BedWarsDirectedGameMapLocationConverter implements Converter {
             return null;
         }
 
-        return new BedWarsDirectedGameMapLocation(configSection.getRawMap());
+        return new BedWarsMapDirectedLocation(configSection.getRawMap());
     }
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return aClass.equals(BedWarsDirectedGameMapLocation.class);
+        return aClass.equals(BedWarsMapDirectedLocation.class);
     }
 }

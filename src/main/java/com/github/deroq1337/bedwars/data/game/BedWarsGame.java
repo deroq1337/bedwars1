@@ -2,12 +2,12 @@ package com.github.deroq1337.bedwars.data.game;
 
 import com.github.deroq1337.bedwars.BedWars;
 import com.github.deroq1337.bedwars.data.game.config.MainConfig;
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMap;
-import com.github.deroq1337.bedwars.data.game.map.BedWarsGameMapManager;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMap;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMapManager;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
-import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeamManager;
-import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUserRegistry;
-import com.github.deroq1337.bedwars.data.game.voting.BedWarsGameVotingManager;
+import com.github.deroq1337.bedwars.data.game.team.BedWarsTeamManager;
+import com.github.deroq1337.bedwars.data.game.user.BedWarsUserRegistry;
+import com.github.deroq1337.bedwars.data.game.voting.BedWarsVotingManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,23 +19,23 @@ public interface BedWarsGame {
 
     @NotNull MainConfig getMainConfig();
 
-    @NotNull BedWarsGameUserRegistry getUserRegistry();
+    @NotNull BedWarsUserRegistry getUserRegistry();
 
-    @NotNull BedWarsGameMapManager getGameMapManager();
+    @NotNull BedWarsMapManager getMapManager();
 
-    @NotNull BedWarsGameVotingManager getGameVotingManager();
+    @NotNull BedWarsVotingManager getVotingManager();
 
-    @NotNull BedWarsGameTeamManager getGameTeamManager();
+    @NotNull BedWarsTeamManager getTeamManager();
 
     Optional<BedWarsGameState> getGameState();
 
     void setGameState(@Nullable BedWarsGameState state);
 
-    Optional<BedWarsGameMap> getGameMap();
+    Optional<BedWarsMap> getCurrentMap();
 
-    void setGameMap(@Nullable BedWarsGameMap gameMap);
+    void setCurrentMap(@Nullable BedWarsMap map);
 
     boolean isForceMapped();
 
-    void forceMap(@NotNull BedWarsGameMap gameMap);
+    void forceMap(@NotNull BedWarsMap map);
 }
