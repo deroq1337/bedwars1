@@ -5,6 +5,8 @@ import com.github.deroq1337.bedwars.data.game.item.ItemBuilders;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import lombok.*;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +42,14 @@ public class BedWarsGameTeam {
     public void teleport(@NotNull BedWarsGameUser user) {
         spawnLocation.ifPresent(location -> {
             user.getBukkitPlayer().ifPresent(player -> player.teleport(location));
+        });
+    }
+
+    public void destroyBed() {
+        bedLocation.ifPresent(location -> {
+            if (Tag.BEDS.isTagged(location.getBlock().getType())) {
+                location.getBlock().setType(Material.AIR);
+            }
         });
     }
 

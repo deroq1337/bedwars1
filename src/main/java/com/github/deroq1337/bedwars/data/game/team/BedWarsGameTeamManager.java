@@ -15,6 +15,8 @@ public interface BedWarsGameTeamManager {
 
     void initLocations();
 
+    void destroyBeds(@NotNull List<BedWarsGameTeam> teams);
+
     boolean handleInventoryClick(@NotNull BedWarsGameUser user, @NotNull InventoryClickEvent event);
 
     @NotNull List<BedWarsGameTeam> getTeams();

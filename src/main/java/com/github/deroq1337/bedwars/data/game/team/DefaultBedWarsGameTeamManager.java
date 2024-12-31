@@ -45,16 +45,23 @@ public class DefaultBedWarsGameTeamManager implements BedWarsGameTeamManager {
                 .min(Comparator.comparingInt(team -> team.getUsers().size()))
                 .orElse(teams.getLast()));
         while (usersWithoutTeam.hasNext()) {
-            BedWarsGameUser user = usersWithoutTeam.next();
-            user.setTeam(Optional.of(teams.get(teamIndex)));
-
-            if (teamIndex == teams.size() - 1) {
-                teamIndex = 0;
+            BedWarsGameTeam team = teams.get(teamIndex);
+            if (team.getUsers().size() >= mainConfig.getTeamSize()) {
+                teamIndex = updateIndex(teamIndex);
                 continue;
             }
 
-            teamIndex++;
+            usersWithoutTeam.next().setTeam(Optional.of(team));
+            teamIndex = updateIndex(teamIndex);
         }
+    }
+
+    private int updateIndex(int index) {
+        if (index == teams.size() - 1) {
+            return 0;
+        }
+
+       return index + 1;
     }
 
     @Override
@@ -67,6 +74,13 @@ public class DefaultBedWarsGameTeamManager implements BedWarsGameTeamManager {
                         .map(BedWarsGameMapLocation::toBukkitLocation));
             });
         });
+    }
+
+    @Override
+    public void destroyBeds(@NotNull List<BedWarsGameTeam> teams) {
+        teams.stream()
+                .filter(team -> team.getUsers().isEmpty())
+                .forEach(BedWarsGameTeam::destroyBed);
     }
 
     @Override

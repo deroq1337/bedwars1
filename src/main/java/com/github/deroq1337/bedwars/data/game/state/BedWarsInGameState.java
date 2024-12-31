@@ -19,6 +19,7 @@ public class BedWarsInGameState extends BedWarsGameState {
     public void enter() {
         game.getGameTeamManager().fillTeams();
         game.getGameTeamManager().initLocations();
+        game.getGameTeamManager().destroyBeds(game.getGameTeamManager().getTeams());
         game.getUserRegistry().getAliveUsers().forEach(user -> {
             user.getTeam().ifPresent(team -> {
                 team.teleport(user);
