@@ -50,6 +50,7 @@ public class BedWarsGameTeam {
         bedLocation.ifPresent(location -> {
             if (Tag.BEDS.isTagged(location.getBlock().getType())) {
                 location.getBlock().setType(Material.AIR);
+                this.bedDestroyed = true;
             }
         });
     }
@@ -59,6 +60,14 @@ public class BedWarsGameTeam {
     }
 
     public @NotNull List<BedWarsGameUser> getUsers() {
+        return game.getUserRegistry().getUsers().stream()
+                .filter(u -> u.getTeam()
+                        .map(team -> team.equals(this))
+                        .orElse(false))
+                .toList();
+    }
+
+    public @NotNull List<BedWarsGameUser> getAliveUsers() {
         return game.getUserRegistry().getAliveUsers().stream()
                 .filter(u -> u.getTeam()
                         .map(team -> team.equals(this))

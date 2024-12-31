@@ -122,6 +122,13 @@ public class DefaultBedWarsGameTeamManager implements BedWarsGameTeamManager {
     }
 
     @Override
+    public Optional<BedWarsGameTeam> getTeamByType(@NotNull BedWarsGameTeamType teamType) {
+        return teams.stream()
+                .filter(team -> team.getTeamType() == teamType)
+                .findFirst();
+    }
+
+    @Override
     public Optional<BedWarsGameTeam> getTeamByItem(@NotNull BedWarsGameUser user, @NotNull ItemStack item) {
         return teams.stream()
                 .filter(team -> team.getDisplayItem(user).getType() == item.getType())

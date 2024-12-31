@@ -2,7 +2,7 @@ package com.github.deroq1337.bedwars.data.game.state;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.countdown.BedWarsInGameCountdown;
-import com.github.deroq1337.bedwars.data.game.team.BedWarsGameTeam;
+import com.github.deroq1337.bedwars.data.game.scoreboard.BedWarsInGameScoreboard;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsGameUser;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +25,8 @@ public class BedWarsInGameState extends BedWarsGameState {
                 team.teleport(user);
                 team.announce(user);
             });
+
+            new BedWarsInGameScoreboard(game).setScoreboard(user);
         });
     }
 

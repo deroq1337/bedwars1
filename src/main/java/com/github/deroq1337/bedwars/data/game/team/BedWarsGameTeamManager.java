@@ -21,6 +21,8 @@ public interface BedWarsGameTeamManager {
 
     @NotNull List<BedWarsGameTeam> getTeams();
 
+    Optional<BedWarsGameTeam> getTeamByType(@NotNull BedWarsGameTeamType teamType);
+
     Optional<BedWarsGameTeam> getTeamByItem(@NotNull BedWarsGameUser user, @NotNull ItemStack item);
 
     @NotNull ItemStack getItem(@NotNull BedWarsGameUser user);

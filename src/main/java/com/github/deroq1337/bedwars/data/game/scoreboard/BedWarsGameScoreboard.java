@@ -13,38 +13,48 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class BedWarsGameScoreboard {
 
     protected final @NotNull BedWarsGame game;
     protected final @NotNull List<BedWarsGameScoreboardScore> scoreboardScores;
 
-    public BedWarsGameScoreboard(@NotNull BedWarsGame game, @NotNull List<BedWarsGameScoreboardScore> scoreboardScores) {
+    public BedWarsGameScoreboard(@NotNull BedWarsGame game) {
         this.game = game;
-        this.scoreboardScores = scoreboardScores;
+        this.scoreboardScores = getScoreboardScores();
     }
 
     public void setScoreboard(@NotNull BedWarsGameUser user) {
         Optional.ofNullable(Bukkit.getScoreboardManager()).ifPresent(scoreboardManager -> {
             Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
-            Objective objective = scoreboard.registerNewObjective("serverName", Criteria.DUMMY, "§lGommeHD Test");
+            Objective objective = scoreboard.registerNewObjective("bedwars", Criteria.DUMMY, "§lGommeHD Test");
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-            int scoreIndex = scoreboardScores.size() * 2 + (scoreboardScores.size() - 1);
-            for (BedWarsGameScoreboardScore scoreboardScore : scoreboardScores) {
-                setEmptyScore(objective, scoreIndex);
-                scoreIndex--;
+            AtomicInteger scoreIndex = new AtomicInteger(scoreboardScores.size() * 2 + (scoreboardScores.size() - 1));
+            // empty score as first line
+            setEmptyScore(objective, scoreIndex.get());
+            scoreIndex.getAndDecrement();
 
-                Score score = objective.getScore(user.getMessage(scoreboardScore.getName()));
-                score.setScore(scoreIndex);
-                scoreIndex--;
+            for (BedWarsGameScoreboardScore scoreboardScore : scoreboardScores) {
+                scoreboardScore.getName().ifPresent(scoreName -> {
+                    Score score = objective.getScore(user.getMessage(scoreName));
+                    score.setScore(scoreIndex.get());
+                    scoreIndex.set(scoreIndex.get() - 1);
+                });
 
                 Team team = getTeam(scoreboard, scoreboardScore);
                 String entry = generateRandomEntry(scoreboard);
                 team.addEntry(entry);
                 team.setPrefix(user.getMessage(scoreboardScore.getValue()));
-                objective.getScore(entry).setScore(scoreIndex);
-                scoreIndex--;
+                objective.getScore(entry).setScore(scoreIndex.get());
+                scoreboardScore.setEntry(Optional.of(entry));
+                scoreIndex.getAndDecrement();
+
+                if (scoreboardScore.isFreeSpace()) {
+                    setEmptyScore(objective, scoreIndex.get());
+                    scoreIndex.getAndDecrement();
+                }
             }
 
             user.getBukkitPlayer().ifPresent(player -> player.setScoreboard(scoreboard));
@@ -53,6 +63,8 @@ public abstract class BedWarsGameScoreboard {
     }
 
     public abstract void updateScoreboard(@NotNull BedWarsGameUser user);
+
+    public abstract @NotNull List<BedWarsGameScoreboardScore> getScoreboardScores();
 
     private void startUpdateScoreboardTask(@NotNull BedWarsGameUser user) {
         new BukkitRunnable() {
