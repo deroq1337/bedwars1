@@ -44,6 +44,7 @@ public class DefaultBedWarsGameTeamManager implements BedWarsGameTeamManager {
         int teamIndex = teams.indexOf(teams.stream()
                 .min(Comparator.comparingInt(team -> team.getUsers().size()))
                 .orElse(teams.getLast()));
+        
         while (usersWithoutTeam.hasNext()) {
             BedWarsGameTeam team = teams.get(teamIndex);
             if (team.getUsers().size() >= mainConfig.getTeamSize()) {

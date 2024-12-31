@@ -22,11 +22,9 @@ public class BedWarsLobbyScoreboard extends BedWarsGameScoreboard {
     public void updateScoreboard(@NotNull BedWarsGameUser user) {
         user.getBukkitPlayer().ifPresent(player -> {
             Scoreboard scoreboard = player.getScoreboard();
-            Optional.ofNullable(scoreboard.getTeam("map")).ifPresent(team -> {
-                String mapPrefix = game.getGameMap().map(map -> user.getMessage("scoreboard_lobby_map_value", map.getName()))
-                        .orElseGet(() -> user.getMessage("scoreboard_lobby_map_value", user.getMessage("scoreboard_lobby_map_value_voting")));
-                updateTeam(scoreboard, "map", mapPrefix);
-            });
+            String mapPrefix = game.getGameMap().map(map -> user.getMessage("scoreboard_lobby_map_value", map.getName()))
+                    .orElseGet(() -> user.getMessage("scoreboard_lobby_map_value", user.getMessage("scoreboard_lobby_map_value_voting")));
+            updateTeam(scoreboard, "map", mapPrefix);
 
             String teamSizePrefix = user.getMessage("scoreboard_lobby_team_size_value",
                     game.getMainConfig().getTeamCount(), game.getMainConfig().getTeamSize());
