@@ -2,6 +2,7 @@ package com.github.deroq1337.bedwars.data.game.scoreboard;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.scoreboard.models.BedWarsScoreboardScore;
+import com.github.deroq1337.bedwars.data.game.state.BedWarsInGameState;
 import com.github.deroq1337.bedwars.data.game.team.BedWarsTeam;
 import com.github.deroq1337.bedwars.data.game.team.BedWarsTeamType;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
@@ -14,7 +15,7 @@ import java.util.Optional;
 public class BedWarsInGameScoreboard extends BedWarsScoreboard {
 
     public BedWarsInGameScoreboard(@NotNull BedWarsGame game) {
-        super(game);
+        super(game, BedWarsInGameState.class);
     }
 
     @Override

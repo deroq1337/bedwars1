@@ -2,7 +2,7 @@ package com.github.deroq1337.bedwars.data.game.scoreboard;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.scoreboard.models.BedWarsScoreboardScore;
-import com.github.deroq1337.bedwars.data.game.state.BedWarsLobbyState;
+import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,10 +18,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class BedWarsScoreboard {
 
     protected final @NotNull BedWarsGame game;
+    private final @NotNull Class<? extends BedWarsGameState> gameState;
     protected final @NotNull List<BedWarsScoreboardScore> scoreboardScores;
 
-    public BedWarsScoreboard(@NotNull BedWarsGame game) {
+    public BedWarsScoreboard(@NotNull BedWarsGame game, @NotNull Class<? extends BedWarsGameState> gameState) {
         this.game = game;
+        this.gameState = gameState;
         this.scoreboardScores = getScoreboardScores();
     }
 
@@ -70,7 +72,10 @@ public abstract class BedWarsScoreboard {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (game.getGameState().isEmpty() || !(game.getGameState().get() instanceof BedWarsLobbyState) || user.getBukkitPlayer().isEmpty()) {
+                boolean cancel = game.getGameState()
+                        .map(currentState -> !currentState.getClass().equals(game.getGameState().get().getClass()))
+                        .orElse(true);
+                if (cancel) {
                     cancel();
                     return;
                 }
