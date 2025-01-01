@@ -6,6 +6,7 @@ import com.github.deroq1337.bedwars.data.game.commands.map.BedWarsMapCommand;
 import com.github.deroq1337.bedwars.data.game.commands.BedWarsPauseCommand;
 import com.github.deroq1337.bedwars.data.game.commands.BedWarsStartCommand;
 import com.github.deroq1337.bedwars.data.game.config.MainConfig;
+import com.github.deroq1337.bedwars.data.game.spawners.config.ResourceSpawnerConfig;
 import com.github.deroq1337.bedwars.data.game.listeners.InventoryClickListener;
 import com.github.deroq1337.bedwars.data.game.listeners.PlayerInteractListener;
 import com.github.deroq1337.bedwars.data.game.listeners.PlayerJoinListener;
@@ -33,6 +34,7 @@ public class DefaultBedWarsGame implements BedWarsGame {
 
     private final @NotNull BedWars bedWars;
     private final @NotNull MainConfig mainConfig;
+    private final @NotNull ResourceSpawnerConfig resourceSpawnerConfig;
     private final @NotNull BedWarsUserRegistry userRegistry;
     private final @NotNull BedWarsMapManager mapManager;
     private final @NotNull BedWarsVotingManager votingManager;
@@ -45,6 +47,7 @@ public class DefaultBedWarsGame implements BedWarsGame {
     public DefaultBedWarsGame(@NotNull BedWars bedWars) {
         this.bedWars = bedWars;
         this.mainConfig = new MainConfig();
+        this.resourceSpawnerConfig = new ResourceSpawnerConfig();
         this.userRegistry = new BedWarsUserRegistry(this);
         this.mapManager = new DefaultBedWarsMapManager(this);
         this.votingManager = new DefaultBedWarsVotingManager(this);

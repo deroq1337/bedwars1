@@ -2,6 +2,7 @@ package com.github.deroq1337.bedwars.data.game.state;
 
 import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.countdown.BedWarsInGameCountdown;
+import com.github.deroq1337.bedwars.data.game.map.BedWarsMap;
 import com.github.deroq1337.bedwars.data.game.scoreboard.BedWarsInGameScoreboard;
 import com.github.deroq1337.bedwars.data.game.user.BedWarsUser;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,11 @@ public class BedWarsInGameState extends BedWarsGameState {
 
     @Override
     public void enter() {
+        game.getCurrentMap().ifPresent(map -> {
+            map.initSpawners(game);
+            map.startSpawners();
+        });
+
         game.getTeamManager().fillTeams();
         game.getTeamManager().initLocations();
         game.getTeamManager().destroyBeds(game.getTeamManager().getTeams());
@@ -28,6 +34,11 @@ public class BedWarsInGameState extends BedWarsGameState {
 
             new BedWarsInGameScoreboard(game).setScoreboard(user);
         });
+    }
+
+    @Override
+    public void leave() {
+        game.getCurrentMap().ifPresent(BedWarsMap::stopSpawners);
     }
 
     @Override

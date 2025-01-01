@@ -2,6 +2,7 @@ package com.github.deroq1337.bedwars.data.game;
 
 import com.github.deroq1337.bedwars.BedWars;
 import com.github.deroq1337.bedwars.data.game.config.MainConfig;
+import com.github.deroq1337.bedwars.data.game.spawners.config.ResourceSpawnerConfig;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsMap;
 import com.github.deroq1337.bedwars.data.game.map.BedWarsMapManager;
 import com.github.deroq1337.bedwars.data.game.state.BedWarsGameState;
@@ -18,6 +19,8 @@ public interface BedWarsGame {
     @NotNull BedWars getBedWars();
 
     @NotNull MainConfig getMainConfig();
+
+    @NotNull ResourceSpawnerConfig getResourceSpawnerConfig();
 
     @NotNull BedWarsUserRegistry getUserRegistry();
 

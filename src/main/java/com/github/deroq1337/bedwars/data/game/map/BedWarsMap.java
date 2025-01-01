@@ -1,10 +1,12 @@
 package com.github.deroq1337.bedwars.data.game.map;
 
+import com.github.deroq1337.bedwars.data.game.BedWarsGame;
 import com.github.deroq1337.bedwars.data.game.map.converters.BedWarsMapDirectedLocationConverter;
 import com.github.deroq1337.bedwars.data.game.map.converters.BedWarsMapLocationConverter;
 import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsMapDirectedLocation;
 import com.github.deroq1337.bedwars.data.game.map.serialization.BedWarsMapLocation;
 import com.github.deroq1337.bedwars.data.game.map.converters.EnumConverter;
+import com.github.deroq1337.bedwars.data.game.spawners.BedWarsResourceSpawner;
 import com.github.deroq1337.bedwars.data.game.spawners.BedWarsResourceSpawnerType;
 import com.github.deroq1337.bedwars.data.game.team.BedWarsTeamType;
 import com.github.deroq1337.bedwars.data.game.utils.EnumMapFix;
@@ -13,6 +15,7 @@ import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.cubespace.Yamler.Config.InvalidConverterException;
 import net.cubespace.Yamler.Config.YamlConfig;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +37,9 @@ public class BedWarsMap extends YamlConfig {
     private @Nullable BedWarsMapDirectedLocation spectatorLocation;
     private @Nullable Set<Material> breakableBlocks;
     private @Nullable Material displayItem;
+
+    /* game logic */
+    private transient @NotNull Set<BedWarsResourceSpawner> spawners = new HashSet<>();
 
     public BedWarsMap(@NotNull File file) {
         this.CONFIG_FILE = file;
@@ -77,6 +83,22 @@ public class BedWarsMap extends YamlConfig {
 
     public boolean exists() {
         return CONFIG_FILE.exists();
+    }
+
+    public void initSpawners(@NotNull BedWarsGame game) {
+        Optional.ofNullable(spawnerLocations).ifPresent(spawnerLocations -> spawnerLocations.forEach((spawnerType, idLocationMap) -> {
+            spawners.addAll(idLocationMap.values().stream()
+                    .map(location -> new BedWarsResourceSpawner(game, spawnerType, location.toBukkitLocation()))
+                    .toList());
+        }));
+    }
+
+    public void startSpawners() {
+        spawners.forEach(BedWarsResourceSpawner::start);
+    }
+
+    public void stopSpawners() {
+        spawners.forEach(BedWarsResourceSpawner::stop);
     }
 
     public void addTeamSpawnLocation(@NotNull BedWarsTeamType teamType, @NotNull BedWarsMapDirectedLocation location) {
