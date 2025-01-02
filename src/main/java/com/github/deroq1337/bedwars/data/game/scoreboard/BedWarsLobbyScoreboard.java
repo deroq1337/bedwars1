@@ -20,7 +20,8 @@ public class BedWarsLobbyScoreboard extends BedWarsScoreboard {
     public void updateScoreboard(@NotNull BedWarsUser user) {
         user.getBukkitPlayer().ifPresent(player -> {
             Scoreboard scoreboard = player.getScoreboard();
-            String mapPrefix = game.getCurrentMap().map(map -> user.getMessage("scoreboard_lobby_map_value", map.getName()))
+            String mapPrefix = game.getCurrentMap()
+                    .map(map -> user.getMessage("scoreboard_lobby_map_value", map.getName()))
                     .orElseGet(() -> user.getMessage("scoreboard_lobby_map_value", user.getMessage("scoreboard_lobby_map_value_voting")));
             updatePrefix(scoreboard, "map", mapPrefix);
 
