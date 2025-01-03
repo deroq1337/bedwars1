@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class BedWarsMapCommand implements CommandExecutor {
 
     private final @NotNull BedWarsGame game;
-    private final Map<String, BedWarsMapSubCommand> subCommandMap;
+    private final @NotNull Map<String, BedWarsMapSubCommand> subCommandMap;
 
     public BedWarsMapCommand(@NotNull BedWarsGame game) {
         this.game = game;
